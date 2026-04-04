@@ -4,16 +4,16 @@ public class Aluno {
 
     private int id;
     private String nome;
-    private int idade;
+    private String dataNascimento; // DD/MM/AAAA para a tela e YYYY/MM/DD para o banco
 
     public Aluno() {
 
     }
 
-    public Aluno(String nome, int idade) {
+    public Aluno(String nome, String dataNascimento) {
 
         this.nome = nome;
-        this.idade = idade;
+        this.dataNascimento = dataNascimento;
 
     }
 
@@ -25,7 +25,7 @@ public class Aluno {
     }
     public void setId(int id) {
 
-        this.nome = nome;
+        this.id = id;
 
     }
 
@@ -40,14 +40,14 @@ public class Aluno {
 
     }
 
-    public int getIdade() {
+    public String getDataNascimento() {
 
-        return idade;
+        return dataNascimento;
 
     }
-    public void setIdade(int idade) {
+    public void setDataNascimento(String dataNascimento) {
 
-        this.idade = idade;
+        this.dataNascimento = dataNascimento;
 
     }
 

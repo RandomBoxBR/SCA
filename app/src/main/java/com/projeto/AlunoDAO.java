@@ -8,13 +8,13 @@ public class AlunoDAO {
 
     public void inserir(Aluno aluno) {
 
-        String sql = "INSERT INTO aluno(nome, idade) VALUES (?, ?)";
+        String sql = "INSERT INTO aluno(nome, data_nascimento) VALUES (?, ?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, aluno.getNome());
-            stmt.setInt(2, aluno.getIdade());
+            stmt.setString(2, aluno.getDataNascimento());
             stmt.executeUpdate();
             System.out.println("Aluno inserido com sucesso.");
 
@@ -40,7 +40,7 @@ public class AlunoDAO {
                Aluno a = new Aluno();
                a.setId(rs.getInt("id"));
                a.setNome(rs.getString("nome"));
-               a.setIdade(rs.getInt("idade"));
+               a.setDataNascimento(rs.getString("data_nascimento"));
                lista.add(a);
 
            }
@@ -56,13 +56,13 @@ public class AlunoDAO {
     }
 
     public void atualizar (Aluno aluno) {
-        String sql = "UPDATE aluno SET nome = ?, idade = ? WHERE id = ?";
+        String sql = "UPDATE aluno SET nome = ?, data_nascimento = ? WHERE id = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, aluno.getNome());
-            stmt.setInt(2, aluno.getIdade());
+            stmt.setString(2, aluno.getDataNascimento());
             stmt.setInt(3, aluno.getId());
             stmt.executeUpdate();
             System.out.println("Aluno atualizado com sucesso.");
