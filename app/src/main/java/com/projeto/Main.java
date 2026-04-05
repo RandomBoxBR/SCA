@@ -47,8 +47,22 @@ public class Main {
 
             JTabbedPane menuPrincipal = new JTabbedPane();
 
+            String[] colunas = {"ID", "Nome", "Data de Nascimento"};
+            DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
+
             menuPrincipal.addTab("Cadastrar", criarPainelCadastro(dao));
-            menuPrincipal.addTab("Listar", criarPainelListagem(dao));
+            menuPrincipal.addTab("Listar", criarPainelListagem(dao, modelo));
+
+            menuPrincipal.addChangeListener(e -> {
+
+                if (menuPrincipal.getSelectedIndex() == 1) {
+
+                    preencherTabela(dao, modelo);
+                    System.out.println("Lista atualizada!");
+
+                }
+
+            });
 
             frame.add(menuPrincipal);
             frame.pack();
@@ -139,30 +153,18 @@ public class Main {
 
     }
 
-    private static JPanel criarPainelListagem(AlunoDAO dao) {
+    private static JPanel criarPainelListagem(AlunoDAO dao, DefaultTableModel modelo) {
 
         JPanel painel = new JPanel(new BorderLayout(10, 10));
         painel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        String[] colunas = {"ID", "Nome", "Data de Nascimento"};
-        DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
-
         JTable tabela = new JTable(modelo);
         tabela.setFillsViewportHeight(true);
 
-        JButton btnAtualizar = new JButton("Atualizar Lista");
-
-        btnAtualizar.addActionListener(e -> {
-
-            preencherTabela(dao, modelo);
-
-        });
-
-        preencherTabela(dao, modelo);
+        tabela.setDefaultEditor(Object.class, null);
 
         painel.add(new JLabel("Alunos Cadastrados:"), BorderLayout.NORTH);
         painel.add(new JScrollPane(tabela), BorderLayout.CENTER);
-        painel.add(btnAtualizar, BorderLayout.SOUTH);
 
         return painel;
 
