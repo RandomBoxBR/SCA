@@ -1,6 +1,7 @@
 package com.projeto;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.sql.Connection;
@@ -40,112 +41,145 @@ public class Main {
 
             AlunoDAO dao = new AlunoDAO();
 
-            JFrame frame = new JFrame("SCA - Cadastro de Alunos");
+            JFrame frame = new JFrame("SCA - Sistema de Cadastro Asdown");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setLayout(new FlowLayout());
+            frame.setPreferredSize(new Dimension(800, 600));
 
-            JTextField txtNome = new JTextField(15);
+            JTabbedPane menuPrincipal = new JTabbedPane();
 
-            JFormattedTextField txtData = null;
-            try {
+            menuPrincipal.addTab("Cadastrar", criarPainelCadastro(dao));
+            menuPrincipal.addTab("Listar", criarPainelListagem(dao));
 
-                MaskFormatter mascara = new MaskFormatter("##/##/####");
-                mascara.setPlaceholderCharacter('_');
-                mascara.setAllowsInvalid(false);
-                mascara.setOverwriteMode(true);
-                txtData = new JFormattedTextField(mascara);
-                txtData.setColumns(8);
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-
-            }
-
-            JButton btnSalvar = new JButton("Salvar");
-            JTextArea areaListagem = new JTextArea(10, 35);
-            areaListagem.setEditable(false);
-
-            final JFormattedTextField campoDataFinal = txtData;
-            btnSalvar.addActionListener(e -> {
-
-                try {
-
-                    String nome = txtNome.getText();
-                    String dataNasc = campoDataFinal.getText().replace("_", "").trim();
-
-                    if(nome.isEmpty()) {
-                        JOptionPane.showMessageDialog(frame, "Preencha o nome!");
-                        return;
-                    }
-
-                    if(dataNasc.length() < 10) {
-                        JOptionPane.showMessageDialog(frame, "Preencha a data de nascimento completa!");
-                        return;
-                    }
-
-                    if(!isDataValida(dataNasc)) {
-                        JOptionPane.showMessageDialog(frame, "Data inserida inválida! Verifique o dia e o mês!");
-                        return;
-                    }
-
-                    try {
-
-                        Aluno aluno = new Aluno(nome, dataNasc);
-                        dao.inserir(aluno);
-
-                        txtNome.setText("");
-                        campoDataFinal.setValue(null);
-
-                        atualizarListagem(dao, areaListagem);
-                        JOptionPane.showMessageDialog(frame, "Aluno salvo com sucesso!");
-
-                    } catch (Exception ex) {
-
-                        JOptionPane.showMessageDialog(frame, "Erro ao salvar:" + ex.getMessage());
-
-                    }
-
-                } catch (Exception ex) {
-
-                    JOptionPane.showMessageDialog(frame, "Erro: " + ex.getMessage());
-
-                }
-
-            });
-
-            frame.add(new JLabel("Nome: ")); frame.add(txtNome);
-            frame.add(new JLabel("Nascimento: ")); frame.add(txtData);
-            frame.add(btnSalvar);
-            frame.add(new JScrollPane(areaListagem));
-
+            frame.add(menuPrincipal);
             frame.pack();
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
-
-            atualizarListagem(dao, areaListagem);
 
         });
 
     }
 
-    private static void atualizarListagem(AlunoDAO dao, JTextArea area) {
+    private static JPanel criarPainelCadastro(AlunoDAO dao) {
 
-        List<Aluno> alunos = dao.listar();
-        StringBuilder sb = new StringBuilder();
-        sb.append("ID | NOME | DATA NASC.\n");
-        sb.append("---------------------------------\n");
+        JPanel painel = new JPanel(new FlowLayout());
 
-        for (Aluno a : alunos) {
+        JTextField txtNome = new JTextField(15);
+        JFormattedTextField txtData = null;
 
-            sb.append(a.getId())
-                    .append(" - ").append(a.getNome())
-                    .append(", ").append(a.getDataNascimento())
-                    .append("\n");
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("##/##/####");
+            mascara.setPlaceholderCharacter('_');
+            mascara.setAllowsInvalid(false);
+            mascara.setOverwriteMode(true);
+            txtData = new JFormattedTextField(mascara);
+            txtData.setColumns(8);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
 
         }
 
-        area.setText(sb.toString());
+        JButton btnSalvar = new JButton("Salvar");
+
+        final JFormattedTextField campoDataFinal = txtData;
+
+        btnSalvar.addActionListener(e -> {
+
+            try {
+
+                String nome = txtNome.getText();
+                String dataNasc = campoDataFinal.getText().replace("_", "").trim();
+
+                if(nome.isEmpty()) {
+                    JOptionPane.showMessageDialog(painel, "Preencha o nome!");
+                    return;
+                }
+
+                if(dataNasc.length() < 10) {
+                    JOptionPane.showMessageDialog(painel, "Preencha a data de nascimento completa!");
+                    return;
+                }
+
+                if(!isDataValida(dataNasc)) {
+                    JOptionPane.showMessageDialog(painel, "Data inserida inválida!");
+                    return;
+                }
+
+                try {
+
+                    Aluno aluno = new Aluno(nome, dataNasc);
+                    dao.inserir(aluno);
+
+                    txtNome.setText("");
+                    campoDataFinal.setValue(null);
+
+                    JOptionPane.showMessageDialog(painel, "Aluno salvo com sucesso!");
+
+                } catch (Exception ex) {
+
+                    JOptionPane.showMessageDialog(painel, "Erro ao salvar:" + ex.getMessage());
+
+                }
+
+            } catch (Exception ex) {
+
+                JOptionPane.showMessageDialog(painel, "Erro: " + ex.getMessage());
+
+            }
+
+        });
+
+        painel.add(new JLabel("Nome: ")); painel.add(txtNome);
+        painel.add(new JLabel("Nascimento: ")); painel.add(txtData);
+        painel.add(btnSalvar);
+
+        return painel;
+
+    }
+
+    private static JPanel criarPainelListagem(AlunoDAO dao) {
+
+        JPanel painel = new JPanel(new BorderLayout(10, 10));
+        painel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        String[] colunas = {"ID", "Nome", "Data de Nascimento"};
+        DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
+
+        JTable tabela = new JTable(modelo);
+        tabela.setFillsViewportHeight(true);
+
+        JButton btnAtualizar = new JButton("Atualizar Lista");
+
+        btnAtualizar.addActionListener(e -> {
+
+            preencherTabela(dao, modelo);
+
+        });
+
+        preencherTabela(dao, modelo);
+
+        painel.add(new JLabel("Alunos Cadastrados:"), BorderLayout.NORTH);
+        painel.add(new JScrollPane(tabela), BorderLayout.CENTER);
+        painel.add(btnAtualizar, BorderLayout.SOUTH);
+
+        return painel;
+
+    }
+
+    private static void preencherTabela(AlunoDAO dao, DefaultTableModel modelo) {
+
+        modelo.setRowCount(0);
+
+        List<Aluno> alunos = dao.listar();
+
+        for (Aluno a : alunos) {
+
+            Object[] linha = { a.getId(), a.getNome(), a.getDataNascimento() };
+            modelo.addRow(linha);
+
+        }
 
     }
 
