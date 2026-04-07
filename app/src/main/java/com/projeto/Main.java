@@ -4,9 +4,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -22,7 +19,7 @@ public class Main {
 
         SwingUtilities.invokeLater(() -> {
 
-            AlunoDAO dao = new AlunoDAO();
+            AlunoDAO alunodao = new AlunoDAO();
 
             JFrame frame = new JFrame("SCA - Sistema de Cadastro Asdown");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -36,21 +33,21 @@ public class Main {
             DefaultTableModel modeloReduzido = new DefaultTableModel(colunasReduzidas, 0);
 
 
-            menuPrincipal.addTab("Cadastrar", criarPainelCadastro(dao));
-            menuPrincipal.addTab("Listar", criarPainelListagem(dao, modelo));
-            menuPrincipal.addTab("Gerenciar", criarPainelGerenciamento(dao, modeloReduzido));
+            menuPrincipal.addTab("Cadastrar", criarPainelCadastro(alunodao));
+            menuPrincipal.addTab("Listar", criarPainelListagem(alunodao, modelo));
+            menuPrincipal.addTab("Gerenciar", criarPainelGerenciamento(alunodao, modeloReduzido));
 
             menuPrincipal.addChangeListener(e -> {
                 int aba = menuPrincipal.getSelectedIndex();
                 if (aba == 1) {
 
-                    preencherTabela(dao, modelo);
+                    preencherTabela(alunodao, modelo);
 
                     System.out.println("Lista atualizada!");
 
                 } else if (aba == 2) {
 
-                    preencherTabela(dao, modeloReduzido);
+                    preencherTabela(alunodao, modeloReduzido);
 
                     System.out.println("Lista atualizada!");
 
@@ -71,7 +68,7 @@ public class Main {
 
         JPanel painel = new JPanel(new FlowLayout());
 
-        JTextField txtNome = new JTextField(15);
+        JTextField txtNome = new JTextField(20);
         JFormattedTextField txtData = null;
 
         try {
@@ -79,7 +76,7 @@ public class Main {
             MaskFormatter mascara = new MaskFormatter("##/##/####");
             mascara.setPlaceholderCharacter('_');
             txtData = new JFormattedTextField(mascara);
-            txtData.setColumns(10);
+            txtData.setColumns(6);
 
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -165,7 +162,7 @@ public class Main {
         painelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel painelEsquerdo = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JTextField txtId = new JTextField(5);
+        JTextField txtId = new JTextField(2);
         txtId.setEditable(false);
         JTextField txtNome = new JTextField(20);
 
@@ -175,7 +172,7 @@ public class Main {
             MaskFormatter m = new MaskFormatter("##/##/####");
             m.setPlaceholderCharacter('_');
             txtData = new JFormattedTextField(m);
-            txtData.setColumns(10);
+            txtData.setColumns(6);
 
         } catch (Exception e)  { e.printStackTrace(); }
 

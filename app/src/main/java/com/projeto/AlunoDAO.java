@@ -48,6 +48,7 @@ public class AlunoDAO {
     }
 
     public void atualizar (Aluno aluno) {
+
         String sql = "UPDATE aluno SET nome = ?, data_nascimento = ? WHERE id = ?";
 
         try (Connection conn = Conexao.conectar();
@@ -64,6 +65,7 @@ public class AlunoDAO {
     }
 
     public void deletar(int id) {
+
         String sql = "DELETE FROM aluno WHERE id = ?";
 
         try (Connection conn = Conexao.conectar();
@@ -80,6 +82,7 @@ public class AlunoDAO {
     public Aluno buscarPorId(int id) {
 
         String sql = "SELECT * FROM aluno WHERE id = ?";
+
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
