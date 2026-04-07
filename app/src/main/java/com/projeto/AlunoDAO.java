@@ -18,11 +18,7 @@ public class AlunoDAO {
             stmt.executeUpdate();
             System.out.println("Aluno inserido com sucesso.");
 
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-
-        }
+        } catch (SQLException e) { e.printStackTrace(); }
 
     }
 
@@ -45,11 +41,7 @@ public class AlunoDAO {
 
            }
 
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-
-        }
+        } catch (SQLException e) { e.printStackTrace(); }
 
         return lista;
 
@@ -67,11 +59,7 @@ public class AlunoDAO {
             stmt.executeUpdate();
             System.out.println("Aluno atualizado com sucesso.");
 
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-
-        }
+        } catch (SQLException e) { e.printStackTrace(); }
 
     }
 
@@ -85,11 +73,30 @@ public class AlunoDAO {
             stmt.executeUpdate();
             System.out.println("Aluno deletado com sucesso.");
 
-        } catch (SQLException e) {
+        } catch (SQLException e) { e.printStackTrace(); }
 
-            e.printStackTrace();
+    }
 
-        }
+    public Aluno buscarPorId(int id) {
+
+        String sql = "SELECT * FROM aluno WHERE id = ?";
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+
+                Aluno a = new Aluno(rs.getString("nome"), rs.getString("data_nascimento"));
+                a.setId(rs.getInt("id"));
+                return a;
+
+            }
+
+        } catch (SQLException e) { e.printStackTrace(); }
+
+        return null;
 
     }
 

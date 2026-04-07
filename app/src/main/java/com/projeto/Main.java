@@ -18,24 +18,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        try (Connection conn = Conexao.conectar();
-             Statement stmt = conn.createStatement()) {
-
-            String sqlCreate = """
-                CREATE TABLE IF NOT EXISTS aluno (
-                    id    INTEGER PRIMARY KEY AUTOINCREMENT,
-                    nome  TEXT   NOT NULL,
-                    data_nascimento TEXT
-                );
-            """;
-            stmt.execute(sqlCreate);
-            System.out.println("Tabela 'aluno' verificada/pronta.");
-
-        } catch (SQLException e) {
-
-            e.printStackTrace();
-
-        }
+        Conexao.inicializarBanco();
 
         SwingUtilities.invokeLater(() -> {
 
@@ -49,15 +32,26 @@ public class Main {
 
             String[] colunas = {"ID", "Nome", "Data de Nascimento"};
             DefaultTableModel modelo = new DefaultTableModel(colunas, 0);
+            String[] colunasReduzidas = {"ID", "Nome"};
+            DefaultTableModel modeloReduzido = new DefaultTableModel(colunasReduzidas, 0);
+
 
             menuPrincipal.addTab("Cadastrar", criarPainelCadastro(dao));
             menuPrincipal.addTab("Listar", criarPainelListagem(dao, modelo));
+            menuPrincipal.addTab("Gerenciar", criarPainelGerenciamento(dao, modeloReduzido));
 
             menuPrincipal.addChangeListener(e -> {
-
-                if (menuPrincipal.getSelectedIndex() == 1) {
+                int aba = menuPrincipal.getSelectedIndex();
+                if (aba == 1) {
 
                     preencherTabela(dao, modelo);
+
+                    System.out.println("Lista atualizada!");
+
+                } else if (aba == 2) {
+
+                    preencherTabela(dao, modeloReduzido);
+
                     System.out.println("Lista atualizada!");
 
                 }
@@ -84,20 +78,14 @@ public class Main {
 
             MaskFormatter mascara = new MaskFormatter("##/##/####");
             mascara.setPlaceholderCharacter('_');
-            mascara.setAllowsInvalid(false);
-            mascara.setOverwriteMode(true);
             txtData = new JFormattedTextField(mascara);
-            txtData.setColumns(8);
+            txtData.setColumns(10);
 
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-        }
-
-        JButton btnSalvar = new JButton("Salvar");
+        } catch (Exception e) { e.printStackTrace(); }
 
         final JFormattedTextField campoDataFinal = txtData;
+
+        JButton btnSalvar = new JButton("Salvar");
 
         btnSalvar.addActionListener(e -> {
 
@@ -167,6 +155,152 @@ public class Main {
         painel.add(new JScrollPane(tabela), BorderLayout.CENTER);
 
         return painel;
+
+    }
+
+    private static JPanel criarPainelGerenciamento(AlunoDAO dao, DefaultTableModel modelo) {
+
+        JPanel painelPrincipal = new JPanel(new GridLayout(1, 2, 10, 10));
+        painelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JPanel painelEsquerdo = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JTextField txtId = new JTextField(5);
+        txtId.setEditable(false);
+        JTextField txtNome = new JTextField(20);
+
+        JFormattedTextField txtData = null;
+        try {
+
+            MaskFormatter m = new MaskFormatter("##/##/####");
+            m.setPlaceholderCharacter('_');
+            txtData = new JFormattedTextField(m);
+            txtData.setColumns(10);
+
+        } catch (Exception e)  { e.printStackTrace(); }
+
+        final JFormattedTextField campoDataFinal = txtData;
+
+        JButton btnEditar = new JButton("Salvar Alterações");
+        JButton btnExcluir = new JButton("Excluir Aluno");
+        btnExcluir.setBackground(new Color(255, 150, 150));
+
+        painelEsquerdo.add(new JLabel("ID:")); painelEsquerdo.add(txtId);
+        painelEsquerdo.add(new JLabel("Nome:")); painelEsquerdo.add(txtNome);
+        painelEsquerdo.add(new JLabel("Data de Nascimento:")); painelEsquerdo.add(txtData);
+        painelEsquerdo.add(btnEditar);
+        painelEsquerdo.add(btnExcluir);
+
+        JTable tabela  = new JTable(modelo);
+        tabela.setFillsViewportHeight(true);
+        tabela.setDefaultEditor(Object.class, null);
+
+
+        tabela.getSelectionModel().addListSelectionListener(e -> {
+
+            if (!e.getValueIsAdjusting() && tabela.getSelectedRow() != -1) {
+
+                int linha = tabela.getSelectedRow();
+
+                int id = Integer.parseInt(tabela.getValueAt(linha, 0).toString());
+
+                Aluno a = dao.buscarPorId(id);
+                if (a != null) {
+
+                    txtId.setText(String.valueOf(a.getId()));
+                    txtNome.setText(a.getNome());
+
+                    if(a.getDataNascimento() != null) {
+
+                        campoDataFinal.setText(a.getDataNascimento());
+
+                    }
+
+                }
+
+            }
+
+        });
+
+        btnEditar.addActionListener(e -> {
+
+            String idTexto = txtId.getText();
+
+            if (idTexto.isEmpty()) {
+
+                JOptionPane.showMessageDialog(painelPrincipal, "Selecione um aluno na tabela para editar.");
+                return;
+
+            }
+
+            String novoNome = txtNome.getText().trim();
+            String novaData = ((JFormattedTextField) painelEsquerdo.getComponent(5)).getText().replace("_", "").trim();
+
+            if (novoNome.isEmpty()) {
+
+                JOptionPane.showMessageDialog(painelPrincipal, "O nome não pode estar vazio!");
+                return;
+
+            }
+
+            if (novaData.length() < 10 || !isDataValida(novaData)) {
+
+                JOptionPane.showMessageDialog(painelPrincipal, "Data inválida!");
+                return;
+
+            }
+
+            Aluno alunoEditado = new Aluno(novoNome, novaData);
+            alunoEditado.setId(Integer.parseInt(idTexto));
+
+            dao.atualizar(alunoEditado);
+
+            preencherTabela(dao, modelo);
+
+            JOptionPane.showMessageDialog(painelPrincipal, "Dados atualizados com sucesso!");
+
+        });
+
+        btnExcluir.addActionListener(e -> {
+
+            if (txtId.getText().isEmpty()) {
+
+                JOptionPane.showMessageDialog(null, "Selecione um aluno na tabela para excluir.");
+                return;
+
+            }
+
+            Object[] opcoes = {"Confirmar", "Cancelar"};
+
+            int escolha = JOptionPane.showOptionDialog(
+
+                    painelPrincipal,
+                    "Tem certeza que deseja excluir o aluno " + txtNome.getText() + "?",
+                    "Atenção!",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE,
+                    null,
+                    opcoes,
+                    opcoes[1]
+
+            );
+
+            if (escolha == 0) {
+
+                dao.deletar(Integer.parseInt(txtId.getText()));
+                preencherTabela(dao, modelo);
+                txtId.setText(""); txtNome.setText(""); campoDataFinal.setValue(null);
+                JOptionPane.showMessageDialog(painelPrincipal, "Aluno deletado com sucesso!");
+
+            }
+
+        });
+
+        painelPrincipal.add(painelEsquerdo);
+        painelPrincipal.add(new JScrollPane(tabela));
+
+        preencherTabela(dao, modelo);
+
+        return painelPrincipal;
 
     }
 
