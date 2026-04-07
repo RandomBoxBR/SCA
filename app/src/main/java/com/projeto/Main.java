@@ -148,7 +148,8 @@ public class Main {
 
         JTable tabela = new JTable(modelo);
         tabela.setFillsViewportHeight(true);
-
+        tabela.getTableHeader().setReorderingAllowed(false);
+        tabela.getTableHeader().setResizingAllowed(false);
         tabela.setDefaultEditor(Object.class, null);
 
         painel.add(new JLabel("Alunos Cadastrados:"), BorderLayout.NORTH);
@@ -192,8 +193,9 @@ public class Main {
 
         JTable tabela  = new JTable(modelo);
         tabela.setFillsViewportHeight(true);
+        tabela.getTableHeader().setReorderingAllowed(false);
+        tabela.getTableHeader().setResizingAllowed(false);
         tabela.setDefaultEditor(Object.class, null);
-
 
         tabela.getSelectionModel().addListSelectionListener(e -> {
 
