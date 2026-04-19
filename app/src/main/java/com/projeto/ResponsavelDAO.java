@@ -6,7 +6,7 @@ import java.util.List;
 
 public class ResponsavelDAO {
 
-    public void inserir(Responsavel responsavel) {
+    public void inserir(Responsavel responsavel) throws SQLException {
 
         String sql = "INSERT INTO responsavel(nome, cpf, data_nascimento) VALUES (?, ?, ?)";
 
@@ -19,7 +19,7 @@ public class ResponsavelDAO {
             stmt.executeUpdate();
             System.out.println("Responsavel inserido com sucesso.");
 
-        } catch (SQLException e) { e.printStackTrace(); }
+        }
 
     }
 

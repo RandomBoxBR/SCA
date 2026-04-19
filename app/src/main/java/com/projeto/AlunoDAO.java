@@ -6,19 +6,32 @@ import java.util.List;
 
 public class AlunoDAO {
 
-    public void inserir(Aluno aluno) {
+    public void inserir(Aluno aluno) throws SQLException{
 
-        String sql = "INSERT INTO aluno(nome, data_nascimento) VALUES (?, ?)";
+        String sql = "INSERT INTO aluno(nome, data_nascimento, id_responsavel1, id_responsavel2) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, aluno.getNome());
             stmt.setString(2, aluno.getDataNascimento());
+            stmt.setInt(3, aluno.getIdResponsavel1());
+
+            if (aluno.getIdResponsavel2() > 0) {
+
+                stmt.setInt(4, aluno.getIdResponsavel2());
+
+            } else {
+
+                stmt.setNull(4, Types.INTEGER);
+
+            }
+
+
             stmt.executeUpdate();
             System.out.println("Aluno inserido com sucesso.");
 
-        } catch (SQLException e) { e.printStackTrace(); }
+        }
 
     }
 
@@ -37,6 +50,8 @@ public class AlunoDAO {
                a.setId(rs.getInt("id"));
                a.setNome(rs.getString("nome"));
                a.setDataNascimento(rs.getString("data_nascimento"));
+               a.setIdResponsavel1(rs.getInt("id_responsavel1"));
+               a.setIdResponsavel2(rs.getInt("id_responsavel2"));
                lista.add(a);
 
            }
@@ -49,14 +64,16 @@ public class AlunoDAO {
 
     public void atualizar (Aluno aluno) {
 
-        String sql = "UPDATE aluno SET nome = ?, data_nascimento = ? WHERE id = ?";
+        String sql = "UPDATE aluno SET nome = ?, data_nascimento = ?, id_responsavel1 = ?, id_responsavel2 = ? WHERE id = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, aluno.getNome());
             stmt.setString(2, aluno.getDataNascimento());
-            stmt.setInt(3, aluno.getId());
+            stmt.setInt(3, aluno.getIdResponsavel1());
+            stmt.setInt(4, aluno.getIdResponsavel2());
+            stmt.setInt(5, aluno.getId());
             stmt.executeUpdate();
             System.out.println("Aluno atualizado com sucesso.");
 
@@ -91,7 +108,10 @@ public class AlunoDAO {
 
             if (rs.next()) {
 
-                Aluno a = new Aluno(rs.getString("nome"), rs.getString("data_nascimento"));
+                Aluno a = new Aluno(rs.getString("nome"),
+                        rs.getString("data_nascimento"),
+                        rs.getInt("id_responsavel1"),
+                        rs.getInt("id_responsavel2"));
                 a.setId(rs.getInt("id"));
                 return a;
 

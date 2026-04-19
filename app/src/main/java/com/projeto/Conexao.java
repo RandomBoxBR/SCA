@@ -30,7 +30,7 @@ public class Conexao {
                     id    INTEGER PRIMARY KEY AUTOINCREMENT,
                     nome  TEXT   NOT NULL,
                     cpf   TEXT   UNIQUE NOT NULL,
-                    data_nascimento TEXT
+                    data_nascimento TEXT NOT NULL
                 );
             """);
 
@@ -38,9 +38,11 @@ public class Conexao {
                 CREATE TABLE IF NOT EXISTS aluno (
                     id    INTEGER PRIMARY KEY AUTOINCREMENT,
                     nome  TEXT   NOT NULL,
-                    data_nascimento TEXT,
-                    id_responsavel INTEGER,
-                    FOREIGN KEY (id_responsavel) REFERENCES responsavel(id)
+                    data_nascimento TEXT   NOT NULL,
+                    id_responsavel1 INTEGER NOT NULL,
+                    id_responsavel2 INTEGER,
+                    FOREIGN KEY (id_responsavel1) REFERENCES responsavel(id),
+                    FOREIGN KEY (id_responsavel2) REFERENCES responsavel(id)
                 );
             """);
 
