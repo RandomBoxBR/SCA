@@ -34,7 +34,7 @@ public class Main {
 
             String[] colunasAl = {"ID", "Nome", "Data de Nascimento", "1º Responsável", "2º Responsável"};
             DefaultTableModel modeloAl = new DefaultTableModel(colunasAl, 0);
-            String[] colunasResp = {"ID", "Nome", "CPF", "Data de Nascimento"};
+            String[] colunasResp = {"ID", "Nome", "CPF", "Data de Nascimento", "Alunos Vinculados"};
             DefaultTableModel modeloResp = new DefaultTableModel(colunasResp, 0);
             String[] colunasReduzidas = {"ID", "Nome"};
             DefaultTableModel modeloReduzido = new DefaultTableModel(colunasReduzidas, 0);
@@ -59,12 +59,13 @@ public class Main {
                 } else if (aba == 1) {
 
                     preencherTabAluno(alunoDao,respDao, modeloAl);
-                    preencherTabResp(respDao, modeloResp);
+                    preencherTabResp(respDao, alunoDao, modeloResp);
 
                     System.out.println("Tabela atualizada!");
 
                 } else if (aba == 2) {
 
+                    atualizarCombosResponsaveis(respDao, comboResp1, comboResp2);
                     preencherTabAlunoReduzida(alunoDao, modeloReduzido);
                     preencherTabRespReduzida(respDao, modeloResp);
 
@@ -416,7 +417,7 @@ public class Main {
 
         JPanel containerCards = new JPanel(new CardLayout());
 
-        JPanel listAluno = criarAlEditar(alunoDao, modeloReduzido);
+        JPanel listAluno = criarAlEditar(alunoDao, respDao, modeloReduzido);
         JPanel listResp = criarRespEditar(respDao, modeloReduzido);
 
         containerCards.add(listAluno, "Alunos");
@@ -433,6 +434,9 @@ public class Main {
             if (selecao.equals("Alunos")) {
 
                 preencherTabAlunoReduzida(alunoDao, modeloReduzido);
+                atualizarCombosResponsaveis(respDao, comboResp1, comboResp2);
+                System.out.println("Combos de responsáveis atualizados!");
+
 
             }else {
 
@@ -452,12 +456,21 @@ public class Main {
 
     }
 
-    private static JPanel criarAlEditar(AlunoDAO alunoDao, DefaultTableModel modeloReduzido) {
+    private static JPanel criarAlEditar(AlunoDAO alunoDao, ResponsavelDAO respDao, DefaultTableModel modeloReduzido) {
 
         JPanel painelPrincipal = new JPanel(new GridLayout(1, 2, 10, 10));
         painelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel painelEditor = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+        comboResp1 = new JComboBox<>();
+        comboResp1.setBackground(Color.WHITE);
+        comboResp2 = new JComboBox<>();
+        comboResp2.setBackground(Color.WHITE);
+        comboResp2.setName("Opcional");
+
+        atualizarCombosResponsaveis(respDao, comboResp1, comboResp2);
+
         JTextField txtId = new JTextField(2);
         txtId.setEditable(false);
         JTextField txtNome = new JTextField(20);
@@ -481,6 +494,8 @@ public class Main {
         painelEditor.add(new JLabel("ID:")); painelEditor.add(txtId);
         painelEditor.add(new JLabel("Nome:")); painelEditor.add(txtNome);
         painelEditor.add(new JLabel("Data de Nascimento:")); painelEditor.add(txtDataFinal);
+        painelEditor.add(new JLabel("Resp. 1")); painelEditor.add(comboResp1);
+        painelEditor.add(new JLabel("Resp. 2")); painelEditor.add(comboResp2);
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
 
@@ -504,6 +519,8 @@ public class Main {
                     txtId.setText(String.valueOf(a.getId()));
                     txtNome.setText(a.getNome());
                     txtDataFinal.setText(a.getDataNascimento());
+                    selecionarNoCombo(comboResp1, a.getIdResponsavel1());
+                    selecionarNoCombo(comboResp2, a.getIdResponsavel2());
 
                 }
 
@@ -539,7 +556,10 @@ public class Main {
 
             }
 
-            Aluno alunoEditado = new Aluno(novoNome, novaData, 1, 2);
+            int novoId1 = ((ResponsavelComboItem) comboResp1.getSelectedItem()).getId();
+            int novoId2 = ((ResponsavelComboItem) comboResp2.getSelectedItem()).getId();
+
+            Aluno alunoEditado = new Aluno(novoNome, novaData, novoId1, novoId2);
             alunoEditado.setId(Integer.parseInt(idTexto));
 
             alunoDao.atualizar(alunoEditado);
@@ -716,6 +736,17 @@ public class Main {
 
         btnExcluir.addActionListener(e -> {
 
+            int id = Integer.parseInt((txtId.getText()));
+
+            if (respDao.temAlunosVinculados(id)) {
+
+                JOptionPane.showMessageDialog(null,
+                        "Não é possível excluir! Este responsável está vinculado a um ou mais alunos.",
+                        "Bloqueado", JOptionPane.ERROR_MESSAGE);
+                return;
+
+            }
+
             if (txtId.getText().isEmpty()) {
 
                 JOptionPane.showMessageDialog(null, "Selecione um responsável na tabela para excluir.");
@@ -804,17 +835,22 @@ public class Main {
 
     }
 
-    private static void preencherTabResp(ResponsavelDAO dao, DefaultTableModel modelo) {
+    private static void preencherTabResp(ResponsavelDAO dao, AlunoDAO alunoDao, DefaultTableModel modelo) {
 
         modelo.setRowCount(0);
 
         for (Responsavel r : dao.listar()) {
 
+            List<String> filhos = alunoDao.buscarNomesAlunosPorResponsavel(r.getId());
+            String nomesFilhos = String.join(", ", filhos);
+            if(nomesFilhos.isEmpty()) nomesFilhos = "Nenhum";
+
             Object[] linha = {
                     r.getId(),
                     r.getNome(),
                     r.getCpf(),
-                    r.getDataNascimento()
+                    r.getDataNascimento(),
+                    nomesFilhos
 
             };
             modelo.addRow(linha);
@@ -887,6 +923,24 @@ public class Main {
             }
 
         }
+
+    }
+
+    public static void selecionarNoCombo(JComboBox<ResponsavelComboItem> combo, int idBuscado) {
+
+        for (int i = 0; i < combo.getItemCount(); i++) {
+
+            if (combo.getItemAt(i).getId() == idBuscado) {
+
+                combo.setSelectedIndex(i);
+
+                return;
+
+            }
+
+        }
+
+        combo.setSelectedIndex(0);
 
     }
 

@@ -111,4 +111,27 @@ public class ResponsavelDAO {
 
     }
 
+    public boolean temAlunosVinculados(int idResponsavel) {
+
+        String sql = "SELECT COUNT (*) FROM aluno WHERE id_responsavel1 = ? OR id_responsavel2 = ?";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idResponsavel);
+            stmt.setInt(2, idResponsavel);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+
+                return rs.getInt(1) > 0;
+
+            }
+
+        } catch (SQLException e) { e.printStackTrace(); }
+
+        return false;
+
+    }
+
 }

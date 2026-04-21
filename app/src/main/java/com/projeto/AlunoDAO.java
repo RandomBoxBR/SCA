@@ -123,4 +123,24 @@ public class AlunoDAO {
 
     }
 
+    public List<String> buscarNomesAlunosPorResponsavel(int idResp) {
+
+        List<String> nomes = new ArrayList<>();
+        String sql = "SELECT nome FROM aluno WHERE id_responsavel1 = ? OR id_responsavel2 = ?";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idResp);
+            stmt.setInt(2, idResp);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) { nomes.add(rs.getString("nome")); }
+
+        } catch (SQLException e) { e.printStackTrace(); }
+
+        return nomes;
+
+    }
+
 }
