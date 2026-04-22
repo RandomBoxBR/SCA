@@ -14,7 +14,7 @@ public class ResponsavelDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, responsavel.getNome());
-            stmt.setString(2, responsavel.getCpf());
+            stmt.setString(2, responsavel.getCPF());
             stmt.setString(3, responsavel.getDataNascimento());
             stmt.executeUpdate();
             System.out.println("Responsavel inserido com sucesso.");
@@ -37,7 +37,7 @@ public class ResponsavelDAO {
                 Responsavel r = new Responsavel();
                 r.setId(rs.getInt("id"));
                 r.setNome(rs.getString("nome"));
-                r.setCpf(rs.getString("cpf"));
+                r.setCPF(rs.getString("cpf"));
                 r.setDataNascimento(rs.getString("data_nascimento"));
                 lista.add(r);
 
@@ -57,7 +57,7 @@ public class ResponsavelDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, responsavel.getNome());
-            stmt.setString(2, responsavel.getCpf());
+            stmt.setString(2, responsavel.getCPF());
             stmt.setString(3, responsavel.getDataNascimento());
             stmt.setInt(4, responsavel.getId());
             stmt.executeUpdate();

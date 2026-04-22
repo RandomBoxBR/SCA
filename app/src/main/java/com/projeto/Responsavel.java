@@ -4,17 +4,17 @@ public class Responsavel {
 
     private int id;
     private String nome;
-    private String cpf;
+    private String CPF;
     private String dataNascimento; // DD/MM/AAAA para a tela e YYYY/MM/DD para o banco
 
     public Responsavel() {
 
     }
 
-    public Responsavel(String nome, String cpf, String dataNascimento) {
+    public Responsavel(String nome, String CPF, String dataNascimento) {
 
         this.nome = nome;
-        this.cpf = cpf;
+        this.CPF = CPF;
         this.dataNascimento = dataNascimento;
 
     }
@@ -53,14 +53,14 @@ public class Responsavel {
 
     }
 
-    public String getCpf() {
+    public String getCPF() {
 
-        return cpf;
+        return CPF;
 
     }
-    public void setCpf(String cpf) {
+    public void setCPF(String CPF) {
 
-        this.cpf = cpf;
+        this.CPF = CPF;
 
     }
 

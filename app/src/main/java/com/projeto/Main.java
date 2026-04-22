@@ -37,12 +37,13 @@ public class Main {
             String[] colunasResp = {"ID", "Nome", "CPF", "Data de Nascimento", "Alunos Vinculados"};
             DefaultTableModel modeloResp = new DefaultTableModel(colunasResp, 0);
             String[] colunasReduzidas = {"ID", "Nome"};
-            DefaultTableModel modeloReduzido = new DefaultTableModel(colunasReduzidas, 0);
+            DefaultTableModel modeloAlReduzido = new DefaultTableModel(colunasReduzidas, 0);
+            DefaultTableModel modeloRespReduzido = new DefaultTableModel(colunasReduzidas, 0);
 
 
             menuAbas.addTab("Cadastrar", criarPainelCadastro(alunoDao, respDao));
             menuAbas.addTab("Listar", criarPainelListagem(modeloAl, modeloResp));
-            menuAbas.addTab("Editar/Excluir", criarPainelEditar(alunoDao, respDao, modeloReduzido));
+            menuAbas.addTab("Editar/Excluir", criarPainelEditar(alunoDao, respDao, modeloAlReduzido, modeloRespReduzido));
 
             menuAbas.addChangeListener(e -> {
                 int aba = menuAbas.getSelectedIndex();
@@ -66,8 +67,8 @@ public class Main {
                 } else if (aba == 2) {
 
                     atualizarCombosResponsaveis(respDao, comboResp1, comboResp2);
-                    preencherTabAlunoReduzida(alunoDao, modeloReduzido);
-                    preencherTabRespReduzida(respDao, modeloResp);
+                    preencherTabAlunoReduzida(alunoDao, modeloAlReduzido);
+                    preencherTabRespReduzida(respDao, modeloRespReduzido);
 
                     System.out.println("Tabela atualizada!");
 
@@ -197,13 +198,19 @@ public class Main {
             int id1 = resp1.getId();
             int id2 = (resp2 != null) ? resp2.getId() : 0;
 
+            if (id1 != 0 && id1 == id2) {
+
+                JOptionPane.showMessageDialog(null, "O 1º e o 2º responsável não podem ser a mesma pessoa!");
+                return;
+
+            }
+
                 try {
 
                     Aluno aluno = new Aluno(nome, dataNasc, id1, id2);
                     alunoDao.inserir(aluno);
 
-                    txtNome.setText("");
-                    txtDataFinal.setValue(null);
+                    limparCamposAluno(txtNome, txtDataFinal, comboResp1, comboResp2, null);
 
                     JOptionPane.showMessageDialog(painel, "Aluno salvo com sucesso!");
 
@@ -291,9 +298,7 @@ public class Main {
                     Responsavel resp = new Responsavel(nome, cpf, dataNasc);
                     respDao.inserir(resp);
 
-                    txtNome.setText("");
-                    txtDataFinal.setValue(null);
-                    txtCPFFinal.setValue(null);
+                    limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, null);
 
                     JOptionPane.showMessageDialog(painel, "Responsável salvo com sucesso!");
 
@@ -404,7 +409,7 @@ public class Main {
 
     }
 
-    private static JPanel criarPainelEditar(AlunoDAO alunoDao, ResponsavelDAO respDao, DefaultTableModel modeloReduzido) {
+    private static JPanel criarPainelEditar(AlunoDAO alunoDao, ResponsavelDAO respDao, DefaultTableModel modeloAlReduzido, DefaultTableModel modeloRespReduzido) {
 
         JPanel painelPrincipal = new JPanel(new BorderLayout());
 
@@ -417,8 +422,8 @@ public class Main {
 
         JPanel containerCards = new JPanel(new CardLayout());
 
-        JPanel listAluno = criarAlEditar(alunoDao, respDao, modeloReduzido);
-        JPanel listResp = criarRespEditar(respDao, modeloReduzido);
+        JPanel listAluno = criarAlEditar(alunoDao, respDao, modeloAlReduzido);
+        JPanel listResp = criarRespEditar(respDao, modeloRespReduzido);
 
         containerCards.add(listAluno, "Alunos");
         containerCards.add(listResp, "Responsáveis");
@@ -433,14 +438,14 @@ public class Main {
 
             if (selecao.equals("Alunos")) {
 
-                preencherTabAlunoReduzida(alunoDao, modeloReduzido);
+                preencherTabAlunoReduzida(alunoDao, modeloAlReduzido);
                 atualizarCombosResponsaveis(respDao, comboResp1, comboResp2);
                 System.out.println("Combos de responsáveis atualizados!");
 
 
             }else {
 
-                preencherTabRespReduzida(respDao, modeloReduzido);
+                preencherTabRespReduzida(respDao, modeloRespReduzido);
 
             }
 
@@ -598,7 +603,7 @@ public class Main {
 
                 alunoDao.deletar(Integer.parseInt(txtId.getText()));
                 preencherTabAlunoReduzida(alunoDao, modeloReduzido);
-                txtId.setText(""); txtNome.setText(""); txtDataFinal.setValue(null);
+                limparCamposAluno(txtNome, txtDataFinal, comboResp1, comboResp2, txtId);
                 JOptionPane.showMessageDialog(painelPrincipal, "Aluno deletado com sucesso!");
 
             }
@@ -625,7 +630,7 @@ public class Main {
         JTextField txtNome = new JTextField(20);
 
         JFormattedTextField txtData = null;
-        JFormattedTextField txtCpf = null;
+        JFormattedTextField txtCPF = null;
 
         try {
 
@@ -640,13 +645,13 @@ public class Main {
 
             MaskFormatter mascara = new MaskFormatter("###.###.###-##");
             mascara.setPlaceholderCharacter('_');
-            txtCpf = new JFormattedTextField(mascara);
-            txtCpf.setColumns(9);
+            txtCPF = new JFormattedTextField(mascara);
+            txtCPF.setColumns(9);
 
         } catch (Exception e) { e.printStackTrace(); }
 
         final JFormattedTextField txtDataFinal = txtData;
-        final JFormattedTextField txtCpfFinal = txtCpf;
+        final JFormattedTextField txtCPFFinal = txtCPF;
 
         JButton btnEditar = new JButton("Salvar Alterações");
         JButton btnExcluir = new JButton("Excluir Responsável");
@@ -654,7 +659,7 @@ public class Main {
 
         painelEditor.add(new JLabel("ID:")); painelEditor.add(txtId);
         painelEditor.add(new JLabel("Nome:")); painelEditor.add(txtNome);
-        painelEditor.add(new JLabel("CPF:")); painelEditor.add(txtCpfFinal);
+        painelEditor.add(new JLabel("CPF:")); painelEditor.add(txtCPFFinal);
         painelEditor.add(new JLabel("Data de Nascimento:")); painelEditor.add(txtDataFinal);
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
@@ -678,7 +683,7 @@ public class Main {
 
                     txtId.setText(String.valueOf(r.getId()));
                     txtNome.setText(r.getNome());
-                    txtCpfFinal.setText(r.getCpf());
+                    txtCPFFinal.setText(r.getCPF());
                     txtDataFinal.setText(r.getDataNascimento());
 
                 }
@@ -700,7 +705,7 @@ public class Main {
 
             String novoNome = txtNome.getText().trim();
             String novaData = txtDataFinal.getText().replace("_", "").trim();
-            String novoCpf = txtCpfFinal.getText().replace("_", "").trim();
+            String novoCpf = txtCPFFinal.getText().replace("_", "").trim();
 
             if (novoNome.isEmpty()) {
 
@@ -773,7 +778,7 @@ public class Main {
 
                 respDao.deletar(Integer.parseInt(txtId.getText()));
                 preencherTabRespReduzida(respDao, modeloReduzido);
-                txtId.setText(""); txtNome.setText(""); txtCpfFinal.setValue(null); txtDataFinal.setValue(null);
+                limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, txtId);
                 JOptionPane.showMessageDialog(painelPrincipal, "Responsável deletado com sucesso!");
 
             }
@@ -841,16 +846,16 @@ public class Main {
 
         for (Responsavel r : dao.listar()) {
 
-            List<String> filhos = alunoDao.buscarNomesAlunosPorResponsavel(r.getId());
-            String nomesFilhos = String.join(", ", filhos);
-            if(nomesFilhos.isEmpty()) nomesFilhos = "Nenhum";
+            List<String> alunos = alunoDao.buscarNomesAlunosPorResponsavel(r.getId());
+            String nomesAlunos = String.join(", ", alunos);
+            if(nomesAlunos.isEmpty()) nomesAlunos = "Nenhum";
 
             Object[] linha = {
                     r.getId(),
                     r.getNome(),
-                    r.getCpf(),
+                    r.getCPF(),
                     r.getDataNascimento(),
-                    nomesFilhos
+                    nomesAlunos
 
             };
             modelo.addRow(linha);
@@ -873,6 +878,28 @@ public class Main {
             modelo.addRow(linha);
 
         }
+
+    }
+
+    private static void limparCamposResponsavel(JTextField txtNome, JFormattedTextField txtCPF, JFormattedTextField txtData, JTextField txtId) {
+
+        txtNome.setText("");
+        txtCPF.setValue(null);
+        txtData.setValue(null);
+        if(txtId != null) txtId.setText("");
+
+    }
+
+
+    private static void limparCamposAluno(JTextField txtNome, JFormattedTextField txtData, JComboBox cb1, JComboBox cb2, JTextField txtId) {
+
+        txtNome.setText("");
+        txtData.setValue(null);
+
+        if (cb1.getItemCount() > 0) cb1.setSelectedIndex(0);
+        if (cb2.getItemCount() > 0) cb2.setSelectedIndex(0);
+
+        if (txtId != null) txtId.setText("");
 
     }
 
