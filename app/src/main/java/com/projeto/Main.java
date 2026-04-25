@@ -14,8 +14,8 @@ import java.util.Locale;
 
 public class Main {
 
-    private static JComboBox<ResponsavelComboItem> comboResp1;
-    private static JComboBox<ResponsavelComboItem> comboResp2;
+    private static JComboBox<ResponsavelComboItem> comboCadResp1, comboCadResp2;
+    private static JComboBox<ResponsavelComboItem> comboEditResp1, comboEditResp2;
 
     public static void main(String[] args) {
 
@@ -32,9 +32,9 @@ public class Main {
 
             JTabbedPane menuAbas = new JTabbedPane();
 
-            String[] colunasAl = {"ID", "Nome", "Data de Nascimento", "1º Responsável", "2º Responsável"};
+            String[] colunasAl = {"Nº", "Nome", "CPF", "Data de Nascimento", "1º Responsável", "2º Responsável"};
             DefaultTableModel modeloAl = new DefaultTableModel(colunasAl, 0);
-            String[] colunasResp = {"ID", "Nome", "CPF", "Data de Nascimento", "Alunos Vinculados"};
+            String[] colunasResp = {"Nº", "Nome", "CPF", "Data de Nascimento", "Alunos Vinculados"};
             DefaultTableModel modeloResp = new DefaultTableModel(colunasResp, 0);
             String[] colunasReduzidas = {"ID", "Nome"};
             DefaultTableModel modeloAlReduzido = new DefaultTableModel(colunasReduzidas, 0);
@@ -44,15 +44,16 @@ public class Main {
             menuAbas.addTab("Cadastrar", criarPainelCadastro(alunoDao, respDao));
             menuAbas.addTab("Listar", criarPainelListagem(modeloAl, modeloResp));
             menuAbas.addTab("Editar/Excluir", criarPainelEditar(alunoDao, respDao, modeloAlReduzido, modeloRespReduzido));
+            menuAbas.addTab("Relatório", criarPainelRelatorio(alunoDao, respDao));
 
             menuAbas.addChangeListener(e -> {
                 int aba = menuAbas.getSelectedIndex();
 
                 if (aba == 0) {
 
-                    if (comboResp1 != null && comboResp2 != null) {
+                    if (comboCadResp1 != null && comboCadResp2 != null) {
 
-                        atualizarCombosResponsaveis(respDao, comboResp1, comboResp2);
+                        atualizarCombosResponsaveis(respDao, comboCadResp1, comboCadResp2);
                         System.out.println("Combos de responsáveis atualizados!");
 
                     }
@@ -66,7 +67,13 @@ public class Main {
 
                 } else if (aba == 2) {
 
-                    atualizarCombosResponsaveis(respDao, comboResp1, comboResp2);
+                    if (comboEditResp1 != null && comboEditResp2 != null) {
+
+                        atualizarCombosResponsaveis(respDao, comboEditResp1, comboEditResp2);
+                        System.out.println("Combos de responsáveis atualizados!");
+
+                    }
+
                     preencherTabAlunoReduzida(alunoDao, modeloAlReduzido);
                     preencherTabRespReduzida(respDao, modeloRespReduzido);
 
@@ -114,7 +121,7 @@ public class Main {
 
             if (selecao.equals("Aluno")) {
 
-                atualizarCombosResponsaveis(respDao, comboResp1, comboResp2);
+                atualizarCombosResponsaveis(respDao, comboCadResp1, comboCadResp2);
                 System.out.println("Combos de responsáveis atualizados!");
 
             }
@@ -136,7 +143,17 @@ public class Main {
         JPanel painel = new JPanel(new FlowLayout());
 
         JTextField txtNome = new JTextField(20);
+        JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
+
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("###.###.###-##");
+            mascara.setPlaceholderCharacter('_');
+            txtCPF = new JFormattedTextField(mascara);
+            txtCPF.setColumns(9);
+
+        } catch (Exception e) { e.printStackTrace(); }
 
         try {
 
@@ -147,26 +164,35 @@ public class Main {
 
         } catch (Exception e) { e.printStackTrace(); }
 
+        final JFormattedTextField txtCPFFinal = txtCPF;
         final JFormattedTextField txtDataFinal = txtData;
 
-        comboResp1 = new JComboBox<>();
-        comboResp1.setBackground(Color.WHITE);
-        comboResp2 = new JComboBox<>();
-        comboResp2.setBackground(Color.WHITE);
-        comboResp2.setName("Opcional");
+        comboCadResp1 = new JComboBox<>();
+        comboCadResp1.setBackground(Color.WHITE);
+        comboCadResp2 = new JComboBox<>();
+        comboCadResp2.setBackground(Color.WHITE);
+        comboCadResp2.setName("Opcional");
 
-        atualizarCombosResponsaveis(respDao, comboResp1, comboResp2);
+        atualizarCombosResponsaveis(respDao, comboCadResp1, comboCadResp2);
 
         JButton btnSalvar = new JButton("Salvar");
 
         btnSalvar.addActionListener(e -> {
 
             String nome = txtNome.getText();
+            String cpf = txtCPFFinal.getText().replace("_", "").trim();
             String dataNasc = txtDataFinal.getText().replace("_", "").trim();
 
             if(nome.isEmpty()) {
 
                 JOptionPane.showMessageDialog(painel, "Preencha o nome!");
+                return;
+
+            }
+
+            if(cpf.length() < 14) {
+
+                JOptionPane.showMessageDialog(painel, "Preencha o CPF completo!");
                 return;
 
             }
@@ -185,8 +211,8 @@ public class Main {
 
             }
 
-            ResponsavelComboItem resp1 = (ResponsavelComboItem) comboResp1.getSelectedItem();
-            ResponsavelComboItem resp2 = (ResponsavelComboItem) comboResp2.getSelectedItem();
+            ResponsavelComboItem resp1 = (ResponsavelComboItem) comboCadResp1.getSelectedItem();
+            ResponsavelComboItem resp2 = (ResponsavelComboItem) comboCadResp2.getSelectedItem();
 
             if (resp1 == null) {
 
@@ -207,107 +233,19 @@ public class Main {
 
                 try {
 
-                    Aluno aluno = new Aluno(nome, dataNasc, id1, id2);
+                    Aluno aluno = new Aluno(nome, cpf, dataNasc, id1, id2);
                     alunoDao.inserir(aluno);
 
-                    limparCamposAluno(txtNome, txtDataFinal, comboResp1, comboResp2, null);
+                    limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboCadResp1, comboCadResp2, null);
 
                     JOptionPane.showMessageDialog(painel, "Aluno salvo com sucesso!");
 
                 } catch (SQLException ex) {
 
-                    JOptionPane.showMessageDialog(painel, "Erro no banco de dados:" + ex.getMessage());
-
-                } catch (Exception ex) {
-
-                JOptionPane.showMessageDialog(painel, "Erro inesperado: " + ex.getMessage());
-
-                }
-
-        });
-
-        painel.add(new JLabel("Nome: ")); painel.add(txtNome);
-        painel.add(new JLabel("Resp. 1:")); painel.add(comboResp1);
-        painel.add(new JLabel("Resp. 2:")); painel.add(comboResp2);
-        painel.add(new JLabel("Nascimento: ")); painel.add(txtData);
-        painel.add(btnSalvar);
-
-        return painel;
-
-    }
-
-    private static JPanel criarFormularioResp(ResponsavelDAO respDao) {
-
-        JPanel painel = new JPanel(new FlowLayout());
-
-        JTextField txtNome = new JTextField(20);
-        JFormattedTextField txtCPF = null;
-        JFormattedTextField txtData = null;
-
-        try {
-
-            MaskFormatter mascara = new MaskFormatter("##/##/####");
-            mascara.setPlaceholderCharacter('_');
-            txtData = new JFormattedTextField(mascara);
-            txtData.setColumns(6);
-
-        } catch (Exception e) { e.printStackTrace(); }
-
-        try {
-
-            MaskFormatter mascara = new MaskFormatter("###.###.###-##");
-            mascara.setPlaceholderCharacter('_');
-            txtCPF = new JFormattedTextField(mascara);
-            txtCPF.setColumns(9);
-
-        } catch (Exception e) { e.printStackTrace(); }
-
-        final JFormattedTextField txtDataFinal = txtData;
-        final JFormattedTextField txtCPFFinal = txtCPF;
-
-        JButton btnSalvar = new JButton("Salvar");
-
-        btnSalvar.addActionListener(e -> {
-
-            String nome = txtNome.getText();
-            String cpf = txtCPFFinal.getText().replace("_", "").trim();
-            String dataNasc = txtDataFinal.getText().replace("_", "").trim();
-
-            if(nome.isEmpty()) {
-                JOptionPane.showMessageDialog(painel, "Preencha o nome!");
-                return;
-            }
-
-            if(dataNasc.length() < 10) {
-                JOptionPane.showMessageDialog(painel, "Preencha a data de nascimento completa!");
-                return;
-            }
-
-            if(!isDataValida(dataNasc)) {
-                JOptionPane.showMessageDialog(painel, "Data inserida inválida!");
-                return;
-            }
-
-            if(cpf.length() < 14) {
-                JOptionPane.showMessageDialog(painel, "Preencha o CPF completo!");
-                return;
-            }
-
-                try {
-
-                    Responsavel resp = new Responsavel(nome, cpf, dataNasc);
-                    respDao.inserir(resp);
-
-                    limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, null);
-
-                    JOptionPane.showMessageDialog(painel, "Responsável salvo com sucesso!");
-
-                } catch (SQLException ex) {
-
-                    if (ex.getMessage().contains("UNIQUE constraint failed: responsavel.cpf")) {
+                    if (ex.getMessage().contains("UNIQUE constraint failed: aluno.cpf")) {
 
                         JOptionPane.showMessageDialog(painel,
-                                "Já existe um responsável cadastrado com este CPF!",
+                                "Já existe alguém cadastrado com este CPF!",
                                 "CPF Duplicado",
                                 JOptionPane.ERROR_MESSAGE);
 
@@ -326,8 +264,116 @@ public class Main {
         });
 
         painel.add(new JLabel("Nome: ")); painel.add(txtNome);
-        painel.add(new JLabel("Nascimento: ")); painel.add(txtData);
-        painel.add(new JLabel("CPF: ")); painel.add(txtCPF);
+        painel.add(new JLabel("CPF: ")); painel.add(txtCPFFinal);
+        painel.add(new JLabel("Nascimento: ")); painel.add(txtDataFinal);
+        painel.add(new JLabel("Resp. 1:")); painel.add(comboCadResp1);
+        painel.add(new JLabel("Resp. 2:")); painel.add(comboCadResp2);
+        painel.add(btnSalvar);
+
+        return painel;
+
+    }
+
+    private static JPanel criarFormularioResp(ResponsavelDAO respDao) {
+
+        JPanel painel = new JPanel(new FlowLayout());
+
+        JTextField txtNome = new JTextField(20);
+        JFormattedTextField txtCPF = null;
+        JFormattedTextField txtData = null;
+
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("###.###.###-##");
+            mascara.setPlaceholderCharacter('_');
+            txtCPF = new JFormattedTextField(mascara);
+            txtCPF.setColumns(9);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("##/##/####");
+            mascara.setPlaceholderCharacter('_');
+            txtData = new JFormattedTextField(mascara);
+            txtData.setColumns(6);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
+        final JFormattedTextField txtCPFFinal = txtCPF;
+        final JFormattedTextField txtDataFinal = txtData;
+
+        JButton btnSalvar = new JButton("Salvar");
+
+        btnSalvar.addActionListener(e -> {
+
+            String nome = txtNome.getText();
+            String cpf = txtCPFFinal.getText().replace("_", "").trim();
+            String dataNasc = txtDataFinal.getText().replace("_", "").trim();
+
+            if(nome.isEmpty()) {
+
+                JOptionPane.showMessageDialog(painel, "Preencha o nome!");
+                return;
+
+            }
+
+            if(cpf.length() < 14) {
+
+                JOptionPane.showMessageDialog(painel, "Preencha o CPF completo!");
+                return;
+
+            }
+
+            if(dataNasc.length() < 10) {
+
+                JOptionPane.showMessageDialog(painel, "Preencha a data de nascimento completa!");
+                return;
+
+            }
+
+            if(!isDataValida(dataNasc)) {
+
+                JOptionPane.showMessageDialog(painel, "Data inserida inválida!");
+                return;
+
+            }
+
+                try {
+
+                    Responsavel resp = new Responsavel(nome, cpf, dataNasc);
+                    respDao.inserir(resp);
+
+                    limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, null);
+
+                    JOptionPane.showMessageDialog(painel, "Responsável salvo com sucesso!");
+
+                } catch (SQLException ex) {
+
+                    if (ex.getMessage().contains("UNIQUE constraint failed: responsavel.cpf")) {
+
+                        JOptionPane.showMessageDialog(painel,
+                                "Já existe alguém cadastrado com este CPF!",
+                                "CPF Duplicado",
+                                JOptionPane.ERROR_MESSAGE);
+
+                    } else {
+
+                        JOptionPane.showMessageDialog(painel, "Erro no banco de dados: " + ex.getMessage());
+
+                    }
+
+                } catch (Exception ex) {
+
+                    JOptionPane.showMessageDialog(painel, "Erro inesperado: " + ex.getMessage());
+
+                }
+
+        });
+
+        painel.add(new JLabel("Nome: ")); painel.add(txtNome);
+        painel.add(new JLabel("CPF: ")); painel.add(txtCPFFinal);
+        painel.add(new JLabel("Nascimento: ")); painel.add(txtDataFinal);
         painel.add(btnSalvar);
 
         return painel;
@@ -439,7 +485,7 @@ public class Main {
             if (selecao.equals("Alunos")) {
 
                 preencherTabAlunoReduzida(alunoDao, modeloAlReduzido);
-                atualizarCombosResponsaveis(respDao, comboResp1, comboResp2);
+                atualizarCombosResponsaveis(respDao, comboEditResp1, comboEditResp2);
                 System.out.println("Combos de responsáveis atualizados!");
 
 
@@ -468,19 +514,30 @@ public class Main {
 
         JPanel painelEditor = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-        comboResp1 = new JComboBox<>();
-        comboResp1.setBackground(Color.WHITE);
-        comboResp2 = new JComboBox<>();
-        comboResp2.setBackground(Color.WHITE);
-        comboResp2.setName("Opcional");
+        comboEditResp1 = new JComboBox<>();
+        comboEditResp1.setBackground(Color.WHITE);
+        comboEditResp2 = new JComboBox<>();
+        comboEditResp2.setBackground(Color.WHITE);
+        comboEditResp2.setName("Opcional");
 
-        atualizarCombosResponsaveis(respDao, comboResp1, comboResp2);
+        atualizarCombosResponsaveis(respDao, comboEditResp1, comboEditResp2);
 
         JTextField txtId = new JTextField(2);
         txtId.setEditable(false);
         JTextField txtNome = new JTextField(20);
 
+        JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
+
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("###.###.###-##");
+            mascara.setPlaceholderCharacter('_');
+            txtCPF = new JFormattedTextField(mascara);
+            txtCPF.setColumns(9);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
         try {
 
             MaskFormatter m = new MaskFormatter("##/##/####");
@@ -490,6 +547,7 @@ public class Main {
 
         } catch (Exception e)  { e.printStackTrace(); }
 
+        final JFormattedTextField txtCPFFinal = txtCPF;
         final JFormattedTextField txtDataFinal = txtData;
 
         JButton btnEditar = new JButton("Salvar Alterações");
@@ -498,9 +556,10 @@ public class Main {
 
         painelEditor.add(new JLabel("ID:")); painelEditor.add(txtId);
         painelEditor.add(new JLabel("Nome:")); painelEditor.add(txtNome);
+        painelEditor.add(new JLabel("CPF:")); painelEditor.add(txtCPFFinal);
         painelEditor.add(new JLabel("Data de Nascimento:")); painelEditor.add(txtDataFinal);
-        painelEditor.add(new JLabel("Resp. 1")); painelEditor.add(comboResp1);
-        painelEditor.add(new JLabel("Resp. 2")); painelEditor.add(comboResp2);
+        painelEditor.add(new JLabel("Resp. 1")); painelEditor.add(comboEditResp1);
+        painelEditor.add(new JLabel("Resp. 2")); painelEditor.add(comboEditResp2);
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
 
@@ -523,9 +582,10 @@ public class Main {
 
                     txtId.setText(String.valueOf(a.getId()));
                     txtNome.setText(a.getNome());
+                    txtCPFFinal.setText(a.getCPF());
                     txtDataFinal.setText(a.getDataNascimento());
-                    selecionarNoCombo(comboResp1, a.getIdResponsavel1());
-                    selecionarNoCombo(comboResp2, a.getIdResponsavel2());
+                    selecionarNoCombo(comboEditResp1, a.getIdResponsavel1());
+                    selecionarNoCombo(comboEditResp2, a.getIdResponsavel2());
 
                 }
 
@@ -545,11 +605,19 @@ public class Main {
             }
 
             String novoNome = txtNome.getText().trim();
+            String novoCPF = txtCPFFinal.getText().replace("_", "").trim();
             String novaData = txtDataFinal.getText().replace("_", "").trim();
 
             if (novoNome.isEmpty()) {
 
                 JOptionPane.showMessageDialog(painelPrincipal, "O nome não pode estar vazio!");
+                return;
+
+            }
+
+            if (novoCPF.length() < 14) {
+
+                JOptionPane.showMessageDialog(painelPrincipal, "Cpf inválido!");
                 return;
 
             }
@@ -561,17 +629,47 @@ public class Main {
 
             }
 
-            int novoId1 = ((ResponsavelComboItem) comboResp1.getSelectedItem()).getId();
-            int novoId2 = ((ResponsavelComboItem) comboResp2.getSelectedItem()).getId();
+            int novoId1 = ((ResponsavelComboItem) comboEditResp1.getSelectedItem()).getId();
+            int novoId2 = ((ResponsavelComboItem) comboEditResp2.getSelectedItem()).getId();
 
-            Aluno alunoEditado = new Aluno(novoNome, novaData, novoId1, novoId2);
+            if (novoId1 != 0 && novoId1 == novoId2) {
+
+                JOptionPane.showMessageDialog(null, "O 1º e o 2º responsável não podem ser a mesma pessoa!");
+                return;
+
+            }
+
+            Aluno alunoEditado = new Aluno(novoNome, novoCPF, novaData, novoId1, novoId2);
             alunoEditado.setId(Integer.parseInt(idTexto));
 
-            alunoDao.atualizar(alunoEditado);
+            try {
 
-            preencherTabAlunoReduzida(alunoDao, modeloReduzido);
+                alunoDao.atualizar(alunoEditado);
 
-            JOptionPane.showMessageDialog(painelPrincipal, "Dados atualizados com sucesso!");
+                preencherTabAlunoReduzida(alunoDao, modeloReduzido);
+
+                JOptionPane.showMessageDialog(painelPrincipal, "Dados atualizados com sucesso!");
+
+            } catch (SQLException ex) {
+
+                if (ex.getMessage().contains("UNIQUE constraint failed: aluno.cpf")) {
+
+                    JOptionPane.showMessageDialog(painelPrincipal,
+                            "Já existe alguém cadastrado com este CPF!",
+                            "CPF Duplicado",
+                            JOptionPane.ERROR_MESSAGE);
+
+                } else {
+
+                    JOptionPane.showMessageDialog(painelPrincipal, "Erro no banco de dados: " + ex.getMessage());
+
+                }
+
+            } catch (Exception ex) {
+
+                JOptionPane.showMessageDialog(painelPrincipal, "Erro inesperado: " + ex.getMessage());
+
+            }
 
         });
 
@@ -601,10 +699,22 @@ public class Main {
 
             if (escolha == 0) {
 
-                alunoDao.deletar(Integer.parseInt(txtId.getText()));
-                preencherTabAlunoReduzida(alunoDao, modeloReduzido);
-                limparCamposAluno(txtNome, txtDataFinal, comboResp1, comboResp2, txtId);
-                JOptionPane.showMessageDialog(painelPrincipal, "Aluno deletado com sucesso!");
+                try {
+
+                    alunoDao.deletar(Integer.parseInt(txtId.getText()));
+                    preencherTabAlunoReduzida(alunoDao, modeloReduzido);
+                    limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboEditResp1, comboEditResp2, txtId);
+                    JOptionPane.showMessageDialog(painelPrincipal, "Aluno deletado com sucesso!");
+
+                } catch (SQLException ex) {
+
+                    JOptionPane.showMessageDialog(null, "Falha ao excluir no banco: " + ex.getMessage());
+
+                } catch (Exception ex) {
+
+                    JOptionPane.showMessageDialog(painelPrincipal, "Erro inesperado: " + ex.getMessage());
+
+                }
 
             }
 
@@ -629,17 +739,8 @@ public class Main {
         txtId.setEditable(false);
         JTextField txtNome = new JTextField(20);
 
-        JFormattedTextField txtData = null;
         JFormattedTextField txtCPF = null;
-
-        try {
-
-            MaskFormatter m = new MaskFormatter("##/##/####");
-            m.setPlaceholderCharacter('_');
-            txtData = new JFormattedTextField(m);
-            txtData.setColumns(6);
-
-        } catch (Exception e)  { e.printStackTrace(); }
+        JFormattedTextField txtData = null;
 
         try {
 
@@ -650,8 +751,17 @@ public class Main {
 
         } catch (Exception e) { e.printStackTrace(); }
 
-        final JFormattedTextField txtDataFinal = txtData;
+        try {
+
+            MaskFormatter m = new MaskFormatter("##/##/####");
+            m.setPlaceholderCharacter('_');
+            txtData = new JFormattedTextField(m);
+            txtData.setColumns(6);
+
+        } catch (Exception e)  { e.printStackTrace(); }
+
         final JFormattedTextField txtCPFFinal = txtCPF;
+        final JFormattedTextField txtDataFinal = txtData;
 
         JButton btnEditar = new JButton("Salvar Alterações");
         JButton btnExcluir = new JButton("Excluir Responsável");
@@ -704,12 +814,19 @@ public class Main {
             }
 
             String novoNome = txtNome.getText().trim();
+            String novoCPF = txtCPFFinal.getText().replace("_", "").trim();
             String novaData = txtDataFinal.getText().replace("_", "").trim();
-            String novoCpf = txtCPFFinal.getText().replace("_", "").trim();
 
             if (novoNome.isEmpty()) {
 
                 JOptionPane.showMessageDialog(painelPrincipal, "O nome não pode estar vazio!");
+                return;
+
+            }
+
+            if (novoCPF.length() < 14) {
+
+                JOptionPane.showMessageDialog(painelPrincipal, "Cpf inválido!");
                 return;
 
             }
@@ -721,25 +838,48 @@ public class Main {
 
             }
 
-            if (novoCpf.length() < 14) {
-
-                JOptionPane.showMessageDialog(painelPrincipal, "Cpf inválido!");
-                return;
-
-            }
-
-            Responsavel respEditado = new Responsavel(novoNome, novaData, novoCpf);
+            Responsavel respEditado = new Responsavel(novoNome, novoCPF, novaData);
             respEditado.setId(Integer.parseInt(idTexto));
 
-            respDao.atualizar(respEditado);
+            try {
 
-            preencherTabRespReduzida(respDao, modeloReduzido);
+                respDao.atualizar(respEditado);
 
-            JOptionPane.showMessageDialog(painelPrincipal, "Dados atualizados com sucesso!");
+                preencherTabRespReduzida(respDao, modeloReduzido);
+
+                JOptionPane.showMessageDialog(painelPrincipal, "Dados atualizados com sucesso!");
+
+            } catch (SQLException ex) {
+
+                if (ex.getMessage().contains("UNIQUE constraint failed: responsavel.cpf")) {
+
+                    JOptionPane.showMessageDialog(painelPrincipal,
+                            "Já existe alguém cadastrado com este CPF!",
+                            "CPF Duplicado",
+                            JOptionPane.ERROR_MESSAGE);
+
+                } else {
+
+                    JOptionPane.showMessageDialog(painelPrincipal, "Erro no banco de dados: " + ex.getMessage());
+
+                }
+
+            } catch (Exception ex) {
+
+                JOptionPane.showMessageDialog(painelPrincipal, "Erro inesperado: " + ex.getMessage());
+
+            }
 
         });
 
         btnExcluir.addActionListener(e -> {
+
+            if (txtId.getText().isEmpty()) {
+
+                JOptionPane.showMessageDialog(null, "Selecione um responsável na tabela para excluir.");
+                return;
+
+            }
 
             int id = Integer.parseInt((txtId.getText()));
 
@@ -748,13 +888,6 @@ public class Main {
                 JOptionPane.showMessageDialog(null,
                         "Não é possível excluir! Este responsável está vinculado a um ou mais alunos.",
                         "Bloqueado", JOptionPane.ERROR_MESSAGE);
-                return;
-
-            }
-
-            if (txtId.getText().isEmpty()) {
-
-                JOptionPane.showMessageDialog(null, "Selecione um responsável na tabela para excluir.");
                 return;
 
             }
@@ -776,10 +909,22 @@ public class Main {
 
             if (escolha == 0) {
 
-                respDao.deletar(Integer.parseInt(txtId.getText()));
-                preencherTabRespReduzida(respDao, modeloReduzido);
-                limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, txtId);
-                JOptionPane.showMessageDialog(painelPrincipal, "Responsável deletado com sucesso!");
+                try {
+
+                    respDao.deletar(Integer.parseInt(txtId.getText()));
+                    preencherTabRespReduzida(respDao, modeloReduzido);
+                    limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, txtId);
+                    JOptionPane.showMessageDialog(painelPrincipal, "Responsável deletado com sucesso!");
+
+                } catch (SQLException ex) {
+
+                    JOptionPane.showMessageDialog(null, "Falha ao excluir no banco: " + ex.getMessage());
+
+                } catch (Exception ex) {
+
+                    JOptionPane.showMessageDialog(painelPrincipal, "Erro inesperado: " + ex.getMessage());
+
+                }
 
             }
 
@@ -794,9 +939,44 @@ public class Main {
 
     }
 
+    private static JPanel criarPainelRelatorio(AlunoDAO alunoDao, ResponsavelDAO respDao) {
+
+        JPanel painel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new java.awt.Insets(10, 10, 10, 10);
+        gbc.gridx = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel titulo = new JLabel("Central de Exportação (Excel/CSV)", SwingConstants.CENTER);
+        titulo.setFont(new Font("Arial", Font.BOLD, 16));
+        gbc.gridy = 0;
+        painel.add(titulo, gbc);
+
+        JButton btnAlunos = new JButton("Exportar Lista de Alunos");
+        gbc.gridy = 1;
+        painel.add(btnAlunos, gbc);
+
+        JButton btnResps = new JButton("Exportar Lista de Responsáveis");
+        gbc.gridy = 2;
+        painel.add(btnResps, gbc);
+
+        JButton btnAmbos = new JButton("Exportar Ambos");
+        btnAmbos.setBackground(new Color(200, 230, 200));
+        gbc.gridy = 3;
+        painel.add(btnAmbos, gbc);
+
+        btnAlunos.addActionListener(e -> acaoExportar(alunoDao, respDao, "Alunos"));
+        btnResps.addActionListener(e -> acaoExportar(alunoDao, respDao, "Responsaveis"));
+        btnAmbos.addActionListener(e -> acaoExportar(alunoDao, respDao, "ambos"));
+
+        return painel;
+
+    }
+
     private static void preencherTabAluno(AlunoDAO dao, ResponsavelDAO respDao, DefaultTableModel modelo) {
 
         modelo.setRowCount(0);
+        int contadorVisual = 1;
 
         for (Aluno a : dao.listar()) {
 
@@ -812,8 +992,9 @@ public class Main {
             }
 
             Object[] linha = {
-                    a.getId(),
+                    contadorVisual++,
                     a.getNome(),
+                    a.getCPF(),
                     a.getDataNascimento(),
                     nomeResp1,
                     nomeResp2
@@ -843,6 +1024,7 @@ public class Main {
     private static void preencherTabResp(ResponsavelDAO dao, AlunoDAO alunoDao, DefaultTableModel modelo) {
 
         modelo.setRowCount(0);
+        int contadorVisual = 1;
 
         for (Responsavel r : dao.listar()) {
 
@@ -851,7 +1033,8 @@ public class Main {
             if(nomesAlunos.isEmpty()) nomesAlunos = "Nenhum";
 
             Object[] linha = {
-                    r.getId(),
+
+                    contadorVisual++,
                     r.getNome(),
                     r.getCPF(),
                     r.getDataNascimento(),
@@ -871,6 +1054,7 @@ public class Main {
         for (Responsavel r : dao.listar()) {
 
             Object[] linha = {
+
                     r.getId(),
                     r.getNome(),
 
@@ -891,9 +1075,10 @@ public class Main {
     }
 
 
-    private static void limparCamposAluno(JTextField txtNome, JFormattedTextField txtData, JComboBox cb1, JComboBox cb2, JTextField txtId) {
+    private static void limparCamposAluno(JTextField txtNome, JFormattedTextField txtCPF, JFormattedTextField txtData, JComboBox cb1, JComboBox cb2, JTextField txtId) {
 
         txtNome.setText("");
+        txtCPF.setValue(null);
         txtData.setValue(null);
 
         if (cb1.getItemCount() > 0) cb1.setSelectedIndex(0);
@@ -968,6 +1153,104 @@ public class Main {
         }
 
         combo.setSelectedIndex(0);
+
+    }
+
+    public static void acaoExportar(AlunoDAO alunoDao, ResponsavelDAO respDao, String tipo) {
+
+        JFileChooser chooser = new JFileChooser();
+
+        if (tipo.equals("ambos")) {
+
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            chooser.setDialogTitle("Selecione a pasta para salvar os relatórios");
+
+        } else {
+
+            chooser.setDialogTitle("Salvar Relatório");
+            chooser.setSelectedFile(new java.io.File(tipo + "_Cadastrados.csv"));
+
+        }
+
+        if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+
+            try {
+
+                if (tipo.equals("Alunos") || tipo.equals("ambos")) {
+
+                    String path = tipo.equals("ambos") ?
+                            chooser.getSelectedFile().getPath() + "/Alunos_Cadastrados.csv" :
+                            chooser.getSelectedFile().getPath();
+                    gerarCsvAlunos(alunoDao, respDao, path);
+
+                }
+                if (tipo.equals("Responsaveis") || tipo.equals("ambos")) {
+
+                    String path = tipo.equals("ambos") ?
+                            chooser.getSelectedFile().getPath() + "/Responsaveis_Cadastrados.csv" :
+                            chooser.getSelectedFile().getPath();
+                    gerarCsvResponsaveis(respDao, alunoDao, path);
+
+                }
+
+                JOptionPane.showMessageDialog(null, "Exportação concluída com sucesso!");
+
+            } catch (Exception ex) {
+
+                JOptionPane.showMessageDialog(null, "Erro ao exportar: " + ex.getMessage());
+
+            }
+
+        }
+
+    }
+
+    private static void gerarCsvAlunos(AlunoDAO alunoDao, ResponsavelDAO respDao, String path) throws java.io.IOException {
+
+        try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.File(path), "ISO-8859-1")) {
+
+            pw.println("sep=;");
+            pw.println("Nome;CPF;Data Nascimento;Responsável 1; Responsável 2");
+
+            for (Aluno a : alunoDao.listar()) {
+
+                Responsavel r1 = respDao.buscarPorId(a.getIdResponsavel1());
+                String nomeR1 = (r1 != null) ? r1.getNome() : "Não encontrado";
+
+                String nomeR2 = "Nenhum";
+                if (a.getIdResponsavel2() > 0) {
+
+                    Responsavel r2 = respDao.buscarPorId(a.getIdResponsavel2());
+                    if (r2 != null) nomeR2 = r2.getNome();
+
+                }
+
+                pw.printf("%s;%s;%s;%s;%s;\n", a.getNome(), a.getCPF(), a.getDataNascimento(), nomeR1, nomeR2);
+
+            }
+
+        }
+
+    }
+
+    private static void gerarCsvResponsaveis(ResponsavelDAO respDao, AlunoDAO alunoDao, String path) throws java.io.IOException {
+
+        try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.File(path), "ISO-8859-1")) {
+
+            pw.println("sep=;");
+            pw.println("Nome;CPF;Data Nascimento;Alunos Vinculados");
+
+            for (Responsavel r : respDao.listar()) {
+
+                List<String> alunos = alunoDao.buscarNomesAlunosPorResponsavel(r.getId());
+                String nomesAlunos = String.join(", ", alunos);
+                if (nomesAlunos.isEmpty()) nomesAlunos = "Nenhum";
+
+                pw.printf("%s;%s;%s;%s;\n", r.getNome(), r.getCPF(), r.getDataNascimento(), nomesAlunos);
+
+            }
+
+        }
 
     }
 

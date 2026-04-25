@@ -38,6 +38,7 @@ public class Conexao {
                 CREATE TABLE IF NOT EXISTS aluno (
                     id    INTEGER PRIMARY KEY AUTOINCREMENT,
                     nome  TEXT   NOT NULL,
+                    cpf   TEXT   UNIQUE NOT NULL,
                     data_nascimento TEXT   NOT NULL,
                     id_responsavel1 INTEGER NOT NULL,
                     id_responsavel2 INTEGER,

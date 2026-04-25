@@ -42,17 +42,6 @@ public class Responsavel {
 
     }
 
-    public String getDataNascimento() {
-
-        return dataNascimento;
-
-    }
-    public void setDataNascimento(String dataNascimento) {
-
-        this.dataNascimento = dataNascimento;
-
-    }
-
     public String getCPF() {
 
         return CPF;
@@ -61,6 +50,17 @@ public class Responsavel {
     public void setCPF(String CPF) {
 
         this.CPF = CPF;
+
+    }
+
+    public String getDataNascimento() {
+
+        return dataNascimento;
+
+    }
+    public void setDataNascimento(String dataNascimento) {
+
+        this.dataNascimento = dataNascimento;
 
     }
 

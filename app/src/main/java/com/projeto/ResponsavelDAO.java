@@ -43,13 +43,17 @@ public class ResponsavelDAO {
 
             }
 
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+
+            System.err.println("Erro ao listar responsáveis: " + e.getMessage());
+
+        }
 
         return lista;
 
     }
 
-    public void atualizar (Responsavel responsavel) {
+    public void atualizar (Responsavel responsavel) throws SQLException {
 
         String sql = "UPDATE responsavel SET nome = ?, cpf = ?, data_nascimento = ? WHERE id = ?";
 
@@ -63,11 +67,11 @@ public class ResponsavelDAO {
             stmt.executeUpdate();
             System.out.println("Responsavel atualizado com sucesso.");
 
-        } catch (SQLException e) { e.printStackTrace(); }
+        }
 
     }
 
-    public void deletar(int id) {
+    public void deletar(int id) throws SQLException {
 
         String sql = "DELETE FROM responsavel WHERE id = ?";
 
@@ -78,7 +82,7 @@ public class ResponsavelDAO {
             stmt.executeUpdate();
             System.out.println("Responsavel deletado com sucesso.");
 
-        } catch (SQLException e) { e.printStackTrace(); }
+        }
 
     }
 
@@ -105,7 +109,11 @@ public class ResponsavelDAO {
 
             }
 
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+
+            System.err.println("Erro na busca por id: " + e.getMessage());
+
+        }
 
         return null;
 
@@ -128,7 +136,12 @@ public class ResponsavelDAO {
 
             }
 
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+
+            System.err.println("Erro ao verificar vínculos: " + e.getMessage());
+            return true;
+
+        }
 
         return false;
 

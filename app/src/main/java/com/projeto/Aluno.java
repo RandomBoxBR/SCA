@@ -4,6 +4,7 @@ public class Aluno {
 
     private int id;
     private String nome;
+    private String CPF;
     private String dataNascimento; // DD/MM/AAAA para a tela e YYYY/MM/DD para o banco
     private int idResponsavel1;
     private int idResponsavel2;
@@ -12,9 +13,10 @@ public class Aluno {
 
     }
 
-    public Aluno(String nome, String dataNascimento, int idResp1, int idResp2) {
+    public Aluno(String nome, String CPF, String dataNascimento, int idResp1, int idResp2) {
 
         this.nome = nome;
+        this.CPF = CPF;
         this.dataNascimento = dataNascimento;
         this.idResponsavel1 = idResp1;
         this.idResponsavel2 = idResp2;
@@ -41,6 +43,17 @@ public class Aluno {
     public void setNome(String nome) {
 
         this.nome = nome;
+
+    }
+
+    public String getCPF() {
+
+        return CPF;
+
+    }
+    public void setCPF(String CPF) {
+
+        this.CPF = CPF;
 
     }
 

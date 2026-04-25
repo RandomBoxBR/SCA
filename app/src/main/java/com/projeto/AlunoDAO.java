@@ -8,22 +8,23 @@ public class AlunoDAO {
 
     public void inserir(Aluno aluno) throws SQLException{
 
-        String sql = "INSERT INTO aluno(nome, data_nascimento, id_responsavel1, id_responsavel2) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO aluno(nome, cpf, data_nascimento, id_responsavel1, id_responsavel2) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, aluno.getNome());
-            stmt.setString(2, aluno.getDataNascimento());
-            stmt.setInt(3, aluno.getIdResponsavel1());
+            stmt.setString(2, aluno.getCPF());
+            stmt.setString(3, aluno.getDataNascimento());
+            stmt.setInt(4, aluno.getIdResponsavel1());
 
             if (aluno.getIdResponsavel2() > 0) {
 
-                stmt.setInt(4, aluno.getIdResponsavel2());
+                stmt.setInt(5, aluno.getIdResponsavel2());
 
             } else {
 
-                stmt.setNull(4, Types.INTEGER);
+                stmt.setNull(5, Types.INTEGER);
 
             }
 
@@ -49,6 +50,7 @@ public class AlunoDAO {
                Aluno a = new Aluno();
                a.setId(rs.getInt("id"));
                a.setNome(rs.getString("nome"));
+               a.setCPF(rs.getString("cpf"));
                a.setDataNascimento(rs.getString("data_nascimento"));
                a.setIdResponsavel1(rs.getInt("id_responsavel1"));
                a.setIdResponsavel2(rs.getInt("id_responsavel2"));
@@ -56,32 +58,37 @@ public class AlunoDAO {
 
            }
 
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+
+            System.err.println("Erro ao listar alunos: " + e.getMessage());
+
+        }
 
         return lista;
 
     }
 
-    public void atualizar (Aluno aluno) {
+    public void atualizar (Aluno aluno) throws SQLException {
 
-        String sql = "UPDATE aluno SET nome = ?, data_nascimento = ?, id_responsavel1 = ?, id_responsavel2 = ? WHERE id = ?";
+        String sql = "UPDATE aluno SET nome = ?, cpf = ?, data_nascimento = ?, id_responsavel1 = ?, id_responsavel2 = ? WHERE id = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, aluno.getNome());
-            stmt.setString(2, aluno.getDataNascimento());
-            stmt.setInt(3, aluno.getIdResponsavel1());
-            stmt.setInt(4, aluno.getIdResponsavel2());
-            stmt.setInt(5, aluno.getId());
+            stmt.setString(2, aluno.getCPF());
+            stmt.setString(3, aluno.getDataNascimento());
+            stmt.setInt(4, aluno.getIdResponsavel1());
+            stmt.setInt(5, aluno.getIdResponsavel2());
+            stmt.setInt(6, aluno.getId());
             stmt.executeUpdate();
             System.out.println("Aluno atualizado com sucesso.");
 
-        } catch (SQLException e) { e.printStackTrace(); }
+        }
 
     }
 
-    public void deletar(int id) {
+    public void deletar(int id) throws SQLException {
 
         String sql = "DELETE FROM aluno WHERE id = ?";
 
@@ -92,7 +99,7 @@ public class AlunoDAO {
             stmt.executeUpdate();
             System.out.println("Aluno deletado com sucesso.");
 
-        } catch (SQLException e) { e.printStackTrace(); }
+        }
 
     }
 
@@ -109,6 +116,7 @@ public class AlunoDAO {
             if (rs.next()) {
 
                 Aluno a = new Aluno(rs.getString("nome"),
+                        rs.getString("cpf"),
                         rs.getString("data_nascimento"),
                         rs.getInt("id_responsavel1"),
                         rs.getInt("id_responsavel2"));
@@ -117,7 +125,11 @@ public class AlunoDAO {
 
             }
 
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+
+            System.err.println("Erro na busca por id: " + e.getMessage());
+
+        }
 
         return null;
 
@@ -137,7 +149,11 @@ public class AlunoDAO {
 
             while (rs.next()) { nomes.add(rs.getString("nome")); }
 
-        } catch (SQLException e) { e.printStackTrace(); }
+        } catch (SQLException e) {
+
+            System.err.println("Erro na busca de alunos por responsável: " + e.getMessage());
+
+        }
 
         return nomes;
 
