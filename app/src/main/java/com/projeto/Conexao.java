@@ -47,6 +47,18 @@ public class Conexao {
                 );
             """);
 
+            stmt.execute("""
+                CREATE TABLE IF NOT EXISTS usuarios (
+                    id    INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username   TEXT   UNIQUE NOT NULL,
+                    password   TEXT   NOT NULL
+                );
+            """);
+
+            stmt.execute("""
+                INSERT OR IGNORE INTO usuarios (id, username, password) VALUES (1, 'admin', 'admin1541');
+            """);
+
             System.out.println("Banco de dados inicializado com sucesso.");
 
         } catch (SQLException e) {

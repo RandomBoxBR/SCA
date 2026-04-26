@@ -16,6 +16,9 @@ public class Main {
 
     private static JComboBox<ResponsavelComboItem> comboCadResp1, comboCadResp2;
     private static JComboBox<ResponsavelComboItem> comboEditResp1, comboEditResp2;
+    private static boolean userLogado = false;
+    private static JTabbedPane menuAbas;
+    private static JPanel abaCadastro, abaEditar;
 
     public static void main(String[] args) {
 
@@ -30,7 +33,7 @@ public class Main {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setPreferredSize(new Dimension(800, 600));
 
-            JTabbedPane menuAbas = new JTabbedPane();
+            menuAbas = new JTabbedPane();
 
             String[] colunasAl = {"Nº", "Nome", "CPF", "Data de Nascimento", "1º Responsável", "2º Responsável"};
             DefaultTableModel modeloAl = new DefaultTableModel(colunasAl, 0);
@@ -40,16 +43,19 @@ public class Main {
             DefaultTableModel modeloAlReduzido = new DefaultTableModel(colunasReduzidas, 0);
             DefaultTableModel modeloRespReduzido = new DefaultTableModel(colunasReduzidas, 0);
 
+            abaCadastro = criarPainelCadastro(alunoDao, respDao);
+            abaEditar = criarPainelEditar(alunoDao, respDao, modeloAlReduzido, modeloRespReduzido);
 
-            menuAbas.addTab("Cadastrar", criarPainelCadastro(alunoDao, respDao));
             menuAbas.addTab("Listar", criarPainelListagem(modeloAl, modeloResp));
-            menuAbas.addTab("Editar/Excluir", criarPainelEditar(alunoDao, respDao, modeloAlReduzido, modeloRespReduzido));
             menuAbas.addTab("Relatório", criarPainelRelatorio(alunoDao, respDao));
+            menuAbas.addTab("Usuários", criarPainelLogin(frame, new UserDAO()));
 
             menuAbas.addChangeListener(e -> {
                 int aba = menuAbas.getSelectedIndex();
+                if (aba == -1) return;
+                String titulo = menuAbas.getTitleAt(aba);
 
-                if (aba == 0) {
+                if (titulo.equals("Cadastrar")) {
 
                     if (comboCadResp1 != null && comboCadResp2 != null) {
 
@@ -58,14 +64,14 @@ public class Main {
 
                     }
 
-                } else if (aba == 1) {
+                } else if (titulo.equals("Listar")) {
 
                     preencherTabAluno(alunoDao,respDao, modeloAl);
                     preencherTabResp(respDao, alunoDao, modeloResp);
 
                     System.out.println("Tabela atualizada!");
 
-                } else if (aba == 2) {
+                } else if (titulo.equals("Editar/Excluir")) {
 
                     if (comboEditResp1 != null && comboEditResp2 != null) {
 
@@ -970,6 +976,63 @@ public class Main {
         btnAmbos.addActionListener(e -> acaoExportar(alunoDao, respDao, "ambos"));
 
         return painel;
+
+    }
+
+    private static JPanel criarPainelLogin(JFrame frame, UserDAO userDao) {
+
+        JPanel painelContainer = new JPanel(new CardLayout());
+
+        JPanel telaLogin = new JPanel(new GridBagLayout());
+        JTextField txtUser = new JTextField(15);
+        JPasswordField txtPass = new JPasswordField(15);
+        JButton btnLogin = new JButton("Conectar");
+        telaLogin.add(new JLabel("Usuário:")); telaLogin.add(txtUser);
+        telaLogin.add(new JLabel("Senha:")); telaLogin.add(txtPass);
+        telaLogin.add(btnLogin);
+
+        btnLogin.addActionListener(e -> {
+
+            if (userDao.validarLogin(txtUser.getText(), new String(txtPass.getPassword()))) {
+
+                userLogado = true;
+                destrancarSistema();
+
+                ((CardLayout)painelContainer.getLayout()).show(painelContainer, "gerenciamento");
+
+                menuAbas.setSelectedIndex(0);
+
+            } else {
+
+                JOptionPane.showMessageDialog(frame, "Usuário ou senha inválidos.");
+
+            }
+
+        });
+
+        JPanel telaGerenciamento = new JPanel(new BorderLayout());
+        telaGerenciamento.add(new JLabel("Gerenciar Contas de Usuário", JLabel.CENTER), BorderLayout.NORTH);
+
+        painelContainer.add(telaLogin, "login");
+        painelContainer.add(telaGerenciamento, "gerenciamento");
+
+        return painelContainer;
+
+    }
+
+    private static void destrancarSistema() {
+
+        if (menuAbas.getTabCount() < 5) {
+
+            menuAbas.insertTab("Cadastrar", null, abaCadastro, null, 0);
+            menuAbas.insertTab("Editar/Excluir", null, abaEditar, null, 2);
+
+            menuAbas.revalidate();
+            menuAbas.repaint();
+
+            JOptionPane.showMessageDialog(null, "Acesso concedido!");
+
+        }
 
     }
 
