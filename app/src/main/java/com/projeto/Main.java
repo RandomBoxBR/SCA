@@ -95,7 +95,7 @@ public class Main {
     private static JPanel criarPainelCadastro(AlunoDAO alunoDao, ResponsavelDAO respDao) {
 
         JPanel painelPrincipal = new JPanel(new BorderLayout());
-        
+
         JPanel painelSeletor = new JPanel(new FlowLayout(FlowLayout.LEFT));
         String[] tipos = {"Aluno", "Responsável"};
         JComboBox<String> comboTipo = new JComboBox<>(tipos);
@@ -231,35 +231,35 @@ public class Main {
 
             }
 
-                try {
+            try {
 
-                    Aluno aluno = new Aluno(nome, cpf, dataNasc, id1, id2);
-                    alunoDao.inserir(aluno);
+                Aluno aluno = new Aluno(nome, cpf, dataNasc, id1, id2);
+                alunoDao.inserir(aluno);
 
-                    limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboCadResp1, comboCadResp2, null);
+                limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboCadResp1, comboCadResp2, null);
 
-                    JOptionPane.showMessageDialog(painel, "Aluno salvo com sucesso!");
+                JOptionPane.showMessageDialog(painel, "Aluno salvo com sucesso!");
 
-                } catch (SQLException ex) {
+            } catch (SQLException ex) {
 
-                    if (ex.getMessage().contains("UNIQUE constraint failed: aluno.cpf")) {
+                if (ex.getMessage().contains("UNIQUE constraint failed: aluno.cpf")) {
 
-                        JOptionPane.showMessageDialog(painel,
-                                "Já existe alguém cadastrado com este CPF!",
-                                "CPF Duplicado",
-                                JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(painel,
+                            "Já existe alguém cadastrado com este CPF!",
+                            "CPF Duplicado",
+                            JOptionPane.ERROR_MESSAGE);
 
-                    } else {
+                } else {
 
-                        JOptionPane.showMessageDialog(painel, "Erro no banco de dados: " + ex.getMessage());
-
-                    }
-
-                } catch (Exception ex) {
-
-                    JOptionPane.showMessageDialog(painel, "Erro inesperado: " + ex.getMessage());
+                    JOptionPane.showMessageDialog(painel, "Erro no banco de dados: " + ex.getMessage());
 
                 }
+
+            } catch (Exception ex) {
+
+                JOptionPane.showMessageDialog(painel, "Erro inesperado: " + ex.getMessage());
+
+            }
 
         });
 
@@ -339,35 +339,35 @@ public class Main {
 
             }
 
-                try {
+            try {
 
-                    Responsavel resp = new Responsavel(nome, cpf, dataNasc);
-                    respDao.inserir(resp);
+                Responsavel resp = new Responsavel(nome, cpf, dataNasc);
+                respDao.inserir(resp);
 
-                    limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, null);
+                limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, null);
 
-                    JOptionPane.showMessageDialog(painel, "Responsável salvo com sucesso!");
+                JOptionPane.showMessageDialog(painel, "Responsável salvo com sucesso!");
 
-                } catch (SQLException ex) {
+            } catch (SQLException ex) {
 
-                    if (ex.getMessage().contains("UNIQUE constraint failed: responsavel.cpf")) {
+                if (ex.getMessage().contains("UNIQUE constraint failed: responsavel.cpf")) {
 
-                        JOptionPane.showMessageDialog(painel,
-                                "Já existe alguém cadastrado com este CPF!",
-                                "CPF Duplicado",
-                                JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(painel,
+                            "Já existe alguém cadastrado com este CPF!",
+                            "CPF Duplicado",
+                            JOptionPane.ERROR_MESSAGE);
 
-                    } else {
+                } else {
 
-                        JOptionPane.showMessageDialog(painel, "Erro no banco de dados: " + ex.getMessage());
-
-                    }
-
-                } catch (Exception ex) {
-
-                    JOptionPane.showMessageDialog(painel, "Erro inesperado: " + ex.getMessage());
+                    JOptionPane.showMessageDialog(painel, "Erro no banco de dados: " + ex.getMessage());
 
                 }
+
+            } catch (Exception ex) {
+
+                JOptionPane.showMessageDialog(painel, "Erro inesperado: " + ex.getMessage());
+
+            }
 
         });
 
@@ -1094,7 +1094,7 @@ public class Main {
             String dataLimpa = dataStr.trim();
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/uuuu")
-                .withResolverStyle(ResolverStyle.STRICT)
+                    .withResolverStyle(ResolverStyle.STRICT)
                     .withLocale(Locale.forLanguageTag("pt-BR"));
 
             LocalDate.parse(dataLimpa, formatter);
@@ -1195,6 +1195,28 @@ public class Main {
 
                 JOptionPane.showMessageDialog(null, "Exportação concluída com sucesso!");
 
+                if (java.awt.Desktop.isDesktopSupported()) {
+
+                    java.io.File pastaParaAbrir;
+
+                    if (tipo.equals("ambos")) {
+
+                        pastaParaAbrir = chooser.getSelectedFile();
+
+                    } else {
+
+                        pastaParaAbrir = chooser.getSelectedFile().getParentFile();
+
+                    }
+
+                    if (pastaParaAbrir != null && pastaParaAbrir.exists()) {
+
+                        java.awt.Desktop.getDesktop().open(pastaParaAbrir);
+
+                    }
+
+                }
+
             } catch (Exception ex) {
 
                 JOptionPane.showMessageDialog(null, "Erro ao exportar: " + ex.getMessage());
@@ -1209,7 +1231,15 @@ public class Main {
 
         try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.File(path), "ISO-8859-1")) {
 
+            String dataHora = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+
             pw.println("sep=;");
+            pw.println("************************************************************");
+            pw.println("                SISTEMA DE CADASTRO AS DOWN                 ");
+            pw.println("                    RELATÓRIO DE ALUNOS                     ");
+            pw.println("                Gerado em: " + dataHora);
+            pw.println("************************************************************");
+            pw.println();
             pw.println("Nome;CPF;Data Nascimento;Responsável 1; Responsável 2");
 
             for (Aluno a : alunoDao.listar()) {
@@ -1237,7 +1267,16 @@ public class Main {
 
         try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.File(path), "ISO-8859-1")) {
 
+            String dataHora = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+
             pw.println("sep=;");
+            pw.println("************************************************************");
+            pw.println("                SISTEMA DE CADASTRO AS DOWN                 ");
+            pw.println("                 RELATÓRIO DE RESPONSÁVEIS                  ");
+            pw.println("                Gerado em: " + dataHora);
+            pw.println("************************************************************");
+            pw.println();
+
             pw.println("Nome;CPF;Data Nascimento;Alunos Vinculados");
 
             for (Responsavel r : respDao.listar()) {
