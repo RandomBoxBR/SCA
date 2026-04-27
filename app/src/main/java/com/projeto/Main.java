@@ -47,6 +47,8 @@ public class Main {
             abaEditar = criarPainelEditar(alunoDao, respDao, modeloAlReduzido, modeloRespReduzido);
 
             menuAbas.addTab("Listar", criarPainelListagem(modeloAl, modeloResp));
+            preencherTabAluno(alunoDao,respDao, modeloAl);
+            preencherTabResp(respDao, alunoDao, modeloResp);
             menuAbas.addTab("Relatório", criarPainelRelatorio(alunoDao, respDao));
             menuAbas.addTab("Usuários", criarPainelLogin(frame, new UserDAO()));
 
@@ -986,10 +988,37 @@ public class Main {
         JPanel telaLogin = new JPanel(new GridBagLayout());
         JTextField txtUser = new JTextField(15);
         JPasswordField txtPass = new JPasswordField(15);
-        JButton btnLogin = new JButton("Conectar");
-        telaLogin.add(new JLabel("Usuário:")); telaLogin.add(txtUser);
-        telaLogin.add(new JLabel("Senha:")); telaLogin.add(txtPass);
-        telaLogin.add(btnLogin);
+        JButton btnLogin = new JButton("Login");
+
+        GridBagConstraints gbcLogin = new GridBagConstraints();
+        gbcLogin.insets = new Insets(10, 10, 10, 10);
+        JLabel lblTitulo = new JLabel("Tela de Login", JLabel.CENTER);
+        lblTitulo.setFont(new Font("Arial", Font.BOLD, 18));
+        gbcLogin.gridx = 0;
+        gbcLogin.gridy = 0;
+        gbcLogin.gridwidth = 2;
+        gbcLogin.anchor = GridBagConstraints.CENTER;
+        telaLogin.add(lblTitulo, gbcLogin);
+
+        gbcLogin.gridwidth = 1;
+        gbcLogin.anchor = GridBagConstraints.WEST;
+
+        gbcLogin.gridx = 0; gbcLogin.gridy = 1;
+        telaLogin.add(new JLabel("Usuário:"), gbcLogin);
+
+        gbcLogin.gridx = 1; gbcLogin.gridy = 1;
+        telaLogin.add(txtUser, gbcLogin);
+
+        gbcLogin.gridx = 0; gbcLogin.gridy = 2;
+        telaLogin.add(new JLabel("Senha:"), gbcLogin);
+
+        gbcLogin.gridx = 1; gbcLogin.gridy = 2;
+        telaLogin.add(txtPass, gbcLogin);
+
+        gbcLogin.gridx = 0; gbcLogin.gridy = 3;
+        gbcLogin.gridwidth = 2;
+        gbcLogin.anchor = GridBagConstraints.CENTER;
+        telaLogin.add(btnLogin, gbcLogin);
 
         btnLogin.addActionListener(e -> {
 
@@ -1010,11 +1039,163 @@ public class Main {
 
         });
 
-        JPanel telaGerenciamento = new JPanel(new BorderLayout());
-        telaGerenciamento.add(new JLabel("Gerenciar Contas de Usuário", JLabel.CENTER), BorderLayout.NORTH);
+        JPanel telaUsers = new JPanel(new BorderLayout(10, 10));
+        telaUsers.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        String[] colunas = {"ID", "Usuário"};
+        DefaultTableModel modeloUser = new DefaultTableModel(colunas, 0);
+
+        JTable tabela = new JTable(modeloUser);
+        tabela.setFillsViewportHeight(true);
+        tabela.getTableHeader().setReorderingAllowed(false);
+        tabela.getTableHeader().setResizingAllowed(false);
+        tabela.setDefaultEditor(Object.class, null);
+        preencherTabUsers(userDao, modeloUser);
+
+        JPanel painelLateral = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(5, 5, 5, 5);
+
+        JTextField txtNovoUser = new JTextField(10);
+        JPasswordField txtNovaPass = new JPasswordField(10);
+        JButton btnSalvar = new JButton("Criar Novo Usuário");
+        JButton btnEditar = new JButton("Alterar Usuário Selecionado");
+        JButton btnExcluir = new JButton("Excluir Selecionado");
+
+        JLabel lblIdOculto = new JLabel("");
+
+        gbc.gridx = 0; gbc.gridy = 0; painelLateral.add(new JLabel("Usuário:"), gbc);
+        gbc.gridy = 1; painelLateral.add(txtNovoUser, gbc);
+        gbc.gridy = 2; painelLateral.add(new JLabel("Senha:"), gbc);
+        gbc.gridy = 3; painelLateral.add(txtNovaPass, gbc);
+        gbc.gridy = 4; painelLateral.add(btnSalvar, gbc);
+        gbc.gridy = 5; painelLateral.add(btnEditar, gbc);
+        gbc.gridy = 6; painelLateral.add(new JSeparator(), gbc);
+        gbc.gridy = 7; painelLateral.add(btnExcluir, gbc);
+
+        telaUsers.add(new JLabel("Gerenciar Contas de Usuário", JLabel.CENTER), BorderLayout.NORTH);
+        telaUsers.add(new JScrollPane(tabela), BorderLayout.CENTER);
+        telaUsers.add(painelLateral, BorderLayout.EAST);
+
+        tabela.getSelectionModel().addListSelectionListener(e -> {
+
+            if (!e.getValueIsAdjusting()) {
+
+                int linha = tabela.getSelectedRow();
+
+                if (linha != -1) {
+
+                    lblIdOculto.setText(modeloUser.getValueAt(linha, 0).toString());
+                    txtNovoUser.setText(modeloUser.getValueAt(linha, 1).toString());
+                    txtNovaPass.setText("");
+
+                }
+
+            }
+
+        });
+
+        btnSalvar.addActionListener(e -> {
+
+            String user = txtNovoUser.getText().trim();
+            String pass = new String(txtNovaPass.getPassword()).trim();
+
+            if (user.isEmpty() || pass.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Preencha Usuário e Senha!");
+                return;
+            }
+
+            User u = new User();
+            u.setUsername(user);
+            u.setPassword(pass);
+
+            if(userDao.inserir(u)) {
+
+                JOptionPane.showMessageDialog(null, "Usuário criado!");
+                preencherTabUsers(userDao, modeloUser);
+                txtNovoUser.setText(""); txtNovaPass.setText("");
+                lblIdOculto.setText("");
+
+            } else {
+
+                JOptionPane.showMessageDialog(null, "Usuário Já Utilizado!");
+
+            }
+
+        });
+
+        btnEditar.addActionListener(e -> {
+
+            if (lblIdOculto.getText().isEmpty()) {
+
+                JOptionPane.showMessageDialog(null, "Selecione um usuário na tabela primeiro.");
+                return;
+
+            }
+
+            int id = Integer.parseInt(lblIdOculto.getText());
+
+            if (id == 1) {
+
+                JOptionPane.showMessageDialog(null, "O Administrador padrão não pode ser alterado.");
+
+                return;
+
+            }
+
+            if (txtNovoUser.getText().trim().isEmpty() || new String(txtNovaPass.getPassword()).trim().isEmpty()) {
+
+                JOptionPane.showMessageDialog(null, "Preencha Usuário e Senha!");
+                return;
+
+            }
+
+            User u = new User();
+            u.setId(id);
+            u.setUsername(txtNovoUser.getText());
+            u.setPassword(new String(txtNovaPass.getPassword()).trim());
+
+            if (userDao.atualizar(u)) {
+
+                JOptionPane.showMessageDialog(null, "Usuário atualizado!");
+                preencherTabUsers(userDao, modeloUser);
+                txtNovoUser.setText(""); txtNovaPass.setText(""); lblIdOculto.setText("");
+                tabela.clearSelection();
+
+            }
+
+        });
+
+        btnExcluir.addActionListener(e -> {
+
+            int linha = tabela.getSelectedRow();
+
+            if (linha != -1) {
+
+                int id = (int) modeloUser.getValueAt(linha, 0);
+
+                if (id == 1) {
+
+                    JOptionPane.showMessageDialog(null, "O Administrador padrão não pode ser excluído.");
+
+                    return;
+
+                }
+
+                if (userDao.deletar(id)) {
+
+                    preencherTabUsers(userDao, modeloUser);
+                    txtNovoUser.setText(""); txtNovaPass.setText(""); lblIdOculto.setText("");
+
+                }
+
+            }
+
+        });
 
         painelContainer.add(telaLogin, "login");
-        painelContainer.add(telaGerenciamento, "gerenciamento");
+        painelContainer.add(telaUsers, "gerenciamento");
 
         return painelContainer;
 
@@ -1031,6 +1212,18 @@ public class Main {
             menuAbas.repaint();
 
             JOptionPane.showMessageDialog(null, "Acesso concedido!");
+
+        }
+
+    }
+
+    private static void preencherTabUsers(UserDAO dao, DefaultTableModel modelo) {
+
+        modelo.setRowCount(0);
+
+        for (User u : dao.listar()) {
+
+            modelo.addRow(new Object[]{u.getId(), u.getUsername()});
 
         }
 
