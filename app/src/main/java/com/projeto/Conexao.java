@@ -30,7 +30,8 @@ public class Conexao {
                     id    INTEGER PRIMARY KEY AUTOINCREMENT,
                     nome  TEXT   NOT NULL,
                     cpf   TEXT   UNIQUE NOT NULL,
-                    data_nascimento TEXT NOT NULL
+                    data_nascimento TEXT NOT NULL,
+                    rg    TEXT
                 );
             """);
 

@@ -4,6 +4,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -16,7 +18,6 @@ public class Main {
 
     private static JComboBox<ResponsavelComboItem> comboCadResp1, comboCadResp2;
     private static JComboBox<ResponsavelComboItem> comboEditResp1, comboEditResp2;
-    private static boolean userLogado = false;
     private static JTabbedPane menuAbas;
     private static CardLayout cardLayout = new CardLayout();
     private static JPanel painelContainer = new JPanel(cardLayout);
@@ -99,7 +100,7 @@ public class Main {
 
         JPanel painel = new JPanel(new FlowLayout());
 
-        JTextField txtNome = new JTextField(20);
+        JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20);
         JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
 
@@ -137,7 +138,7 @@ public class Main {
         btnSalvar.addActionListener(e -> {
 
             String nome = txtNome.getText();
-            String cpf = txtCPFFinal.getText().replace("_", "").trim();
+            String CPF = txtCPFFinal.getText().replace("_", "").trim();
             String dataNasc = txtDataFinal.getText().replace("_", "").trim();
 
             if(nome.isEmpty()) {
@@ -147,7 +148,7 @@ public class Main {
 
             }
 
-            if(cpf.length() < 14) {
+            if(CPF.length() < 14) {
 
                 JOptionPane.showMessageDialog(painel, "Preencha o CPF completo!");
                 return;
@@ -190,7 +191,7 @@ public class Main {
 
             try {
 
-                Aluno aluno = new Aluno(nome, cpf, dataNasc, id1, id2);
+                Aluno aluno = new Aluno(nome, CPF, dataNasc, id1, id2);
                 alunoDao.inserir(aluno);
 
                 limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboCadResp1, comboCadResp2, null);
@@ -235,9 +236,10 @@ public class Main {
 
         JPanel painel = new JPanel(new FlowLayout());
 
-        JTextField txtNome = new JTextField(20);
+        JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20);
         JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
+        JtextFieldSomenteNumeros txtRG = new JtextFieldSomenteNumeros(12, 12);
 
         try {
 
@@ -265,8 +267,9 @@ public class Main {
         btnSalvar.addActionListener(e -> {
 
             String nome = txtNome.getText();
-            String cpf = txtCPFFinal.getText().replace("_", "").trim();
+            String CPF = txtCPFFinal.getText().replace("_", "").trim();
             String dataNasc = txtDataFinal.getText().replace("_", "").trim();
+            String RG = txtRG.getText();
 
             if(nome.isEmpty()) {
 
@@ -275,7 +278,7 @@ public class Main {
 
             }
 
-            if(cpf.length() < 14) {
+            if(CPF.length() < 14) {
 
                 JOptionPane.showMessageDialog(painel, "Preencha o CPF completo!");
                 return;
@@ -298,10 +301,10 @@ public class Main {
 
             try {
 
-                Responsavel resp = new Responsavel(nome, cpf, dataNasc);
+                Responsavel resp = new Responsavel(nome, CPF, dataNasc, RG);
                 respDao.inserir(resp);
 
-                limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, null);
+                limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, txtRG, null);
 
                 JOptionPane.showMessageDialog(painel, "Responsável salvo com sucesso!");
 
@@ -331,6 +334,7 @@ public class Main {
         painel.add(new JLabel("Nome: ")); painel.add(txtNome);
         painel.add(new JLabel("CPF: ")); painel.add(txtCPFFinal);
         painel.add(new JLabel("Nascimento: ")); painel.add(txtDataFinal);
+        painel.add(new JLabel("RG: ")); painel.add(txtRG);
         painel.add(btnSalvar);
 
         return painel;
@@ -481,7 +485,7 @@ public class Main {
 
         JTextField txtId = new JTextField(2);
         txtId.setEditable(false);
-        JTextField txtNome = new JTextField(20);
+        JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20);
 
         JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
@@ -694,10 +698,12 @@ public class Main {
         JPanel painelEditor = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JTextField txtId = new JTextField(2);
         txtId.setEditable(false);
-        JTextField txtNome = new JTextField(20);
+        JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20);
 
         JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
+
+        JtextFieldSomenteNumeros txtRG = new JtextFieldSomenteNumeros(12, 12);
 
         try {
 
@@ -728,6 +734,7 @@ public class Main {
         painelEditor.add(new JLabel("Nome:")); painelEditor.add(txtNome);
         painelEditor.add(new JLabel("CPF:")); painelEditor.add(txtCPFFinal);
         painelEditor.add(new JLabel("Data de Nascimento:")); painelEditor.add(txtDataFinal);
+        painelEditor.add(new JLabel("RG:")); painelEditor.add(txtRG);
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
 
@@ -752,6 +759,7 @@ public class Main {
                     txtNome.setText(r.getNome());
                     txtCPFFinal.setText(r.getCPF());
                     txtDataFinal.setText(r.getDataNascimento());
+                    txtRG.setText(String.valueOf(r.getRG()));
 
                 }
 
@@ -773,6 +781,7 @@ public class Main {
             String novoNome = txtNome.getText().trim();
             String novoCPF = txtCPFFinal.getText().replace("_", "").trim();
             String novaData = txtDataFinal.getText().replace("_", "").trim();
+            String novoRG = txtRG.getText().trim();
 
             if (novoNome.isEmpty()) {
 
@@ -795,7 +804,7 @@ public class Main {
 
             }
 
-            Responsavel respEditado = new Responsavel(novoNome, novoCPF, novaData);
+            Responsavel respEditado = new Responsavel(novoNome, novoCPF, novaData, novoRG);
             respEditado.setId(Integer.parseInt(idTexto));
 
             try {
@@ -870,7 +879,7 @@ public class Main {
 
                     respDao.deletar(Integer.parseInt(txtId.getText()));
                     preencherTabRespReduzida(respDao, modeloReduzido);
-                    limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, txtId);
+                    limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, txtRG, txtId);
                     JOptionPane.showMessageDialog(painelPrincipal, "Responsável deletado com sucesso!");
 
                 } catch (SQLException ex) {
@@ -1217,8 +1226,6 @@ public class Main {
 
     private static void destrancarSistema() {
 
-        userLogado = true;
-
         cardLayout.show(painelContainer, "SISTEMA");
 
         JOptionPane.showMessageDialog(null, "Acesso concedido!");
@@ -1329,11 +1336,12 @@ public class Main {
 
     }
 
-    private static void limparCamposResponsavel(JTextField txtNome, JFormattedTextField txtCPF, JFormattedTextField txtData, JTextField txtId) {
+    private static void limparCamposResponsavel(JTextField txtNome, JFormattedTextField txtCPF, JFormattedTextField txtData, JtextFieldSomenteNumeros txtRG, JTextField txtId) {
 
         txtNome.setText("");
         txtCPF.setValue(null);
         txtData.setValue(null);
+        txtRG.setText("");
         if(txtId != null) txtId.setText("");
 
     }
@@ -1541,7 +1549,7 @@ public class Main {
             pw.println("************************************************************");
             pw.println();
 
-            pw.println("Nome;CPF;Data Nascimento;Alunos Vinculados");
+            pw.println("Nome;CPF;Data Nascimento;RG;Alunos Vinculados");
 
             for (Responsavel r : respDao.listar()) {
 
@@ -1549,9 +1557,123 @@ public class Main {
                 String nomesAlunos = String.join(", ", alunos);
                 if (nomesAlunos.isEmpty()) nomesAlunos = "Nenhum";
 
-                pw.printf("%s;%s;%s;%s;\n", r.getNome(), r.getCPF(), r.getDataNascimento(), nomesAlunos);
+                pw.printf("%s;%s;%s;%s;%s\n", r.getNome(), r.getCPF(), r.getDataNascimento(), r.getRG(), nomesAlunos);
 
             }
+
+        }
+
+    }
+
+    public static final class JtextFieldSomenteNumeros extends JTextField {
+
+        private int maximoCaracteres = -1;
+
+        public JtextFieldSomenteNumeros(int columns) {
+
+            super(columns);
+            configurarEvento();
+
+        }
+
+        public JtextFieldSomenteNumeros(int columns, int maximo) {
+
+            super(columns);
+            this.maximoCaracteres = maximo;
+            configurarEvento();
+
+        }
+
+        private void configurarEvento() {
+
+            addKeyListener(new KeyAdapter() {
+
+                @Override
+                public void keyTyped(KeyEvent evt) {
+
+                    char c = evt.getKeyChar();
+
+                    if (!Character.isDigit(c) && c != '.' && c != '-') {
+
+                        evt.consume();
+                        return;
+
+                    }
+
+                    if (maximoCaracteres != -1 && getText().length() >= maximoCaracteres) {
+
+                        evt.consume();
+
+                    }
+
+                }
+
+            });
+
+        }
+
+        public int getMaximoCaracteres() { return maximoCaracteres; }
+
+        public void setMaximoCaracteres(int maximoCaracteres) {
+
+            this.maximoCaracteres = maximoCaracteres;
+
+        }
+
+    }
+
+    public static final class JtextFieldSomenteLetras extends JTextField {
+
+        private int maximoCaracteres = -1;
+
+        public JtextFieldSomenteLetras(int columns) {
+
+            super(columns);
+            configurarEvento();
+
+        }
+
+        public JtextFieldSomenteLetras(int columns, int maximo) {
+
+            super(columns);
+            this.maximoCaracteres = maximo;
+            configurarEvento();
+
+        }
+
+        private void configurarEvento() {
+
+            addKeyListener(new KeyAdapter() {
+
+                @Override
+                public void keyTyped(KeyEvent evt) {
+
+                    char c = evt.getKeyChar();
+
+                    if (!Character.isLetter(c) && !Character.isSpaceChar(c)) {
+
+                        evt.consume();
+                        return;
+
+                    }
+
+                    if (maximoCaracteres != -1 && getText().length() >= maximoCaracteres) {
+
+                        evt.consume();
+
+                    }
+
+                }
+
+            });
+
+        }
+
+        public int getMaximoCaracteres() { return maximoCaracteres; }
+
+        public void setMaximoCaracteres(int maximo) {
+
+            this.maximoCaracteres = maximo;
 
         }
 
