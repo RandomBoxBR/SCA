@@ -24,66 +24,48 @@ public class Aluno {
     }
 
     //Getters e Setters
-    public int getId() {
+    public int getId() { return id; }
 
-        return id;
-
-    }
     public void setId(int id) {
 
         this.id = id;
 
     }
 
-    public String getNome() {
+    public String getNome() { return nome; }
 
-        return nome;
-
-    }
     public void setNome(String nome) {
 
         this.nome = nome;
 
     }
 
-    public String getCPF() {
+    public String getCPF() { return CPF; }
 
-        return CPF;
-
-    }
     public void setCPF(String CPF) {
 
         this.CPF = CPF;
 
     }
 
-    public String getDataNascimento() {
+    public String getDataNascimento() { return dataNascimento; }
 
-        return dataNascimento;
-
-    }
     public void setDataNascimento(String dataNascimento) {
 
         this.dataNascimento = dataNascimento;
 
     }
 
-    public int getIdResponsavel1() {
+    public int getIdResponsavel1() { return idResponsavel1; }
 
-        return idResponsavel1;
-
-    }
     public void setIdResponsavel1(int idResp1) {
 
         this.idResponsavel1 = idResp1;
 
     }
 
-    public int getIdResponsavel2() {
+    public int getIdResponsavel2() { return idResponsavel2; }
 
-        return idResponsavel2;
-
-    }
     public void setIdResponsavel2(int idResp2) {
 
         this.idResponsavel2 = idResp2;
