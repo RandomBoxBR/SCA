@@ -18,7 +18,8 @@ public class Main {
     private static JComboBox<ResponsavelComboItem> comboEditResp1, comboEditResp2;
     private static boolean userLogado = false;
     private static JTabbedPane menuAbas;
-    private static JPanel abaCadastro, abaEditar;
+    private static CardLayout cardLayout = new CardLayout();
+    private static JPanel painelContainer = new JPanel(cardLayout);
 
     public static void main(String[] args) {
 
@@ -26,72 +27,20 @@ public class Main {
 
         SwingUtilities.invokeLater(() -> {
 
-            AlunoDAO alunoDao = new AlunoDAO();
-            ResponsavelDAO respDao = new ResponsavelDAO();
-
             JFrame frame = new JFrame("SCA - Sistema de Cadastro Asdown");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setPreferredSize(new Dimension(800, 600));
+            frame.setPreferredSize(new Dimension(900, 700));
 
-            menuAbas = new JTabbedPane();
+            JPanel telaLogin = criarPainelLogin(frame);
+            JPanel telaSistema = interfaceSistema();
 
-            String[] colunasAl = {"Nº", "Nome", "CPF", "Data de Nascimento", "1º Responsável", "2º Responsável"};
-            DefaultTableModel modeloAl = new DefaultTableModel(colunasAl, 0);
-            String[] colunasResp = {"Nº", "Nome", "CPF", "Data de Nascimento", "Alunos Vinculados"};
-            DefaultTableModel modeloResp = new DefaultTableModel(colunasResp, 0);
-            String[] colunasReduzidas = {"ID", "Nome"};
-            DefaultTableModel modeloAlReduzido = new DefaultTableModel(colunasReduzidas, 0);
-            DefaultTableModel modeloRespReduzido = new DefaultTableModel(colunasReduzidas, 0);
+            painelContainer.add(telaLogin, "LOGIN");
+            painelContainer.add(telaSistema, "SISTEMA");
 
-            abaCadastro = criarPainelCadastro(alunoDao, respDao);
-            abaEditar = criarPainelEditar(alunoDao, respDao, modeloAlReduzido, modeloRespReduzido);
+            frame.add(painelContainer);
 
-            menuAbas.addTab("Listar", criarPainelListagem(modeloAl, modeloResp));
-            preencherTabAluno(alunoDao,respDao, modeloAl);
-            preencherTabResp(respDao, alunoDao, modeloResp);
-            menuAbas.addTab("Relatório", criarPainelRelatorio(alunoDao, respDao));
-            menuAbas.addTab("Usuários", criarPainelLogin(frame, new UserDAO()));
+            cardLayout.show(painelContainer, "LOGIN");
 
-            menuAbas.addChangeListener(e -> {
-                int aba = menuAbas.getSelectedIndex();
-                if (aba == -1) return;
-                String titulo = menuAbas.getTitleAt(aba);
-
-                if (titulo.equals("Cadastrar")) {
-
-                    if (comboCadResp1 != null && comboCadResp2 != null) {
-
-                        atualizarCombosResponsaveis(respDao, comboCadResp1, comboCadResp2);
-                        System.out.println("Combos de responsáveis atualizados!");
-
-                    }
-
-                } else if (titulo.equals("Listar")) {
-
-                    preencherTabAluno(alunoDao,respDao, modeloAl);
-                    preencherTabResp(respDao, alunoDao, modeloResp);
-
-                    System.out.println("Tabela atualizada!");
-
-                } else if (titulo.equals("Editar/Excluir")) {
-
-                    if (comboEditResp1 != null && comboEditResp2 != null) {
-
-                        atualizarCombosResponsaveis(respDao, comboEditResp1, comboEditResp2);
-                        System.out.println("Combos de responsáveis atualizados!");
-
-                    }
-
-                    preencherTabAlunoReduzida(alunoDao, modeloAlReduzido);
-                    preencherTabRespReduzida(respDao, modeloRespReduzido);
-
-                    System.out.println("Tabela atualizada!");
-
-                }
-
-            });
-
-            frame.add(menuAbas);
             frame.pack();
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
@@ -981,55 +930,49 @@ public class Main {
 
     }
 
-    private static JPanel criarPainelLogin(JFrame frame, UserDAO userDao) {
+    private static JPanel criarPainelLogin(JFrame frame) {
 
-        JPanel painelContainer = new JPanel(new CardLayout());
-
+        UserDAO userDao = new UserDAO();
         JPanel telaLogin = new JPanel(new GridBagLayout());
         JTextField txtUser = new JTextField(15);
         JPasswordField txtPass = new JPasswordField(15);
         JButton btnLogin = new JButton("Login");
 
-        GridBagConstraints gbcLogin = new GridBagConstraints();
-        gbcLogin.insets = new Insets(10, 10, 10, 10);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
         JLabel lblTitulo = new JLabel("Tela de Login", JLabel.CENTER);
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 18));
-        gbcLogin.gridx = 0;
-        gbcLogin.gridy = 0;
-        gbcLogin.gridwidth = 2;
-        gbcLogin.anchor = GridBagConstraints.CENTER;
-        telaLogin.add(lblTitulo, gbcLogin);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        telaLogin.add(lblTitulo, gbc);
 
-        gbcLogin.gridwidth = 1;
-        gbcLogin.anchor = GridBagConstraints.WEST;
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
 
-        gbcLogin.gridx = 0; gbcLogin.gridy = 1;
-        telaLogin.add(new JLabel("Usuário:"), gbcLogin);
+        gbc.gridx = 0; gbc.gridy = 1;
+        telaLogin.add(new JLabel("Usuário:"), gbc);
 
-        gbcLogin.gridx = 1; gbcLogin.gridy = 1;
-        telaLogin.add(txtUser, gbcLogin);
+        gbc.gridx = 1; gbc.gridy = 1;
+        telaLogin.add(txtUser, gbc);
 
-        gbcLogin.gridx = 0; gbcLogin.gridy = 2;
-        telaLogin.add(new JLabel("Senha:"), gbcLogin);
+        gbc.gridx = 0; gbc.gridy = 2;
+        telaLogin.add(new JLabel("Senha:"), gbc);
 
-        gbcLogin.gridx = 1; gbcLogin.gridy = 2;
-        telaLogin.add(txtPass, gbcLogin);
+        gbc.gridx = 1; gbc.gridy = 2;
+        telaLogin.add(txtPass, gbc);
 
-        gbcLogin.gridx = 0; gbcLogin.gridy = 3;
-        gbcLogin.gridwidth = 2;
-        gbcLogin.anchor = GridBagConstraints.CENTER;
-        telaLogin.add(btnLogin, gbcLogin);
+        gbc.gridx = 0; gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        telaLogin.add(btnLogin, gbc);
 
         btnLogin.addActionListener(e -> {
 
             if (userDao.validarLogin(txtUser.getText(), new String(txtPass.getPassword()))) {
 
-                userLogado = true;
                 destrancarSistema();
-
-                ((CardLayout)painelContainer.getLayout()).show(painelContainer, "gerenciamento");
-
-                menuAbas.setSelectedIndex(0);
 
             } else {
 
@@ -1039,6 +982,13 @@ public class Main {
 
         });
 
+        return telaLogin;
+
+    }
+
+    private static JPanel criarPainelUsuarios() {
+
+        UserDAO userDao = new UserDAO();
         JPanel telaUsers = new JPanel(new BorderLayout(10, 10));
         telaUsers.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -1194,26 +1144,84 @@ public class Main {
 
         });
 
-        painelContainer.add(telaLogin, "login");
-        painelContainer.add(telaUsers, "gerenciamento");
+        return telaUsers;
 
-        return painelContainer;
+    }
+
+    private static JPanel interfaceSistema() {
+
+        JPanel painelSistema = new JPanel(new BorderLayout());
+
+        AlunoDAO alunoDao = new AlunoDAO();
+        ResponsavelDAO respDao = new ResponsavelDAO();
+
+        menuAbas = new JTabbedPane();
+
+        String[] colunasAl = {"Nº", "Nome", "CPF", "Data de Nascimento", "1º Responsável", "2º Responsável"};
+        DefaultTableModel modeloAl = new DefaultTableModel(colunasAl, 0);
+        String[] colunasResp = {"Nº", "Nome", "CPF", "Data de Nascimento", "Alunos Vinculados"};
+        DefaultTableModel modeloResp = new DefaultTableModel(colunasResp, 0);
+        String[] colunasReduzidas = {"ID", "Nome"};
+        DefaultTableModel modeloAlReduzido = new DefaultTableModel(colunasReduzidas, 0);
+        DefaultTableModel modeloRespReduzido = new DefaultTableModel(colunasReduzidas, 0);
+
+        menuAbas.addTab("Cadastrar", criarPainelCadastro(alunoDao, respDao));
+        menuAbas.addTab("Listar", criarPainelListagem(modeloAl, modeloResp));
+        menuAbas.addTab("Editar/Excluir", criarPainelEditar(alunoDao, respDao, modeloAlReduzido, modeloRespReduzido));
+        menuAbas.addTab("Relatório", criarPainelRelatorio(alunoDao, respDao));
+        menuAbas.addTab("Usuários", criarPainelUsuarios());
+
+        menuAbas.addChangeListener(e -> {
+            int aba = menuAbas.getSelectedIndex();
+            if (aba == -1) return;
+            String titulo = menuAbas.getTitleAt(aba);
+
+            if (titulo.equals("Cadastrar")) {
+
+                if (comboCadResp1 != null && comboCadResp2 != null) {
+
+                    atualizarCombosResponsaveis(respDao, comboCadResp1, comboCadResp2);
+                    System.out.println("Combos de responsáveis atualizados!");
+
+                }
+
+            } else if (titulo.equals("Listar")) {
+
+                preencherTabAluno(alunoDao,respDao, modeloAl);
+                preencherTabResp(respDao, alunoDao, modeloResp);
+
+                System.out.println("Tabela atualizada!");
+
+            } else if (titulo.equals("Editar/Excluir")) {
+
+                if (comboEditResp1 != null && comboEditResp2 != null) {
+
+                    atualizarCombosResponsaveis(respDao, comboEditResp1, comboEditResp2);
+                    System.out.println("Combos de responsáveis atualizados!");
+
+                }
+
+                preencherTabAlunoReduzida(alunoDao, modeloAlReduzido);
+                preencherTabRespReduzida(respDao, modeloRespReduzido);
+
+                System.out.println("Tabela atualizada!");
+
+            }
+
+        });
+
+        painelSistema.add(menuAbas, BorderLayout.CENTER);
+        return painelSistema;
 
     }
 
     private static void destrancarSistema() {
 
-        if (menuAbas.getTabCount() < 5) {
+        userLogado = true;
 
-            menuAbas.insertTab("Cadastrar", null, abaCadastro, null, 0);
-            menuAbas.insertTab("Editar/Excluir", null, abaEditar, null, 2);
+        cardLayout.show(painelContainer, "SISTEMA");
 
-            menuAbas.revalidate();
-            menuAbas.repaint();
-
-            JOptionPane.showMessageDialog(null, "Acesso concedido!");
-
-        }
+        JOptionPane.showMessageDialog(null, "Acesso concedido!");
 
     }
 

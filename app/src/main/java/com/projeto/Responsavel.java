@@ -6,6 +6,7 @@ public class Responsavel {
     private String nome;
     private String CPF;
     private String dataNascimento; // DD/MM/AAAA para a tela e YYYY/MM/DD para o banco
+    //private String RG;
 
     public Responsavel() {
 
@@ -19,49 +20,44 @@ public class Responsavel {
 
     }
 
-    //Getters e Setters
-    public int getId() {
+    public int getId() { return id; }
 
-        return id;
-
-    }
     public void setId(int id) {
 
         this.id = id;
 
     }
 
-    public String getNome() {
+    public String getNome() { return nome; }
 
-        return nome;
-
-    }
     public void setNome(String nome) {
 
         this.nome = nome;
 
     }
 
-    public String getCPF() {
+    public String getCPF() { return CPF; }
 
-        return CPF;
-
-    }
     public void setCPF(String CPF) {
 
         this.CPF = CPF;
 
     }
 
-    public String getDataNascimento() {
+    public String getDataNascimento() { return dataNascimento; }
 
-        return dataNascimento;
-
-    }
     public void setDataNascimento(String dataNascimento) {
 
         this.dataNascimento = dataNascimento;
 
     }
+
+    //public String getRG() { return RG; }
+
+    //public void setRG(String RG) {
+
+    //    this.RG = RG;
+
+    //}
 
 }
