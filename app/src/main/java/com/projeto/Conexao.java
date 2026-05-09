@@ -31,7 +31,9 @@ public class Conexao {
                     nome  TEXT   NOT NULL,
                     cpf   TEXT   UNIQUE NOT NULL,
                     data_nascimento TEXT NOT NULL,
-                    rg    TEXT
+                    rg    TEXT,
+                    estado_civil   TEXT,
+                    celular   TEXT   UNIQUE NOT NULL
                 );
             """);
 

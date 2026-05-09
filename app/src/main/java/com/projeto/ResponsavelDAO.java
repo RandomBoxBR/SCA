@@ -8,7 +8,7 @@ public class ResponsavelDAO {
 
     public void inserir(Responsavel responsavel) throws SQLException {
 
-        String sql = "INSERT INTO responsavel(nome, cpf, data_nascimento, rg) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO responsavel(nome, cpf, data_nascimento, rg, estado_civil, celular) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -17,6 +17,8 @@ public class ResponsavelDAO {
             stmt.setString(2, responsavel.getCPF());
             stmt.setString(3, responsavel.getDataNascimento());
             stmt.setString(4, responsavel.getRG());
+            stmt.setString(5, responsavel.getEstCivil());
+            stmt.setString(6, responsavel.getCelular());
             stmt.executeUpdate();
             System.out.println("Responsavel inserido com sucesso.");
 
@@ -41,6 +43,8 @@ public class ResponsavelDAO {
                 r.setCPF(rs.getString("cpf"));
                 r.setDataNascimento(rs.getString("data_nascimento"));
                 r.setRG(rs.getString("rg"));
+                r.setEstCivil(rs.getString("estado_civil"));
+                r.setCelular(rs.getString("celular"));
                 lista.add(r);
 
             }
@@ -57,7 +61,7 @@ public class ResponsavelDAO {
 
     public void atualizar (Responsavel responsavel) throws SQLException {
 
-        String sql = "UPDATE responsavel SET nome = ?, cpf = ?, data_nascimento = ?, rg = ? WHERE id = ?";
+        String sql = "UPDATE responsavel SET nome = ?, cpf = ?, data_nascimento = ?, rg = ?, estado_civil = ?, celular = ? WHERE id = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -66,7 +70,9 @@ public class ResponsavelDAO {
             stmt.setString(2, responsavel.getCPF());
             stmt.setString(3, responsavel.getDataNascimento());
             stmt.setString(4, responsavel.getRG());
-            stmt.setInt(5, responsavel.getId());
+            stmt.setString(5, responsavel.getEstCivil());
+            stmt.setString(6, responsavel.getCelular());
+            stmt.setInt(7, responsavel.getId());
             stmt.executeUpdate();
             System.out.println("Responsavel atualizado com sucesso.");
 
@@ -105,7 +111,9 @@ public class ResponsavelDAO {
                         rs.getString("nome"),
                         rs.getString("cpf"),
                         rs.getString("data_nascimento"),
-                        rs.getString("rg")
+                        rs.getString("rg"),
+                        rs.getString("estado_civil"),
+                        rs.getString("celular")
                 );
                 r.setId(rs.getInt("id"));
 

@@ -236,10 +236,12 @@ public class Main {
 
         JPanel painel = new JPanel(new FlowLayout());
 
-        JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20);
+        JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20, 100);
         JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
         JtextFieldSomenteNumeros txtRG = new JtextFieldSomenteNumeros(12, 12);
+        JtextFieldSomenteLetras txtCivil = new JtextFieldSomenteLetras(10, 40);
+        JFormattedTextField txtCel = null;
 
         try {
 
@@ -259,8 +261,18 @@ public class Main {
 
         } catch (Exception e) { e.printStackTrace(); }
 
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("(##) 9####-####");
+            mascara.setPlaceholderCharacter('_');
+            txtCel = new JFormattedTextField(mascara);
+            txtCel.setColumns(14);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
         final JFormattedTextField txtCPFFinal = txtCPF;
         final JFormattedTextField txtDataFinal = txtData;
+        final JFormattedTextField txtCelFinal = txtCel;
 
         JButton btnSalvar = new JButton("Salvar");
 
@@ -270,6 +282,8 @@ public class Main {
             String CPF = txtCPFFinal.getText().replace("_", "").trim();
             String dataNasc = txtDataFinal.getText().replace("_", "").trim();
             String RG = txtRG.getText();
+            String civil = txtCivil.getText();
+            String celular = txtCelFinal.getText().replace("_", "").trim();
 
             if(nome.isEmpty()) {
 
@@ -299,22 +313,36 @@ public class Main {
 
             }
 
+            if(celular.length() < 15) {
+
+                JOptionPane.showMessageDialog(painel, "Preencha o número de celular completo!");
+                return;
+
+            }
+
             try {
 
-                Responsavel resp = new Responsavel(nome, CPF, dataNasc, RG);
+                Responsavel resp = new Responsavel(nome, CPF, dataNasc, RG, civil, celular);
                 respDao.inserir(resp);
 
-                limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, txtRG, null);
+                limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, txtRG, txtCivil, txtCelFinal, null);
 
                 JOptionPane.showMessageDialog(painel, "Responsável salvo com sucesso!");
 
             } catch (SQLException ex) {
 
-                if (ex.getMessage().contains("UNIQUE constraint failed: responsavel.cpf")) {
+                if (ex.getMessage().toLowerCase().contains("UNIQUE constraint failed: responsavel.cpf")) {
 
                     JOptionPane.showMessageDialog(painel,
                             "Já existe alguém cadastrado com este CPF!",
                             "CPF Duplicado",
+                            JOptionPane.ERROR_MESSAGE);
+
+                } else if (ex.getMessage().toLowerCase().contains("UNIQUE constraint failed: responsavel.celular")) {
+
+                    JOptionPane.showMessageDialog(painel,
+                            "Já existe alguém cadastrado com este número de celular!",
+                            "Celular Duplicado",
                             JOptionPane.ERROR_MESSAGE);
 
                 } else {
@@ -335,6 +363,8 @@ public class Main {
         painel.add(new JLabel("CPF: ")); painel.add(txtCPFFinal);
         painel.add(new JLabel("Nascimento: ")); painel.add(txtDataFinal);
         painel.add(new JLabel("RG: ")); painel.add(txtRG);
+        painel.add(new JLabel("Estado Civil: ")); painel.add(txtCivil);
+        painel.add(new JLabel("Número de Cel.")); painel.add(txtCelFinal);
         painel.add(btnSalvar);
 
         return painel;
@@ -698,12 +728,15 @@ public class Main {
         JPanel painelEditor = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JTextField txtId = new JTextField(2);
         txtId.setEditable(false);
-        JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20);
+        JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20, 100);
 
         JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
 
         JtextFieldSomenteNumeros txtRG = new JtextFieldSomenteNumeros(12, 12);
+        JtextFieldSomenteLetras txtCivil = new JtextFieldSomenteLetras(10, 40);
+
+        JFormattedTextField txtCel = null;
 
         try {
 
@@ -723,18 +756,30 @@ public class Main {
 
         } catch (Exception e)  { e.printStackTrace(); }
 
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("(##) 9####-####");
+            mascara.setPlaceholderCharacter('_');
+            txtCel = new JFormattedTextField(mascara);
+            txtCel.setColumns(14);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
         final JFormattedTextField txtCPFFinal = txtCPF;
         final JFormattedTextField txtDataFinal = txtData;
+        final JFormattedTextField txtCelFinal = txtCel;
 
         JButton btnEditar = new JButton("Salvar Alterações");
         JButton btnExcluir = new JButton("Excluir Responsável");
         btnExcluir.setBackground(new Color(255, 150, 150));
 
-        painelEditor.add(new JLabel("ID:")); painelEditor.add(txtId);
-        painelEditor.add(new JLabel("Nome:")); painelEditor.add(txtNome);
-        painelEditor.add(new JLabel("CPF:")); painelEditor.add(txtCPFFinal);
-        painelEditor.add(new JLabel("Data de Nascimento:")); painelEditor.add(txtDataFinal);
-        painelEditor.add(new JLabel("RG:")); painelEditor.add(txtRG);
+        painelEditor.add(new JLabel("ID: ")); painelEditor.add(txtId);
+        painelEditor.add(new JLabel("Nome: ")); painelEditor.add(txtNome);
+        painelEditor.add(new JLabel("CPF: ")); painelEditor.add(txtCPFFinal);
+        painelEditor.add(new JLabel("Data de Nascimento: ")); painelEditor.add(txtDataFinal);
+        painelEditor.add(new JLabel("RG: ")); painelEditor.add(txtRG);
+        painelEditor.add(new JLabel("Estado Civil: ")); painelEditor.add(txtCivil);
+        painelEditor.add(new JLabel("Número de Cel.")); painelEditor.add(txtCelFinal);
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
 
@@ -760,6 +805,8 @@ public class Main {
                     txtCPFFinal.setText(r.getCPF());
                     txtDataFinal.setText(r.getDataNascimento());
                     txtRG.setText(String.valueOf(r.getRG()));
+                    txtCivil.setText(String.valueOf(r.getEstCivil()));
+                    txtCelFinal.setText(r.getCelular());
 
                 }
 
@@ -782,6 +829,8 @@ public class Main {
             String novoCPF = txtCPFFinal.getText().replace("_", "").trim();
             String novaData = txtDataFinal.getText().replace("_", "").trim();
             String novoRG = txtRG.getText().trim();
+            String novoCivil = txtCivil.getText().trim();
+            String novoCelular = txtCelFinal.getText().replace("_", "").trim();
 
             if (novoNome.isEmpty()) {
 
@@ -804,7 +853,14 @@ public class Main {
 
             }
 
-            Responsavel respEditado = new Responsavel(novoNome, novoCPF, novaData, novoRG);
+            if(novoCelular.length() < 15) {
+
+                JOptionPane.showMessageDialog(painelPrincipal, "Número de celular inválido!");
+                return;
+
+            }
+
+            Responsavel respEditado = new Responsavel(novoNome, novoCPF, novaData, novoRG, novoCivil, novoCelular);
             respEditado.setId(Integer.parseInt(idTexto));
 
             try {
@@ -817,11 +873,18 @@ public class Main {
 
             } catch (SQLException ex) {
 
-                if (ex.getMessage().contains("UNIQUE constraint failed: responsavel.cpf")) {
+                if (ex.getMessage().toLowerCase().contains("UNIQUE constraint failed: responsavel.cpf")) {
 
                     JOptionPane.showMessageDialog(painelPrincipal,
                             "Já existe alguém cadastrado com este CPF!",
                             "CPF Duplicado",
+                            JOptionPane.ERROR_MESSAGE);
+
+                } else if (ex.getMessage().toLowerCase().contains("UNIQUE constraint failed: responsavel.celular")) {
+
+                    JOptionPane.showMessageDialog(painelPrincipal,
+                            "Já existe alguém cadastrado com este número de celular!",
+                            "Celular Duplicado",
                             JOptionPane.ERROR_MESSAGE);
 
                 } else {
@@ -879,7 +942,7 @@ public class Main {
 
                     respDao.deletar(Integer.parseInt(txtId.getText()));
                     preencherTabRespReduzida(respDao, modeloReduzido);
-                    limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, txtRG, txtId);
+                    limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, txtRG, txtCivil, txtCelFinal, txtId);
                     JOptionPane.showMessageDialog(painelPrincipal, "Responsável deletado com sucesso!");
 
                 } catch (SQLException ex) {
@@ -1336,12 +1399,14 @@ public class Main {
 
     }
 
-    private static void limparCamposResponsavel(JTextField txtNome, JFormattedTextField txtCPF, JFormattedTextField txtData, JtextFieldSomenteNumeros txtRG, JTextField txtId) {
+    private static void limparCamposResponsavel(JtextFieldSomenteLetras txtNome, JFormattedTextField txtCPF, JFormattedTextField txtData, JtextFieldSomenteNumeros txtRG, JtextFieldSomenteLetras txtCivil, JFormattedTextField txtCel, JTextField txtId) {
 
         txtNome.setText("");
         txtCPF.setValue(null);
         txtData.setValue(null);
         txtRG.setText("");
+        txtCivil.setText("");
+        txtCel.setValue(null);
         if(txtId != null) txtId.setText("");
 
     }
@@ -1549,7 +1614,7 @@ public class Main {
             pw.println("************************************************************");
             pw.println();
 
-            pw.println("Nome;CPF;Data Nascimento;RG;Alunos Vinculados");
+            pw.println("Nome;CPF;Data Nascimento;RG;Estado Civil;Número de Celular;Alunos Vinculados");
 
             for (Responsavel r : respDao.listar()) {
 
@@ -1557,7 +1622,7 @@ public class Main {
                 String nomesAlunos = String.join(", ", alunos);
                 if (nomesAlunos.isEmpty()) nomesAlunos = "Nenhum";
 
-                pw.printf("%s;%s;%s;%s;%s\n", r.getNome(), r.getCPF(), r.getDataNascimento(), r.getRG(), nomesAlunos);
+                pw.printf("%s;%s;%s;%s;%s;%s;%s\n", r.getNome(), r.getCPF(), r.getDataNascimento(), r.getRG(), r.getEstCivil(), r.getCelular(), nomesAlunos);
 
             }
 
