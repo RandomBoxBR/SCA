@@ -8,7 +8,8 @@ public class ResponsavelDAO {
 
     public void inserir(Responsavel responsavel) throws SQLException {
 
-        String sql = "INSERT INTO responsavel(nome, cpf, data_nascimento, rg, estado_civil, celular) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO responsavel(nome, cpf, data_nascimento, rg, estado_civil, celular, email, profissao, " +
+                "local_trabalho) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -19,6 +20,9 @@ public class ResponsavelDAO {
             stmt.setString(4, responsavel.getRG());
             stmt.setString(5, responsavel.getEstCivil());
             stmt.setString(6, responsavel.getCelular());
+            stmt.setString(7, responsavel.getEmail());
+            stmt.setString(8, responsavel.getProfissao());
+            stmt.setString(9, responsavel.getLocTrabalho());
             stmt.executeUpdate();
             System.out.println("Responsavel inserido com sucesso.");
 
@@ -45,6 +49,9 @@ public class ResponsavelDAO {
                 r.setRG(rs.getString("rg"));
                 r.setEstCivil(rs.getString("estado_civil"));
                 r.setCelular(rs.getString("celular"));
+                r.setEmail(rs.getString("email"));
+                r.setProfissao(rs.getString("profissao"));
+                r.setLocTrabalho(rs.getString("local_trabalho"));
                 lista.add(r);
 
             }
@@ -61,7 +68,8 @@ public class ResponsavelDAO {
 
     public void atualizar (Responsavel responsavel) throws SQLException {
 
-        String sql = "UPDATE responsavel SET nome = ?, cpf = ?, data_nascimento = ?, rg = ?, estado_civil = ?, celular = ? WHERE id = ?";
+        String sql = "UPDATE responsavel SET nome = ?, cpf = ?, data_nascimento = ?, rg = ?, estado_civil = ?, celular = ?, " +
+                "email = ?, profissao = ?, local_trabalho = ? WHERE id = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -72,7 +80,10 @@ public class ResponsavelDAO {
             stmt.setString(4, responsavel.getRG());
             stmt.setString(5, responsavel.getEstCivil());
             stmt.setString(6, responsavel.getCelular());
-            stmt.setInt(7, responsavel.getId());
+            stmt.setString(7, responsavel.getEmail());
+            stmt.setString(8, responsavel.getProfissao());
+            stmt.setString(9, responsavel.getLocTrabalho());
+            stmt.setInt(10, responsavel.getId());
             stmt.executeUpdate();
             System.out.println("Responsavel atualizado com sucesso.");
 
@@ -113,7 +124,10 @@ public class ResponsavelDAO {
                         rs.getString("data_nascimento"),
                         rs.getString("rg"),
                         rs.getString("estado_civil"),
-                        rs.getString("celular")
+                        rs.getString("celular"),
+                        rs.getString("email"),
+                        rs.getString("profissao"),
+                        rs.getString("local_trabalho")
                 );
                 r.setId(rs.getInt("id"));
 
