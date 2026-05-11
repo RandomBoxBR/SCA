@@ -33,7 +33,10 @@ public class Conexao {
                     data_nascimento TEXT NOT NULL,
                     rg    TEXT,
                     estado_civil   TEXT,
-                    celular   TEXT   UNIQUE NOT NULL
+                    celular   TEXT   UNIQUE NOT NULL,
+                    email   TEXT,
+                    profissao   TEXT,
+                    local_trabalho   TEXT
                 );
             """);
 

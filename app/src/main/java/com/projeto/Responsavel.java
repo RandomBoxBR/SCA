@@ -9,12 +9,15 @@ public class Responsavel {
     private String RG;
     private String estCivil;
     private String celular;
+    private String email;
+    private String profissao;
+    private String locTrabalho;
 
     public Responsavel() {
 
     }
 
-    public Responsavel(String nome, String CPF, String dataNascimento, String RG, String estCivil, String celular) {
+    public Responsavel(String nome, String CPF, String dataNascimento, String RG, String estCivil, String celular, String email, String profissao, String locTrabalho) {
 
         this.nome = nome;
         this.CPF = CPF;
@@ -22,6 +25,9 @@ public class Responsavel {
         this.RG = RG;
         this.estCivil = estCivil;
         this.celular = celular;
+        this.email = email;
+        this.profissao = profissao;
+        this.locTrabalho = locTrabalho;
 
     }
 
@@ -78,6 +84,30 @@ public class Responsavel {
     public void setCelular(String celular) {
 
         this.celular = celular;
+
+    }
+
+    public String getEmail() { return email; }
+
+    public void setEmail(String email) {
+
+        this.email = email;
+
+    }
+
+    public String getProfissao() { return profissao; }
+
+    public void setProfissao(String profissao) {
+
+        this.profissao = profissao;
+
+    }
+
+    public String getLocTrabalho() { return locTrabalho; }
+
+    public void setLocTrabalho(String locTrabalho) {
+
+        this.locTrabalho = locTrabalho;
 
     }
 
