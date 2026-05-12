@@ -100,7 +100,7 @@ public class Main {
 
         JPanel painel = new JPanel(new FlowLayout());
 
-        JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20);
+        JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20, 100);
         JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
 
@@ -245,13 +245,20 @@ public class Main {
         JtextFieldLimitado txtEmail = new JtextFieldLimitado(20, 50);
         JtextFieldSomenteLetras txtProf = new JtextFieldSomenteLetras(20, 40);
         JtextFieldLimitado txtTrab = new JtextFieldLimitado(20, 50);
+        JtextFieldLimitado txtEnder = new JtextFieldLimitado(25, 40);
+        JtextFieldSomenteLetras txtCid = new JtextFieldSomenteLetras(15, 40);
+        String[] ufs = {"GO", "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "MA", "MT", "MS", "MG", "PA", "PB",
+                "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"};
+        JComboBox<String> comboEstado = new JComboBox<>(ufs);
+        comboEstado.setBackground(Color.WHITE);
+        JFormattedTextField txtCep = null;
 
         try {
 
             MaskFormatter mascara = new MaskFormatter("###.###.###-##");
             mascara.setPlaceholderCharacter('_');
             txtCPF = new JFormattedTextField(mascara);
-            txtCPF.setColumns(9);
+            txtCPF.setColumns(14);
 
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -260,7 +267,7 @@ public class Main {
             MaskFormatter mascara = new MaskFormatter("##/##/####");
             mascara.setPlaceholderCharacter('_');
             txtData = new JFormattedTextField(mascara);
-            txtData.setColumns(6);
+            txtData.setColumns(10);
 
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -269,13 +276,23 @@ public class Main {
             MaskFormatter mascara = new MaskFormatter("(##) 9####-####");
             mascara.setPlaceholderCharacter('_');
             txtCel = new JFormattedTextField(mascara);
-            txtCel.setColumns(14);
+            txtCel.setColumns(15);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("#####-###");
+            mascara.setPlaceholderCharacter('_');
+            txtCep = new JFormattedTextField(mascara);
+            txtCep.setColumns(9);
 
         } catch (Exception e) { e.printStackTrace(); }
 
         final JFormattedTextField txtCPFFinal = txtCPF;
         final JFormattedTextField txtDataFinal = txtData;
         final JFormattedTextField txtCelFinal = txtCel;
+        final JFormattedTextField txtCepFinal = txtCep;
 
         JButton btnSalvar = new JButton("Salvar");
 
@@ -290,6 +307,10 @@ public class Main {
             String email = txtEmail.getText();
             String prof = txtProf.getText();
             String trab = txtTrab.getText();
+            String endereco = txtEnder.getText();
+            String cidade = txtCid.getText();
+            String estado = (String) comboEstado.getSelectedItem();
+            String cep = txtCepFinal.getText().replace("_", "").trim();
 
             if(nome.isEmpty()) {
 
@@ -326,13 +347,34 @@ public class Main {
 
             }
 
+            if(endereco.isEmpty()) {
+
+                JOptionPane.showMessageDialog(painel, "Preencha o endereço!");
+                return;
+
+            }
+
+            if(cidade.isEmpty()) {
+
+                JOptionPane.showMessageDialog(painel, "Preencha a cidade!");
+                return;
+
+            }
+
+            if(cep.length() < 9) {
+
+                JOptionPane.showMessageDialog(painel, "Preencha o CEP completo!");
+                return;
+
+            }
+
             try {
 
-                Responsavel resp = new Responsavel(nome, CPF, dataNasc, RG, civil, celular, email, prof, trab);
+                Responsavel resp = new Responsavel(nome, CPF, dataNasc, RG, civil, celular, email, prof, trab, endereco, cidade, estado, cep);
                 respDao.inserir(resp);
 
                 limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, txtRG, txtCivil, txtCelFinal, txtEmail,
-                        txtProf, txtTrab, null);
+                        txtProf, txtTrab, txtEnder, txtCid, comboEstado, txtCepFinal, null);
 
                 JOptionPane.showMessageDialog(painel, "Responsável salvo com sucesso!");
 
@@ -375,6 +417,10 @@ public class Main {
         painel.add(new JLabel("E-mail: ")); painel.add(txtEmail);
         painel.add(new JLabel("Profissão: ")); painel.add(txtProf);
         painel.add(new JLabel("Local de Trabalho: ")); painel.add(txtTrab);
+        painel.add(new JLabel("Endereço: ")); painel.add(txtEnder);
+        painel.add(new JLabel("Cidade: ")); painel.add(txtCid);
+        painel.add(new JLabel("Estado: ")); painel.add(comboEstado);
+        painel.add(new JLabel("CEP: ")); painel.add(txtCepFinal);
         painel.add(btnSalvar);
 
         return painel;
@@ -526,7 +572,7 @@ public class Main {
 
         JTextField txtId = new JTextField(2);
         txtId.setEditable(false);
-        JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20);
+        JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20, 100);
 
         JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
@@ -737,28 +783,32 @@ public class Main {
         painelPrincipal.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JPanel painelEditor = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
         JTextField txtId = new JTextField(2);
         txtId.setEditable(false);
         JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20, 100);
-
         JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
-
         JtextFieldSomenteNumeros txtRG = new JtextFieldSomenteNumeros(12, 12);
         JtextFieldSomenteLetras txtCivil = new JtextFieldSomenteLetras(10, 40);
-
         JtextFieldLimitado txtEmail = new JtextFieldLimitado(20, 50);
-
         JFormattedTextField txtCel = null;
         JtextFieldSomenteLetras txtProf = new JtextFieldSomenteLetras(20, 40);
         JtextFieldLimitado txtTrab = new JtextFieldLimitado(20, 50);
+        JtextFieldLimitado txtEnder = new JtextFieldLimitado(25, 40);
+        JtextFieldSomenteLetras txtCid = new JtextFieldSomenteLetras(15, 40);
+        String[] ufs = {"GO", "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "MA", "MT", "MS", "MG", "PA", "PB",
+                "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"};
+        JComboBox<String> comboEstado = new JComboBox<>(ufs);
+        comboEstado.setBackground(Color.WHITE);
+        JFormattedTextField txtCep = null;
 
         try {
 
             MaskFormatter mascara = new MaskFormatter("###.###.###-##");
             mascara.setPlaceholderCharacter('_');
             txtCPF = new JFormattedTextField(mascara);
-            txtCPF.setColumns(9);
+            txtCPF.setColumns(14);
 
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -767,7 +817,7 @@ public class Main {
             MaskFormatter m = new MaskFormatter("##/##/####");
             m.setPlaceholderCharacter('_');
             txtData = new JFormattedTextField(m);
-            txtData.setColumns(6);
+            txtData.setColumns(10);
 
         } catch (Exception e)  { e.printStackTrace(); }
 
@@ -776,13 +826,23 @@ public class Main {
             MaskFormatter mascara = new MaskFormatter("(##) 9####-####");
             mascara.setPlaceholderCharacter('_');
             txtCel = new JFormattedTextField(mascara);
-            txtCel.setColumns(14);
+            txtCel.setColumns(15);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("#####-###");
+            mascara.setPlaceholderCharacter('_');
+            txtCep = new JFormattedTextField(mascara);
+            txtCep.setColumns(9);
 
         } catch (Exception e) { e.printStackTrace(); }
 
         final JFormattedTextField txtCPFFinal = txtCPF;
         final JFormattedTextField txtDataFinal = txtData;
         final JFormattedTextField txtCelFinal = txtCel;
+        final JFormattedTextField txtCepFinal = txtCep;
 
         JButton btnEditar = new JButton("Salvar Alterações");
         JButton btnExcluir = new JButton("Excluir Responsável");
@@ -798,6 +858,10 @@ public class Main {
         painelEditor.add(new JLabel("E-Mail: ")); painelEditor.add(txtEmail);
         painelEditor.add(new JLabel("Profissão: ")); painelEditor.add(txtProf);
         painelEditor.add(new JLabel("Local de Trabalho: ")); painelEditor.add(txtTrab);
+        painelEditor.add(new JLabel("Endereço: ")); painelEditor.add(txtEnder);
+        painelEditor.add(new JLabel("Cidade: ")); painelEditor.add(txtCid);
+        painelEditor.add(new JLabel("Estado: ")); painelEditor.add(comboEstado);
+        painelEditor.add(new JLabel("CEP: ")); painelEditor.add(txtCepFinal);
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
 
@@ -828,6 +892,10 @@ public class Main {
                     txtEmail.setText(r.getEmail());
                     txtProf.setText(r.getProfissao());
                     txtTrab.setText(r.getLocTrabalho());
+                    txtEnder.setText(r.getEndereco());
+                    txtCid.setText(r.getCidade());
+                    comboEstado.setSelectedItem(r.getEstado());
+                    txtCepFinal.setText(r.getCep());
 
                 }
 
@@ -852,9 +920,13 @@ public class Main {
             String novoRG = txtRG.getText().trim();
             String novoCivil = txtCivil.getText().trim();
             String novoCelular = txtCelFinal.getText().replace("_", "").trim();
-            String novoEmail = txtEmail.getText();
-            String novaProf = txtProf.getText();
-            String novoTrab = txtTrab.getText();
+            String novoEmail = txtEmail.getText().trim();
+            String novaProf = txtProf.getText().trim();
+            String novoTrab = txtTrab.getText().trim();
+            String novoEnder = txtEnder.getText().trim();
+            String novaCid = txtCid.getText().trim();
+            String novoEstado = (String) comboEstado.getSelectedItem();
+            String novoCep = txtCepFinal.getText().trim();
 
             if (novoNome.isEmpty()) {
 
@@ -884,7 +956,29 @@ public class Main {
 
             }
 
-            Responsavel respEditado = new Responsavel(novoNome, novoCPF, novaData, novoRG, novoCivil, novoCelular, novoEmail, novaProf, novoTrab);
+            if(novoEnder.isEmpty()) {
+
+                JOptionPane.showMessageDialog(painelPrincipal, "Endereço não pode estar vazio!");
+                return;
+
+            }
+
+            if(novaCid.isEmpty()) {
+
+                JOptionPane.showMessageDialog(painelPrincipal, "Cidade não pode estar vazia!");
+                return;
+
+            }
+
+            if(novoCep.length() < 9) {
+
+                JOptionPane.showMessageDialog(painelEditor, "Preencha o CEP completo!");
+                return;
+
+            }
+
+            Responsavel respEditado = new Responsavel(novoNome, novoCPF, novaData, novoRG, novoCivil, novoCelular,
+                    novoEmail, novaProf, novoTrab, novoEnder, novaCid, novoEstado, novoCep);
             respEditado.setId(Integer.parseInt(idTexto));
 
             try {
@@ -966,7 +1060,8 @@ public class Main {
 
                     respDao.deletar(Integer.parseInt(txtId.getText()));
                     preencherTabRespReduzida(respDao, modeloReduzido);
-                    limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, txtRG, txtCivil, txtCelFinal, txtEmail, txtProf, txtTrab, txtId);
+                    limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, txtRG, txtCivil, txtCelFinal, txtEmail,
+                            txtProf, txtTrab, txtEnder, txtCid, comboEstado, txtCepFinal, txtId);
                     JOptionPane.showMessageDialog(painelPrincipal, "Responsável deletado com sucesso!");
 
                 } catch (SQLException ex) {
@@ -1427,7 +1522,9 @@ public class Main {
                                                 JFormattedTextField txtData, JtextFieldSomenteNumeros txtRG,
                                                 JtextFieldSomenteLetras txtCivil, JFormattedTextField txtCel,
                                                 JtextFieldLimitado txtEmail, JtextFieldSomenteLetras txtProf,
-                                                JtextFieldLimitado txtTrab, JTextField txtId) {
+                                                JtextFieldLimitado txtTrab, JtextFieldLimitado txtEnder,
+                                                JtextFieldSomenteLetras txtCid, JComboBox cb1, JFormattedTextField txtCep,
+                                                JTextField txtId) {
 
         txtNome.setText("");
         txtCPF.setValue(null);
@@ -1438,6 +1535,10 @@ public class Main {
         txtEmail.setText("");
         txtProf.setText("");
         txtTrab.setText("");
+        txtEnder.setText("");
+        txtCid.setText("");
+        if (cb1.getItemCount() > 0) cb1.setSelectedIndex(0);
+        txtCep.setValue(null);
         if(txtId != null) txtId.setText("");
 
     }
@@ -1646,7 +1747,8 @@ public class Main {
             pw.println("************************************************************");
             pw.println();
 
-            pw.println("Nome;CPF;Data Nascimento;RG;Estado Civil;Número de Celular;E-Mail;Profissão;Local de Trabalho;Alunos Vinculados");
+            pw.println("Nome;CPF;Data Nascimento;RG;Estado Civil;Número de Celular;E-Mail;Profissão;Local de Trabalho;" +
+                    "Endereço;Cidade;Estado;CEP;Alunos Vinculados");
 
             for (Responsavel r : respDao.listar()) {
 
@@ -1654,8 +1756,9 @@ public class Main {
                 String nomesAlunos = String.join(", ", alunos);
                 if (nomesAlunos.isEmpty()) nomesAlunos = "Nenhum";
 
-                pw.printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", r.getNome(), r.getCPF(), r.getDataNascimento(), r.getRG(),
-                        r.getEstCivil(), r.getCelular(), r.getEmail(), r.getProfissao(), r.getLocTrabalho(), nomesAlunos);
+                pw.printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", r.getNome(), r.getCPF(), r.getDataNascimento(), r.getRG(),
+                        r.getEstCivil(), r.getCelular(), r.getEmail(), r.getProfissao(), r.getLocTrabalho(), r.getEndereco(),
+                        r.getCidade(), r.getEstado(), r.getCep(), nomesAlunos);
 
             }
 
@@ -1667,12 +1770,6 @@ public class Main {
 
         private int maximoCaracteres = -1;
 
-        public JtextFieldSomenteNumeros(int columns) {
-
-            super(columns);
-            configurarEvento();
-
-        }
 
         public JtextFieldSomenteNumeros(int columns, int maximo) {
 
@@ -1723,13 +1820,6 @@ public class Main {
     public static final class JtextFieldSomenteLetras extends JTextField {
 
         private int maximoCaracteres = -1;
-
-        public JtextFieldSomenteLetras(int columns) {
-
-            super(columns);
-            configurarEvento();
-
-        }
 
         public JtextFieldSomenteLetras(int columns, int maximo) {
 

@@ -36,7 +36,11 @@ public class Conexao {
                     celular   TEXT   UNIQUE NOT NULL,
                     email   TEXT,
                     profissao   TEXT,
-                    local_trabalho   TEXT
+                    local_trabalho   TEXT,
+                    endereco   TEXT   NOT NULL,
+                    cidade   TEXT   NOT NULL,
+                    estado   TEXT   NOT NULL,
+                    cep   TEXT   NOT NULL
                 );
             """);
 

@@ -3,21 +3,14 @@ package com.projeto;
 public class Responsavel {
 
     private int id;
-    private String nome;
-    private String CPF;
-    private String dataNascimento; // DD/MM/AAAA para a tela e YYYY/MM/DD para o banco
-    private String RG;
-    private String estCivil;
-    private String celular;
-    private String email;
-    private String profissao;
-    private String locTrabalho;
+    private String nome, CPF, dataNascimento, RG, estCivil, celular, email, profissao, locTrabalho, endereco, cidade, estado, cep;
 
     public Responsavel() {
 
     }
 
-    public Responsavel(String nome, String CPF, String dataNascimento, String RG, String estCivil, String celular, String email, String profissao, String locTrabalho) {
+    public Responsavel(String nome, String CPF, String dataNascimento, String RG, String estCivil, String celular,
+                       String email, String profissao, String locTrabalho, String endereco, String cidade, String estado, String cep) {
 
         this.nome = nome;
         this.CPF = CPF;
@@ -28,6 +21,10 @@ public class Responsavel {
         this.email = email;
         this.profissao = profissao;
         this.locTrabalho = locTrabalho;
+        this.endereco = endereco;
+        this.cidade = cidade;
+        this.estado = estado;
+        this.cep = cep;
 
     }
 
@@ -111,4 +108,35 @@ public class Responsavel {
 
     }
 
+    public String getEndereco() { return endereco; }
+
+    public void setEndereco(String endereco) {
+
+        this.endereco = endereco;
+
+    }
+
+    public String getCidade() { return cidade; }
+
+    public void setCidade(String cidade) {
+
+        this.cidade = cidade;
+
+    }
+
+    public String getEstado() { return estado; }
+
+    public void setEstado(String estado) {
+
+        this.estado = estado;
+
+    }
+
+    public String getCep() { return cep; }
+
+    public void setCep(String cep) {
+
+        this.cep = cep;
+
+    }
 }
