@@ -9,7 +9,7 @@ public class ResponsavelDAO {
     public void inserir(Responsavel responsavel) throws SQLException {
 
         String sql = "INSERT INTO responsavel(nome, cpf, data_nascimento, rg, estado_civil, celular, email, profissao, " +
-                "local_trabalho) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "local_trabalho, endereco, cidade, estado, cep) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -23,6 +23,10 @@ public class ResponsavelDAO {
             stmt.setString(7, responsavel.getEmail());
             stmt.setString(8, responsavel.getProfissao());
             stmt.setString(9, responsavel.getLocTrabalho());
+            stmt.setString(10, responsavel.getEndereco());
+            stmt.setString(11, responsavel.getCidade());
+            stmt.setString(12, responsavel.getEstado());
+            stmt.setString(13, responsavel.getCep());
             stmt.executeUpdate();
             System.out.println("Responsavel inserido com sucesso.");
 
@@ -52,6 +56,10 @@ public class ResponsavelDAO {
                 r.setEmail(rs.getString("email"));
                 r.setProfissao(rs.getString("profissao"));
                 r.setLocTrabalho(rs.getString("local_trabalho"));
+                r.setEndereco(rs.getString("endereco"));
+                r.setCidade(rs.getString("cidade"));
+                r.setEstado(rs.getString("estado"));
+                r.setCep(rs.getString("cep"));
                 lista.add(r);
 
             }
@@ -69,7 +77,7 @@ public class ResponsavelDAO {
     public void atualizar (Responsavel responsavel) throws SQLException {
 
         String sql = "UPDATE responsavel SET nome = ?, cpf = ?, data_nascimento = ?, rg = ?, estado_civil = ?, celular = ?, " +
-                "email = ?, profissao = ?, local_trabalho = ? WHERE id = ?";
+                "email = ?, profissao = ?, local_trabalho = ?, endereco = ?, cidade = ?, estado = ?, cep = ? WHERE id = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -83,7 +91,11 @@ public class ResponsavelDAO {
             stmt.setString(7, responsavel.getEmail());
             stmt.setString(8, responsavel.getProfissao());
             stmt.setString(9, responsavel.getLocTrabalho());
-            stmt.setInt(10, responsavel.getId());
+            stmt.setString(10, responsavel.getEndereco());
+            stmt.setString(11, responsavel.getCidade());
+            stmt.setString(12, responsavel.getEstado());
+            stmt.setString(13, responsavel.getCep());
+            stmt.setInt(14, responsavel.getId());
             stmt.executeUpdate();
             System.out.println("Responsavel atualizado com sucesso.");
 
@@ -127,7 +139,11 @@ public class ResponsavelDAO {
                         rs.getString("celular"),
                         rs.getString("email"),
                         rs.getString("profissao"),
-                        rs.getString("local_trabalho")
+                        rs.getString("local_trabalho"),
+                        rs.getString("endereco"),
+                        rs.getString("cidade"),
+                        rs.getString("estado"),
+                        rs.getString("cep")
                 );
                 r.setId(rs.getInt("id"));
 
