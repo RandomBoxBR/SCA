@@ -443,7 +443,7 @@ public class Main {
 
         JPanel containerCards = new JPanel(new CardLayout());
 
-        JPanel listAluno = criarAlListagem(modeloAl);
+        JPanel listAluno = criarAlListagem(modeloAl, respDao, alunoDao);
         JPanel listResp = criarRespListagem(modeloResp, respDao, alunoDao);
 
         containerCards.add(listAluno, "Alunos");
@@ -469,7 +469,7 @@ public class Main {
 
     }
 
-    private static JPanel criarAlListagem(DefaultTableModel modeloAl) {
+    private static JPanel criarAlListagem(DefaultTableModel modeloAl, ResponsavelDAO respDao, AlunoDAO alunoDao) {
 
         JPanel painel = new JPanel(new BorderLayout(10, 10));
         painel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -479,6 +479,27 @@ public class Main {
         tabela.getTableHeader().setReorderingAllowed(false);
         tabela.getTableHeader().setResizingAllowed(false);
         tabela.setDefaultEditor(Object.class, null);
+
+        tabela.addMouseListener(new java.awt.event.MouseAdapter() {
+
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+
+                if (e.getClickCount() == 2) {
+
+                    int linha = tabela.getSelectedRow();
+                    if (linha != -1) {
+
+                        int id = Integer.parseInt(tabela.getValueAt(linha, 0).toString());
+
+                        abrirFichaAluno(id, respDao, alunoDao);
+
+                    }
+
+                }
+
+            }
+
+        });
 
         painel.add(new JLabel("Alunos Cadastrados:"), BorderLayout.NORTH);
         painel.add(new JScrollPane(tabela), BorderLayout.CENTER);
@@ -1956,6 +1977,57 @@ public class Main {
         adicionarCampoFicha(painelFicha, "Cidade/Estado:", r.getCidade() + " - " + r.getEstado(), gbc, linha++);
         adicionarCampoFicha(painelFicha, "CEP:", r.getCep(), gbc, linha++);
         adicionarCampoFicha(painelFicha, "Alunos Vinculados:", nomesAlunos, gbc, linha++);
+
+        JScrollPane scroll = new JScrollPane(painelFicha);
+        scroll.setBorder(null);
+
+        ficha.add(scroll);
+        ficha.setVisible(true);
+
+    }
+
+    private static void abrirFichaAluno(int id, ResponsavelDAO respDao, AlunoDAO alunoDao) {
+
+        Aluno a = alunoDao.buscarPorId(id);
+        if (a == null) return;
+
+        Responsavel r1 = respDao.buscarPorId(a.getIdResponsavel1());
+        String nomeResp1 = (r1 != null) ? r1.getNome() : "Não encontrado";
+
+        String nomeResp2 = "Nenhum";
+        if (a.getIdResponsavel2() > 0) {
+
+            Responsavel r2 = respDao.buscarPorId(a.getIdResponsavel2());
+            if (r2 != null) nomeResp2 = r2.getNome();
+
+        }
+
+        JDialog ficha = new JDialog((Frame) null, "Ficha do Aluno: " + a.getNome(), true);
+        ficha.setSize(550, 650);
+        ficha.setLocationRelativeTo(null);
+        ficha.setResizable(false);
+
+        JPanel painelFicha = new JPanel(new GridBagLayout());
+        painelFicha.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+        painelFicha.setBackground(Color.WHITE);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel lbTitulo = new JLabel("INFORMAÇÕES DO ALUNO", SwingConstants.CENTER);
+        lbTitulo.setFont(new Font("Arial", Font.BOLD, 16));
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2; gbc.weightx = 1.0;
+        gbc.insets = new Insets(0, 0, 40, 0);
+        painelFicha.add(lbTitulo, gbc);
+
+        gbc.gridwidth = 1;
+        gbc.insets = new Insets(8, 5, 8, 5);
+        int linha = 1;
+
+        adicionarCampoFicha(painelFicha, "Nome:", a.getNome(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "CPF:", a.getCPF(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "Data de Nascimento:", a.getDataNascimento(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "1º Responsável:", nomeResp1, gbc, linha++);
+        adicionarCampoFicha(painelFicha, "2º Responsável:", nomeResp2, gbc, linha++);
 
         JScrollPane scroll = new JScrollPane(painelFicha);
         scroll.setBorder(null);
