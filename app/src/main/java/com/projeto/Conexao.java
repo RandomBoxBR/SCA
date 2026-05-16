@@ -52,6 +52,8 @@ public class Conexao {
                     data_nascimento TEXT   NOT NULL,
                     id_responsavel1 INTEGER NOT NULL,
                     id_responsavel2 INTEGER,
+                    rg    TEXT,
+                    estado_civil   TEXT,
                     FOREIGN KEY (id_responsavel1) REFERENCES responsavel(id),
                     FOREIGN KEY (id_responsavel2) REFERENCES responsavel(id)
                 );

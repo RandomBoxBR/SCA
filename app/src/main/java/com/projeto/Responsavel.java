@@ -3,7 +3,8 @@ package com.projeto;
 public class Responsavel {
 
     private int id;
-    private String nome, CPF, dataNascimento, RG, estCivil, celular, email, profissao, locTrabalho, endereco, cidade, estado, cep;
+    private String nome, CPF, dataNascimento, RG, estCivil, celular, email, profissao, locTrabalho, endereco,
+            cidade, estado, cep;
 
     public Responsavel() {
 
