@@ -2,28 +2,25 @@ package com.projeto;
 
 public class Aluno {
 
-    private int id;
-    private String nome;
-    private String CPF;
-    private String dataNascimento; // DD/MM/AAAA para a tela e YYYY/MM/DD para o banco
-    private int idResponsavel1;
-    private int idResponsavel2;
+    private int id, idResponsavel1, idResponsavel2;
+    private String nome, CPF, dataNascimento, RG, estCivil;
 
     public Aluno() {
 
     }
 
-    public Aluno(String nome, String CPF, String dataNascimento, int idResp1, int idResp2) {
+    public Aluno(String nome, String CPF, String dataNascimento, String rg, String estCivil, int idResp1, int idResp2) {
 
         this.nome = nome;
         this.CPF = CPF;
         this.dataNascimento = dataNascimento;
+        this.RG = rg;
+        this.estCivil = estCivil;
         this.idResponsavel1 = idResp1;
         this.idResponsavel2 = idResp2;
 
     }
 
-    //Getters e Setters
     public int getId() { return id; }
 
     public void setId(int id) {
@@ -56,6 +53,14 @@ public class Aluno {
 
     }
 
+    public String getRG() { return RG; }
+
+    public void setRG(String RG) {
+
+        this.RG = RG;
+
+    }
+
     public int getIdResponsavel1() { return idResponsavel1; }
 
     public void setIdResponsavel1(int idResp1) {
@@ -69,6 +74,14 @@ public class Aluno {
     public void setIdResponsavel2(int idResp2) {
 
         this.idResponsavel2 = idResp2;
+
+    }
+
+    public String getEstCivil() { return estCivil; }
+
+    public void setEstCivil(String estCivil) {
+
+        this.estCivil = estCivil;
 
     }
 

@@ -8,7 +8,8 @@ public class AlunoDAO {
 
     public void inserir(Aluno aluno) throws SQLException{
 
-        String sql = "INSERT INTO aluno(nome, cpf, data_nascimento, id_responsavel1, id_responsavel2) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO aluno(nome, cpf, data_nascimento, rg, estado_civil, id_responsavel1, id_responsavel2) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -16,18 +17,19 @@ public class AlunoDAO {
             stmt.setString(1, aluno.getNome());
             stmt.setString(2, aluno.getCPF());
             stmt.setString(3, aluno.getDataNascimento());
-            stmt.setInt(4, aluno.getIdResponsavel1());
+            stmt.setString(4, aluno.getRG());
+            stmt.setString(5, aluno.getEstCivil());
+            stmt.setInt(6, aluno.getIdResponsavel1());
 
             if (aluno.getIdResponsavel2() > 0) {
 
-                stmt.setInt(5, aluno.getIdResponsavel2());
+                stmt.setInt(7, aluno.getIdResponsavel2());
 
             } else {
 
-                stmt.setNull(5, Types.INTEGER);
+                stmt.setNull(7, Types.INTEGER);
 
             }
-
 
             stmt.executeUpdate();
             System.out.println("Aluno inserido com sucesso.");
@@ -52,6 +54,8 @@ public class AlunoDAO {
                a.setNome(rs.getString("nome"));
                a.setCPF(rs.getString("cpf"));
                a.setDataNascimento(rs.getString("data_nascimento"));
+               a.setRG(rs.getString("rg"));
+               a.setEstCivil(rs.getString("estado_civil"));
                a.setIdResponsavel1(rs.getInt("id_responsavel1"));
                a.setIdResponsavel2(rs.getInt("id_responsavel2"));
                lista.add(a);
@@ -70,7 +74,8 @@ public class AlunoDAO {
 
     public void atualizar (Aluno aluno) throws SQLException {
 
-        String sql = "UPDATE aluno SET nome = ?, cpf = ?, data_nascimento = ?, id_responsavel1 = ?, id_responsavel2 = ? WHERE id = ?";
+        String sql = "UPDATE aluno SET nome = ?, cpf = ?, data_nascimento = ?, rg = ?, estado_civil = ?, id_responsavel1 = ?, " +
+                "id_responsavel2 = ? WHERE id = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -78,9 +83,11 @@ public class AlunoDAO {
             stmt.setString(1, aluno.getNome());
             stmt.setString(2, aluno.getCPF());
             stmt.setString(3, aluno.getDataNascimento());
-            stmt.setInt(4, aluno.getIdResponsavel1());
-            stmt.setInt(5, aluno.getIdResponsavel2());
-            stmt.setInt(6, aluno.getId());
+            stmt.setString(4, aluno.getRG());
+            stmt.setString(5, aluno.getEstCivil());
+            stmt.setInt(6, aluno.getIdResponsavel1());
+            stmt.setInt(7, aluno.getIdResponsavel2());
+            stmt.setInt(8, aluno.getId());
             stmt.executeUpdate();
             System.out.println("Aluno atualizado com sucesso.");
 
@@ -118,6 +125,8 @@ public class AlunoDAO {
                 Aluno a = new Aluno(rs.getString("nome"),
                         rs.getString("cpf"),
                         rs.getString("data_nascimento"),
+                        rs.getString("rg"),
+                        rs.getString("estado_civil"),
                         rs.getInt("id_responsavel1"),
                         rs.getInt("id_responsavel2"));
                 a.setId(rs.getInt("id"));

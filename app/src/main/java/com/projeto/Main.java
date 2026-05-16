@@ -106,6 +106,8 @@ public class Main {
         JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20, 100);
         JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
+        JtextFieldSomenteNumeros txtRG = new JtextFieldSomenteNumeros(12, 12);
+        JtextFieldSomenteLetras txtCivil = new JtextFieldSomenteLetras(10, 40);
 
         try {
 
@@ -143,6 +145,8 @@ public class Main {
             String nome = txtNome.getText();
             String CPF = txtCPFFinal.getText().replace("_", "").trim();
             String dataNasc = txtDataFinal.getText().replace("_", "").trim();
+            String RG = txtRG.getText();
+            String civil = txtCivil.getText();
 
             if(nome.isEmpty()) {
 
@@ -194,10 +198,10 @@ public class Main {
 
             try {
 
-                Aluno aluno = new Aluno(nome, CPF, dataNasc, id1, id2);
+                Aluno aluno = new Aluno(nome, CPF, dataNasc, RG, civil, id1, id2);
                 alunoDao.inserir(aluno);
 
-                limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboCadResp1, comboCadResp2, null);
+                limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, txtRG, txtCivil, comboCadResp1, comboCadResp2, null);
 
                 JOptionPane.showMessageDialog(painel, "Aluno salvo com sucesso!");
 
@@ -229,6 +233,8 @@ public class Main {
         painel.add(new JLabel("Nascimento: ")); painel.add(txtDataFinal);
         painel.add(new JLabel("Resp. 1:")); painel.add(comboCadResp1);
         painel.add(new JLabel("Resp. 2:")); painel.add(comboCadResp2);
+        painel.add(new JLabel("RG: ")); painel.add(txtRG);
+        painel.add(new JLabel("Estado Civil: ")); painel.add(txtCivil);
         painel.add(btnSalvar);
 
         return painel;
@@ -620,6 +626,8 @@ public class Main {
 
         JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
+        JtextFieldSomenteNumeros txtRG = new JtextFieldSomenteNumeros(12, 12);
+        JtextFieldSomenteLetras txtCivil = new JtextFieldSomenteLetras(10, 40);
 
         try {
 
@@ -652,6 +660,8 @@ public class Main {
         painelEditor.add(new JLabel("Data de Nascimento:")); painelEditor.add(txtDataFinal);
         painelEditor.add(new JLabel("Resp. 1")); painelEditor.add(comboEditResp1);
         painelEditor.add(new JLabel("Resp. 2")); painelEditor.add(comboEditResp2);
+        painelEditor.add(new JLabel("RG: ")); painelEditor.add(txtRG);
+        painelEditor.add(new JLabel("Estado Civil: ")); painelEditor.add(txtCivil);
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
 
@@ -678,6 +688,8 @@ public class Main {
                     txtDataFinal.setText(a.getDataNascimento());
                     selecionarNoCombo(comboEditResp1, a.getIdResponsavel1());
                     selecionarNoCombo(comboEditResp2, a.getIdResponsavel2());
+                    txtRG.setText(String.valueOf(a.getRG()));
+                    txtCivil.setText(String.valueOf(a.getEstCivil()));
 
                 }
 
@@ -699,6 +711,8 @@ public class Main {
             String novoNome = txtNome.getText().trim();
             String novoCPF = txtCPFFinal.getText().replace("_", "").trim();
             String novaData = txtDataFinal.getText().replace("_", "").trim();
+            String novoRG = txtRG.getText().trim();
+            String novoCivil = txtCivil.getText().trim();
 
             if (novoNome.isEmpty()) {
 
@@ -731,7 +745,7 @@ public class Main {
 
             }
 
-            Aluno alunoEditado = new Aluno(novoNome, novoCPF, novaData, novoId1, novoId2);
+            Aluno alunoEditado = new Aluno(novoNome, novoCPF, novaData, novoRG, novoCivil, novoId1, novoId2);
             alunoEditado.setId(Integer.parseInt(idTexto));
 
             try {
@@ -795,7 +809,8 @@ public class Main {
 
                     alunoDao.deletar(Integer.parseInt(txtId.getText()));
                     preencherTabAlunoReduzida(alunoDao, modeloReduzido);
-                    limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboEditResp1, comboEditResp2, txtId);
+                    limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, txtRG, txtCivil,
+                            comboEditResp1, comboEditResp2, txtId);
                     JOptionPane.showMessageDialog(painelPrincipal, "Aluno deletado com sucesso!");
 
                 } catch (SQLException ex) {
@@ -1588,12 +1603,15 @@ public class Main {
     }
 
 
-    private static void limparCamposAluno(JTextField txtNome, JFormattedTextField txtCPF, JFormattedTextField txtData,
+    private static void limparCamposAluno(JtextFieldSomenteLetras txtNome, JFormattedTextField txtCPF, JFormattedTextField txtData,
+                                          JtextFieldSomenteNumeros txtRG, JtextFieldSomenteLetras txtCivil,
                                           JComboBox cb1, JComboBox cb2, JTextField txtId) {
 
         txtNome.setText("");
         txtCPF.setValue(null);
         txtData.setValue(null);
+        txtRG.setText("");
+        txtCivil.setText("");
 
         if (cb1.getItemCount() > 0) cb1.setSelectedIndex(0);
         if (cb2.getItemCount() > 0) cb2.setSelectedIndex(0);
@@ -1754,7 +1772,7 @@ public class Main {
             pw.println("                Gerado em: " + dataHora);
             pw.println("************************************************************");
             pw.println();
-            pw.println("Nome;CPF;Data Nascimento;Responsável 1; Responsável 2");
+            pw.println("Nome;CPF;Data Nascimento;Responsável 1;Responsável 2;RG;Estado Civil");
 
             for (Aluno a : alunoDao.listar()) {
 
@@ -1769,7 +1787,7 @@ public class Main {
 
                 }
 
-                pw.printf("%s;%s;%s;%s;%s;\n", a.getNome(), a.getCPF(), a.getDataNascimento(), nomeR1, nomeR2);
+                pw.printf("%s;%s;%s;%s;%s;%s;%s\n", a.getNome(), a.getCPF(), a.getDataNascimento(), nomeR1, nomeR2, a.getRG(), a.getEstCivil());
 
             }
 
@@ -2028,6 +2046,8 @@ public class Main {
         adicionarCampoFicha(painelFicha, "Data de Nascimento:", a.getDataNascimento(), gbc, linha++);
         adicionarCampoFicha(painelFicha, "1º Responsável:", nomeResp1, gbc, linha++);
         adicionarCampoFicha(painelFicha, "2º Responsável:", nomeResp2, gbc, linha++);
+        adicionarCampoFicha(painelFicha, "RG:", a.getRG(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "Estado Civil:", a.getEstCivil(), gbc, linha++);
 
         JScrollPane scroll = new JScrollPane(painelFicha);
         scroll.setBorder(null);
