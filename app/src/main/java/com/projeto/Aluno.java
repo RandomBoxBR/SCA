@@ -3,14 +3,14 @@ package com.projeto;
 public class Aluno {
 
     private int id, idResponsavel1, idResponsavel2;
-    private String nome, CPF, dataNascimento, RG, estCivil, celular, email;
+    private String nome, CPF, dataNascimento, RG, estCivil, celular, email, endereco, cidade, estado, cep;
 
     public Aluno() {
 
     }
 
     public Aluno(String nome, String CPF, String dataNascimento, int idResp1, int idResp2, String rg, String estCivil,
-                 String celular, String email) {
+                 String celular, String email, String endereco, String cidade, String estado, String cep) {
 
         this.nome = nome;
         this.CPF = CPF;
@@ -21,6 +21,10 @@ public class Aluno {
         this.estCivil = estCivil;
         this.celular = celular;
         this.email = email;
+        this.endereco = endereco;
+        this.cidade = cidade;
+        this.estado = estado;
+        this.cep = cep;
 
     }
 
@@ -101,6 +105,38 @@ public class Aluno {
     public void setEmail(String email) {
 
         this.email = email;
+
+    }
+
+    public String getEndereco() { return endereco; }
+
+    public void setEndereco(String endereco) {
+
+        this.endereco = endereco;
+
+    }
+
+    public String getCidade() { return cidade; }
+
+    public void setCidade(String cidade) {
+
+        this.cidade = cidade;
+
+    }
+
+    public String getEstado() { return estado; }
+
+    public void setEstado(String estado) {
+
+        this.estado = estado;
+
+    }
+
+    public String getCep() { return cep; }
+
+    public void setCep(String cep) {
+
+        this.cep = cep;
 
     }
 

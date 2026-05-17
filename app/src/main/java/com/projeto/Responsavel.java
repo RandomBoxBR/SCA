@@ -11,7 +11,8 @@ public class Responsavel {
     }
 
     public Responsavel(String nome, String CPF, String dataNascimento, String RG, String estCivil, String celular,
-                       String email, String profissao, String locTrabalho, String endereco, String cidade, String estado, String cep) {
+                       String email, String profissao, String locTrabalho, String endereco, String cidade, String estado,
+                       String cep) {
 
         this.nome = nome;
         this.CPF = CPF;
@@ -140,4 +141,5 @@ public class Responsavel {
         this.cep = cep;
 
     }
+
 }
