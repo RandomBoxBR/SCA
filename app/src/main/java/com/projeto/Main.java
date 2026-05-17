@@ -110,6 +110,13 @@ public class Main {
         JtextFieldSomenteLetras txtCivil = new JtextFieldSomenteLetras(10, 40);
         JFormattedTextField txtCel = null;
         JtextFieldLimitado txtEmail = new JtextFieldLimitado(20, 50);
+        JtextFieldLimitado txtEnder = new JtextFieldLimitado(25, 40);
+        JtextFieldSomenteLetras txtCid = new JtextFieldSomenteLetras(15, 40);
+        String[] ufs = {"GO", "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "MA", "MT", "MS", "MG", "PA", "PB",
+                "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"};
+        JComboBox<String> comboEstado = new JComboBox<>(ufs);
+        comboEstado.setBackground(Color.WHITE);
+        JFormattedTextField txtCep = null;
 
         try {
 
@@ -138,9 +145,19 @@ public class Main {
 
         } catch (Exception e) { e.printStackTrace(); }
 
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("#####-###");
+            mascara.setPlaceholderCharacter('_');
+            txtCep = new JFormattedTextField(mascara);
+            txtCep.setColumns(9);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
         final JFormattedTextField txtCPFFinal = txtCPF;
         final JFormattedTextField txtDataFinal = txtData;
         final JFormattedTextField txtCelFinal = txtCel;
+        final JFormattedTextField txtCepFinal = txtCep;
 
         comboCadResp1 = new JComboBox<>();
         comboCadResp1.setBackground(Color.WHITE);
@@ -161,6 +178,10 @@ public class Main {
             String civil = txtCivil.getText();
             String celular = txtCelFinal.getText().replace("_", "").trim();
             String email = txtEmail.getText();
+            String endereco = txtEnder.getText();
+            String cidade = txtCid.getText();
+            String estado = (String) comboEstado.getSelectedItem();
+            String cep = txtCepFinal.getText().replace("_", "").trim();
 
             if(nome.isEmpty()) {
 
@@ -221,13 +242,35 @@ public class Main {
 
             }
 
+            if(endereco.isEmpty()) {
+
+                JOptionPane.showMessageDialog(painel, "Preencha o endereço!");
+                return;
+
+            }
+
+            if(cidade.isEmpty()) {
+
+                JOptionPane.showMessageDialog(painel, "Preencha a cidade!");
+                return;
+
+            }
+
+            if(cep.length() < 9) {
+
+                JOptionPane.showMessageDialog(painel, "Preencha o CEP completo!");
+                return;
+
+            }
+
             try {
 
-                Aluno aluno = new Aluno(nome, CPF, dataNasc, id1, id2, RG, civil, celular, email);
+                Aluno aluno = new Aluno(nome, CPF, dataNasc, id1, id2, RG, civil, celular, email, endereco, cidade,
+                        estado, cep);
                 alunoDao.inserir(aluno);
 
                 limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboCadResp1, comboCadResp2, txtRG, txtCivil,
-                        txtCelFinal, txtEmail, null);
+                        txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, null);
 
                 JOptionPane.showMessageDialog(painel, "Aluno salvo com sucesso!");
 
@@ -270,6 +313,10 @@ public class Main {
         painel.add(new JLabel("Estado Civil: ")); painel.add(txtCivil);
         painel.add(new JLabel("Número de Cel.: ")); painel.add(txtCelFinal);
         painel.add(new JLabel("E-mail: ")); painel.add(txtEmail);
+        painel.add(new JLabel("Endereço: ")); painel.add(txtEnder);
+        painel.add(new JLabel("Cidade: ")); painel.add(txtCid);
+        painel.add(new JLabel("Estado: ")); painel.add(comboEstado);
+        painel.add(new JLabel("CEP: ")); painel.add(txtCepFinal);
         painel.add(btnSalvar);
 
         return painel;
@@ -665,6 +712,13 @@ public class Main {
         JtextFieldSomenteLetras txtCivil = new JtextFieldSomenteLetras(10, 40);
         JtextFieldLimitado txtEmail = new JtextFieldLimitado(20, 50);
         JFormattedTextField txtCel = null;
+        JtextFieldLimitado txtEnder = new JtextFieldLimitado(25, 40);
+        JtextFieldSomenteLetras txtCid = new JtextFieldSomenteLetras(15, 40);
+        String[] ufs = {"GO", "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "MA", "MT", "MS", "MG", "PA", "PB",
+                "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"};
+        JComboBox<String> comboEstado = new JComboBox<>(ufs);
+        comboEstado.setBackground(Color.WHITE);
+        JFormattedTextField txtCep = null;
 
         try {
 
@@ -693,9 +747,19 @@ public class Main {
 
         } catch (Exception e) { e.printStackTrace(); }
 
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("#####-###");
+            mascara.setPlaceholderCharacter('_');
+            txtCep = new JFormattedTextField(mascara);
+            txtCep.setColumns(9);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
         final JFormattedTextField txtCPFFinal = txtCPF;
         final JFormattedTextField txtDataFinal = txtData;
         final JFormattedTextField txtCelFinal = txtCel;
+        final JFormattedTextField txtCepFinal = txtCep;
 
         JButton btnEditar = new JButton("Salvar Alterações");
         JButton btnExcluir = new JButton("Excluir Aluno");
@@ -711,6 +775,10 @@ public class Main {
         painelEditor.add(new JLabel("Estado Civil: ")); painelEditor.add(txtCivil);
         painelEditor.add(new JLabel("Número de Cel.: ")); painelEditor.add(txtCelFinal);
         painelEditor.add(new JLabel("E-Mail: ")); painelEditor.add(txtEmail);
+        painelEditor.add(new JLabel("Endereço: ")); painelEditor.add(txtEnder);
+        painelEditor.add(new JLabel("Cidade: ")); painelEditor.add(txtCid);
+        painelEditor.add(new JLabel("Estado: ")); painelEditor.add(comboEstado);
+        painelEditor.add(new JLabel("CEP: ")); painelEditor.add(txtCepFinal);
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
 
@@ -741,6 +809,10 @@ public class Main {
                     txtCivil.setText(String.valueOf(a.getEstCivil()));
                     txtCelFinal.setText(a.getCelular());
                     txtEmail.setText(a.getEmail());
+                    txtEnder.setText(a.getEndereco());
+                    txtCid.setText(a.getCidade());
+                    comboEstado.setSelectedItem(a.getEstado());
+                    txtCepFinal.setText(a.getCep());
 
                 }
 
@@ -766,6 +838,10 @@ public class Main {
             String novoCivil = txtCivil.getText().trim();
             String novoCelular = txtCelFinal.getText().replace("_", "").trim();
             String novoEmail = txtEmail.getText().trim();
+            String novoEnder = txtEnder.getText().trim();
+            String novaCid = txtCid.getText().trim();
+            String novoEstado = (String) comboEstado.getSelectedItem();
+            String novoCep = txtCepFinal.getText().trim();
 
             if (novoNome.isEmpty()) {
 
@@ -809,8 +885,29 @@ public class Main {
 
             }
 
+            if(novoEnder.isEmpty()) {
+
+                JOptionPane.showMessageDialog(painelPrincipal, "Endereço não pode estar vazio!");
+                return;
+
+            }
+
+            if(novaCid.isEmpty()) {
+
+                JOptionPane.showMessageDialog(painelPrincipal, "Cidade não pode estar vazia!");
+                return;
+
+            }
+
+            if(novoCep.length() < 9) {
+
+                JOptionPane.showMessageDialog(painelEditor, "Preencha o CEP completo!");
+                return;
+
+            }
+
             Aluno alunoEditado = new Aluno(novoNome, novoCPF, novaData, novoId1, novoId2, novoRG, novoCivil,
-                    novoCelular, novoEmail);
+                    novoCelular, novoEmail, novoEnder, novaCid, novoEstado, novoCep);
             alunoEditado.setId(Integer.parseInt(idTexto));
 
             try {
@@ -882,7 +979,7 @@ public class Main {
                     alunoDao.deletar(Integer.parseInt(txtId.getText()));
                     preencherTabAlunoReduzida(alunoDao, modeloReduzido);
                     limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboEditResp1, comboEditResp2, txtRG, txtCivil,
-                            txtCelFinal, txtEmail, txtId);
+                            txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, txtId);
                     JOptionPane.showMessageDialog(painelPrincipal, "Aluno deletado com sucesso!");
 
                 } catch (SQLException ex) {
@@ -1678,7 +1775,9 @@ public class Main {
     private static void limparCamposAluno(JtextFieldSomenteLetras txtNome, JFormattedTextField txtCPF,
                                           JFormattedTextField txtData, JComboBox cb1, JComboBox cb2,
                                           JtextFieldSomenteNumeros txtRG, JtextFieldSomenteLetras txtCivil,
-                                          JFormattedTextField txtCel, JtextFieldLimitado txtEmail, JTextField txtId) {
+                                          JFormattedTextField txtCel, JtextFieldLimitado txtEmail,
+                                          JtextFieldLimitado txtEnder, JtextFieldSomenteLetras txtCid, JComboBox cb3,
+                                          JFormattedTextField txtCep, JTextField txtId) {
 
         txtNome.setText("");
         txtCPF.setValue(null);
@@ -1689,6 +1788,10 @@ public class Main {
         txtCivil.setText("");
         txtCel.setValue(null);
         txtEmail.setText("");
+        txtEnder.setText("");
+        txtCid.setText("");
+        if (cb3.getItemCount() > 0) cb3.setSelectedIndex(0);
+        txtCep.setValue(null);
 
         if (txtId != null) txtId.setText("");
 
@@ -1846,7 +1949,8 @@ public class Main {
             pw.println("                Gerado em: " + dataHora);
             pw.println("************************************************************");
             pw.println();
-            pw.println("Nome;CPF;Data Nascimento;Responsável 1;Responsável 2;RG;Estado Civil;Celular;E-Mail");
+            pw.println("Nome;CPF;Data Nascimento;Responsável 1;Responsável 2;RG;Estado Civil;Celular;E-Mail;Endereço;Cidade;" +
+                    "Estado;CEP");
 
             for (Aluno a : alunoDao.listar()) {
 
@@ -1861,8 +1965,9 @@ public class Main {
 
                 }
 
-                pw.printf("%s;%s;%s;%s;%s;%s;%s;%s;%s\n", a.getNome(), a.getCPF(), a.getDataNascimento(), nomeR1, nomeR2,
-                        a.getRG(), a.getEstCivil(), a.getCelular(), a.getEmail());
+                pw.printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", a.getNome(), a.getCPF(), a.getDataNascimento(),
+                        nomeR1, nomeR2, a.getRG(), a.getEstCivil(), a.getCelular(), a.getEmail(), a.getEndereco(),
+                        a.getCidade(), a.getEstado(), a.getCep());
 
             }
 
@@ -2125,6 +2230,9 @@ public class Main {
         adicionarCampoFicha(painelFicha, "Estado Civil:", a.getEstCivil(), gbc, linha++);
         adicionarCampoFicha(painelFicha, "Celular:", a.getCelular(), gbc, linha++);
         adicionarCampoFicha(painelFicha, "E-mail:", a.getEmail(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "Endereço:", a.getEndereco(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "Cidade/Estado:", a.getCidade() + " - " + a.getEstado(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "CEP:", a.getCep(), gbc, linha++);
 
         JScrollPane scroll = new JScrollPane(painelFicha);
         scroll.setBorder(null);

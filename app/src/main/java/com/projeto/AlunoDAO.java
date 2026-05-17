@@ -9,7 +9,7 @@ public class AlunoDAO {
     public void inserir(Aluno aluno) throws SQLException{
 
         String sql = "INSERT INTO aluno(nome, cpf, data_nascimento, id_responsavel1, id_responsavel2, rg, estado_civil, " +
-                "celular, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "celular, email, endereco, cidade, estado, cep) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -32,6 +32,10 @@ public class AlunoDAO {
             stmt.setString(7, aluno.getEstCivil());
             stmt.setString(8, aluno.getCelular());
             stmt.setString(9, aluno.getEmail());
+            stmt.setString(10, aluno.getEndereco());
+            stmt.setString(11, aluno.getCidade());
+            stmt.setString(12, aluno.getEstado());
+            stmt.setString(13, aluno.getCep());
 
             stmt.executeUpdate();
             System.out.println("Aluno inserido com sucesso.");
@@ -62,6 +66,10 @@ public class AlunoDAO {
                a.setEstCivil(rs.getString("estado_civil"));
                a.setCelular(rs.getString("celular"));
                a.setEmail(rs.getString("email"));
+               a.setEndereco(rs.getString("endereco"));
+               a.setCidade(rs.getString("cidade"));
+               a.setEstado(rs.getString("estado"));
+               a.setCep(rs.getString("cep"));
                lista.add(a);
 
            }
@@ -79,7 +87,8 @@ public class AlunoDAO {
     public void atualizar (Aluno aluno) throws SQLException {
 
         String sql = "UPDATE aluno SET nome = ?, cpf = ?, data_nascimento = ?, id_responsavel1 = ?, id_responsavel2 = ?," +
-                " rg = ?, estado_civil = ?, celular = ?, email = ? WHERE id = ?";
+                " rg = ?, estado_civil = ?, celular = ?, email = ?, endereco = ?, cidade = ?, estado = ?, cep = ? " +
+                "WHERE id = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -93,7 +102,11 @@ public class AlunoDAO {
             stmt.setString(7, aluno.getEstCivil());
             stmt.setString(8, aluno.getCelular());
             stmt.setString(9, aluno.getEmail());
-            stmt.setInt(10, aluno.getId());
+            stmt.setString(10, aluno.getEndereco());
+            stmt.setString(11, aluno.getCidade());
+            stmt.setString(12, aluno.getEstado());
+            stmt.setString(13, aluno.getCep());
+            stmt.setInt(14, aluno.getId());
             stmt.executeUpdate();
             System.out.println("Aluno atualizado com sucesso.");
 
@@ -136,7 +149,12 @@ public class AlunoDAO {
                         rs.getString("rg"),
                         rs.getString("estado_civil"),
                         rs.getString("celular"),
-                        rs.getString("email"));
+                        rs.getString("email"),
+                        rs.getString("endereco"),
+                        rs.getString("cidade"),
+                        rs.getString("estado"),
+                        rs.getString("cep")
+                );
                 a.setId(rs.getInt("id"));
                 return a;
 

@@ -56,6 +56,10 @@ public class Conexao {
                     estado_civil   TEXT,
                     celular   TEXT,
                     email   TEXT,
+                    endereco   TEXT   NOT NULL,
+                    cidade   TEXT   NOT NULL,
+                    estado   TEXT   NOT NULL,
+                    cep   TEXT   NOT NULL,
                     FOREIGN KEY (id_responsavel1) REFERENCES responsavel(id),
                     FOREIGN KEY (id_responsavel2) REFERENCES responsavel(id)
                 );
