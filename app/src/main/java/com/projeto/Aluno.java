@@ -3,21 +3,24 @@ package com.projeto;
 public class Aluno {
 
     private int id, idResponsavel1, idResponsavel2;
-    private String nome, CPF, dataNascimento, RG, estCivil;
+    private String nome, CPF, dataNascimento, RG, estCivil, celular, email;
 
     public Aluno() {
 
     }
 
-    public Aluno(String nome, String CPF, String dataNascimento, String rg, String estCivil, int idResp1, int idResp2) {
+    public Aluno(String nome, String CPF, String dataNascimento, int idResp1, int idResp2, String rg, String estCivil,
+                 String celular, String email) {
 
         this.nome = nome;
         this.CPF = CPF;
         this.dataNascimento = dataNascimento;
-        this.RG = rg;
-        this.estCivil = estCivil;
         this.idResponsavel1 = idResp1;
         this.idResponsavel2 = idResp2;
+        this.RG = rg;
+        this.estCivil = estCivil;
+        this.celular = celular;
+        this.email = email;
 
     }
 
@@ -53,14 +56,6 @@ public class Aluno {
 
     }
 
-    public String getRG() { return RG; }
-
-    public void setRG(String RG) {
-
-        this.RG = RG;
-
-    }
-
     public int getIdResponsavel1() { return idResponsavel1; }
 
     public void setIdResponsavel1(int idResp1) {
@@ -77,11 +72,35 @@ public class Aluno {
 
     }
 
+    public String getRG() { return RG; }
+
+    public void setRG(String RG) {
+
+        this.RG = RG;
+
+    }
+
     public String getEstCivil() { return estCivil; }
 
     public void setEstCivil(String estCivil) {
 
         this.estCivil = estCivil;
+
+    }
+
+    public String getCelular() { return celular; }
+
+    public void setCelular(String celular) {
+
+        this.celular = celular;
+
+    }
+
+    public String getEmail() { return email; }
+
+    public void setEmail(String email) {
+
+        this.email = email;
 
     }
 
