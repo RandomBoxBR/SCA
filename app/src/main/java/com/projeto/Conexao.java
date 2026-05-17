@@ -54,6 +54,8 @@ public class Conexao {
                     id_responsavel2 INTEGER,
                     rg    TEXT,
                     estado_civil   TEXT,
+                    celular   TEXT,
+                    email   TEXT,
                     FOREIGN KEY (id_responsavel1) REFERENCES responsavel(id),
                     FOREIGN KEY (id_responsavel2) REFERENCES responsavel(id)
                 );
