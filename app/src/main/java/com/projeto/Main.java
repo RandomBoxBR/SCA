@@ -117,6 +117,9 @@ public class Main {
         JComboBox<String> comboEstado = new JComboBox<>(ufs);
         comboEstado.setBackground(Color.WHITE);
         JFormattedTextField txtCep = null;
+        JtextFieldLimitado txtEsc = new JtextFieldLimitado(20, 50);
+        JFormattedTextField txtAno = null;
+        JFormattedTextField txtFone = null;
 
         try {
 
@@ -154,10 +157,30 @@ public class Main {
 
         } catch (Exception e) { e.printStackTrace(); }
 
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("####");
+            mascara.setPlaceholderCharacter('_');
+            txtAno = new JFormattedTextField(mascara);
+            txtAno.setColumns(4);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("(##) 9####-####");
+            mascara.setPlaceholderCharacter('_');
+            txtFone = new JFormattedTextField(mascara);
+            txtFone.setColumns(9);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
         final JFormattedTextField txtCPFFinal = txtCPF;
         final JFormattedTextField txtDataFinal = txtData;
         final JFormattedTextField txtCelFinal = txtCel;
         final JFormattedTextField txtCepFinal = txtCep;
+        final JFormattedTextField txtAnoFinal = txtAno;
+        final JFormattedTextField txtFoneFinal = txtFone;
 
         comboCadResp1 = new JComboBox<>();
         comboCadResp1.setBackground(Color.WHITE);
@@ -171,17 +194,20 @@ public class Main {
 
         btnSalvar.addActionListener(e -> {
 
-            String nome = txtNome.getText();
+            String nome = txtNome.getText().trim();
             String CPF = txtCPFFinal.getText().replace("_", "").trim();
             String dataNasc = txtDataFinal.getText().replace("_", "").trim();
-            String RG = txtRG.getText();
-            String civil = txtCivil.getText();
+            String RG = txtRG.getText().trim();
+            String civil = txtCivil.getText().trim();
             String celular = txtCelFinal.getText().replace("_", "").trim();
-            String email = txtEmail.getText();
-            String endereco = txtEnder.getText();
-            String cidade = txtCid.getText();
+            String email = txtEmail.getText().trim();
+            String endereco = txtEnder.getText().trim();
+            String cidade = txtCid.getText().trim();
             String estado = (String) comboEstado.getSelectedItem();
             String cep = txtCepFinal.getText().replace("_", "").trim();
+            String escola = txtEsc.getText().trim();
+            String ano = txtAnoFinal.getText().replace("_", "").trim();
+            String fone = txtFoneFinal.getText().replace("_", "").trim();
 
             if(nome.isEmpty()) {
 
@@ -233,7 +259,7 @@ public class Main {
 
             if (celular.length() == 5) {
 
-                celular = null;
+                celular = "";
 
             } else if (celular.length() < 15) {
 
@@ -263,14 +289,33 @@ public class Main {
 
             }
 
+            if (!ano.isEmpty() && ano.length() < 4) {
+
+                JOptionPane.showMessageDialog(painel, "Preencha o ano da escola completo!");
+                return;
+
+            }
+
+            if (fone.length() == 5) {
+
+                fone = "";
+
+            } else if (fone.length() < 15) {
+
+                JOptionPane.showMessageDialog(painel, "Preencha o celular da escola completo!");
+                return;
+
+            }
+
             try {
 
                 Aluno aluno = new Aluno(nome, CPF, dataNasc, id1, id2, RG, civil, celular, email, endereco, cidade,
-                        estado, cep);
+                        estado, cep, escola, ano, fone);
                 alunoDao.inserir(aluno);
 
                 limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboCadResp1, comboCadResp2, txtRG, txtCivil,
-                        txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, null);
+                        txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, txtEsc, txtAnoFinal,
+                        txtFoneFinal, null);
 
                 JOptionPane.showMessageDialog(painel, "Aluno salvo com sucesso!");
 
@@ -281,13 +326,6 @@ public class Main {
                     JOptionPane.showMessageDialog(painel,
                             "Já existe alguém cadastrado com este CPF!",
                             "CPF Duplicado",
-                            JOptionPane.ERROR_MESSAGE);
-
-                } else if (ex.getMessage().toLowerCase().contains("UNIQUE constraint failed: aluno.celular")) {
-
-                    JOptionPane.showMessageDialog(painel,
-                            "Já existe alguém cadastrado com este número de celular!",
-                            "Celular Duplicado",
                             JOptionPane.ERROR_MESSAGE);
 
                 } else {
@@ -317,6 +355,9 @@ public class Main {
         painel.add(new JLabel("Cidade: ")); painel.add(txtCid);
         painel.add(new JLabel("Estado: ")); painel.add(comboEstado);
         painel.add(new JLabel("CEP: ")); painel.add(txtCepFinal);
+        painel.add(new JLabel("Escola: ")); painel.add(txtEsc);
+        painel.add(new JLabel("Ano: ")); painel.add(txtAnoFinal);
+        painel.add(new JLabel("Fone: ")); painel.add(txtFoneFinal);
         painel.add(btnSalvar);
 
         return painel;
@@ -461,7 +502,8 @@ public class Main {
 
             try {
 
-                Responsavel resp = new Responsavel(nome, CPF, dataNasc, RG, civil, celular, email, prof, trab, endereco, cidade, estado, cep);
+                Responsavel resp = new Responsavel(nome, CPF, dataNasc, RG, civil, celular, email, prof, trab, endereco,
+                        cidade, estado, cep);
                 respDao.inserir(resp);
 
                 limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, txtRG, txtCivil, txtCelFinal, txtEmail,
@@ -476,13 +518,6 @@ public class Main {
                     JOptionPane.showMessageDialog(painel,
                             "Já existe alguém cadastrado com este CPF!",
                             "CPF Duplicado",
-                            JOptionPane.ERROR_MESSAGE);
-
-                } else if (ex.getMessage().toLowerCase().contains("UNIQUE constraint failed: responsavel.celular")) {
-
-                    JOptionPane.showMessageDialog(painel,
-                            "Já existe alguém cadastrado com este número de celular!",
-                            "Celular Duplicado",
                             JOptionPane.ERROR_MESSAGE);
 
                 } else {
@@ -719,6 +754,9 @@ public class Main {
         JComboBox<String> comboEstado = new JComboBox<>(ufs);
         comboEstado.setBackground(Color.WHITE);
         JFormattedTextField txtCep = null;
+        JtextFieldLimitado txtEsc = new JtextFieldLimitado(20, 50);
+        JFormattedTextField txtAno = null;
+        JFormattedTextField txtFone = null;
 
         try {
 
@@ -756,10 +794,30 @@ public class Main {
 
         } catch (Exception e) { e.printStackTrace(); }
 
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("####");
+            mascara.setPlaceholderCharacter('_');
+            txtAno = new JFormattedTextField(mascara);
+            txtAno.setColumns(4);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("(##) 9####-####");
+            mascara.setPlaceholderCharacter('_');
+            txtFone = new JFormattedTextField(mascara);
+            txtFone.setColumns(9);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
         final JFormattedTextField txtCPFFinal = txtCPF;
         final JFormattedTextField txtDataFinal = txtData;
         final JFormattedTextField txtCelFinal = txtCel;
         final JFormattedTextField txtCepFinal = txtCep;
+        final JFormattedTextField txtAnoFinal = txtAno;
+        final JFormattedTextField txtFoneFinal = txtFone;
 
         JButton btnEditar = new JButton("Salvar Alterações");
         JButton btnExcluir = new JButton("Excluir Aluno");
@@ -779,6 +837,9 @@ public class Main {
         painelEditor.add(new JLabel("Cidade: ")); painelEditor.add(txtCid);
         painelEditor.add(new JLabel("Estado: ")); painelEditor.add(comboEstado);
         painelEditor.add(new JLabel("CEP: ")); painelEditor.add(txtCepFinal);
+        painelEditor.add(new JLabel("Escola: ")); painelEditor.add(txtEsc);
+        painelEditor.add(new JLabel("Ano: ")); painelEditor.add(txtAnoFinal);
+        painelEditor.add(new JLabel("Fone: ")); painelEditor.add(txtFoneFinal);
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
 
@@ -813,6 +874,9 @@ public class Main {
                     txtCid.setText(a.getCidade());
                     comboEstado.setSelectedItem(a.getEstado());
                     txtCepFinal.setText(a.getCep());
+                    txtEsc.setText(a.getEscola());
+                    txtAnoFinal.setText(a.getEscAno());
+                    txtFoneFinal.setText(a.getEscFone());
 
                 }
 
@@ -842,6 +906,9 @@ public class Main {
             String novaCid = txtCid.getText().trim();
             String novoEstado = (String) comboEstado.getSelectedItem();
             String novoCep = txtCepFinal.getText().trim();
+            String novaEscola = txtEsc.getText().trim();
+            String novoAno = txtAnoFinal.getText().replace("_", "").trim();
+            String novoFone = txtFoneFinal.getText().replace("_", "").trim();
 
             if (novoNome.isEmpty()) {
 
@@ -876,7 +943,7 @@ public class Main {
 
             if (novoCelular.length() == 5) {
 
-                novoCelular = null;
+                novoCelular = "";
 
             } else if(novoCelular.length() < 15) {
 
@@ -906,8 +973,26 @@ public class Main {
 
             }
 
+            if ((!novoAno.isEmpty()) && novoAno.length() < 4) {
+
+                JOptionPane.showMessageDialog(painelEditor, "Preencha o ano da escola completo!");
+                return;
+
+            }
+
+            if (novoFone.length() == 5) {
+
+                novoFone = "";
+
+            } else if (novoFone.length() < 15) {
+
+                JOptionPane.showMessageDialog(painelEditor, "Preencha o celular da escola completo!");
+                return;
+
+            }
+
             Aluno alunoEditado = new Aluno(novoNome, novoCPF, novaData, novoId1, novoId2, novoRG, novoCivil,
-                    novoCelular, novoEmail, novoEnder, novaCid, novoEstado, novoCep);
+                    novoCelular, novoEmail, novoEnder, novaCid, novoEstado, novoCep, novaEscola, novoAno, novoFone);
             alunoEditado.setId(Integer.parseInt(idTexto));
 
             try {
@@ -925,13 +1010,6 @@ public class Main {
                     JOptionPane.showMessageDialog(painelPrincipal,
                             "Já existe alguém cadastrado com este CPF!",
                             "CPF Duplicado",
-                            JOptionPane.ERROR_MESSAGE);
-
-                } else if (ex.getMessage().toLowerCase().contains("UNIQUE constraint failed: aluno.celular")) {
-
-                    JOptionPane.showMessageDialog(painelPrincipal,
-                            "Já existe alguém cadastrado com este número de celular!",
-                            "Celular Duplicado",
                             JOptionPane.ERROR_MESSAGE);
 
                 } else {
@@ -979,7 +1057,8 @@ public class Main {
                     alunoDao.deletar(Integer.parseInt(txtId.getText()));
                     preencherTabAlunoReduzida(alunoDao, modeloReduzido);
                     limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboEditResp1, comboEditResp2, txtRG, txtCivil,
-                            txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, txtId);
+                            txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, txtEsc, txtAnoFinal,
+                            txtFoneFinal, txtId);
                     JOptionPane.showMessageDialog(painelPrincipal, "Aluno deletado com sucesso!");
 
                 } catch (SQLException ex) {
@@ -1224,13 +1303,6 @@ public class Main {
                     JOptionPane.showMessageDialog(painelPrincipal,
                             "Já existe alguém cadastrado com este CPF!",
                             "CPF Duplicado",
-                            JOptionPane.ERROR_MESSAGE);
-
-                } else if (ex.getMessage().toLowerCase().contains("UNIQUE constraint failed: responsavel.celular")) {
-
-                    JOptionPane.showMessageDialog(painelPrincipal,
-                            "Já existe alguém cadastrado com este número de celular!",
-                            "Celular Duplicado",
                             JOptionPane.ERROR_MESSAGE);
 
                 } else {
@@ -1777,7 +1849,8 @@ public class Main {
                                           JtextFieldSomenteNumeros txtRG, JtextFieldSomenteLetras txtCivil,
                                           JFormattedTextField txtCel, JtextFieldLimitado txtEmail,
                                           JtextFieldLimitado txtEnder, JtextFieldSomenteLetras txtCid, JComboBox cb3,
-                                          JFormattedTextField txtCep, JTextField txtId) {
+                                          JFormattedTextField txtCep, JtextFieldLimitado txtEsc,
+                                          JFormattedTextField txtAno, JFormattedTextField txtFone, JTextField txtId) {
 
         txtNome.setText("");
         txtCPF.setValue(null);
@@ -1792,6 +1865,9 @@ public class Main {
         txtCid.setText("");
         if (cb3.getItemCount() > 0) cb3.setSelectedIndex(0);
         txtCep.setValue(null);
+        txtEsc.setText("");
+        txtAno.setValue(null);
+        txtFone.setValue(null);
 
         if (txtId != null) txtId.setText("");
 
@@ -1950,7 +2026,7 @@ public class Main {
             pw.println("************************************************************");
             pw.println();
             pw.println("Nome;CPF;Data Nascimento;Responsável 1;Responsável 2;RG;Estado Civil;Celular;E-Mail;Endereço;Cidade;" +
-                    "Estado;CEP");
+                    "Estado;CEP;Escola;Ano;Fone");
 
             for (Aluno a : alunoDao.listar()) {
 
@@ -1965,9 +2041,9 @@ public class Main {
 
                 }
 
-                pw.printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", a.getNome(), a.getCPF(), a.getDataNascimento(),
+                pw.printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", a.getNome(), a.getCPF(), a.getDataNascimento(),
                         nomeR1, nomeR2, a.getRG(), a.getEstCivil(), a.getCelular(), a.getEmail(), a.getEndereco(),
-                        a.getCidade(), a.getEstado(), a.getCep());
+                        a.getCidade(), a.getEstado(), a.getCep(), a.getEscola(), a.getEscAno(), a.getEscFone());
 
             }
 
@@ -2233,6 +2309,8 @@ public class Main {
         adicionarCampoFicha(painelFicha, "Endereço:", a.getEndereco(), gbc, linha++);
         adicionarCampoFicha(painelFicha, "Cidade/Estado:", a.getCidade() + " - " + a.getEstado(), gbc, linha++);
         adicionarCampoFicha(painelFicha, "CEP:", a.getCep(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "Escola/Ano/Fone:", a.getEscola() + " - " + a.getEscAno() + " / " +
+                 a.getEscFone(), gbc, linha++);
 
         JScrollPane scroll = new JScrollPane(painelFicha);
         scroll.setBorder(null);

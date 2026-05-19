@@ -33,7 +33,7 @@ public class Conexao {
                     data_nascimento TEXT NOT NULL,
                     rg    TEXT,
                     estado_civil   TEXT,
-                    celular   TEXT   UNIQUE NOT NULL,
+                    celular   TEXT   NOT NULL,
                     email   TEXT,
                     profissao   TEXT,
                     local_trabalho   TEXT,
@@ -60,6 +60,9 @@ public class Conexao {
                     cidade   TEXT   NOT NULL,
                     estado   TEXT   NOT NULL,
                     cep   TEXT   NOT NULL,
+                    escola   TEXT,
+                    escola_ano   TEXT,
+                    escola_fone   TEXT,
                     FOREIGN KEY (id_responsavel1) REFERENCES responsavel(id),
                     FOREIGN KEY (id_responsavel2) REFERENCES responsavel(id)
                 );

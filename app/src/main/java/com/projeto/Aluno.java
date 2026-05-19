@@ -3,14 +3,16 @@ package com.projeto;
 public class Aluno {
 
     private int id, idResponsavel1, idResponsavel2;
-    private String nome, CPF, dataNascimento, RG, estCivil, celular, email, endereco, cidade, estado, cep;
+    private String nome, CPF, dataNascimento, RG, estCivil, celular, email, endereco, cidade, estado, cep, escola, escAno,
+            escFone;
 
     public Aluno() {
 
     }
 
     public Aluno(String nome, String CPF, String dataNascimento, int idResp1, int idResp2, String rg, String estCivil,
-                 String celular, String email, String endereco, String cidade, String estado, String cep) {
+                 String celular, String email, String endereco, String cidade, String estado, String cep, String escola,
+                 String escAno, String escFone) {
 
         this.nome = nome;
         this.CPF = CPF;
@@ -25,6 +27,9 @@ public class Aluno {
         this.cidade = cidade;
         this.estado = estado;
         this.cep = cep;
+        this.escola = escola;
+        this.escAno = escAno;
+        this.escFone = escFone;
 
     }
 
@@ -138,6 +143,30 @@ public class Aluno {
 
         this.cep = cep;
 
+    }
+
+    public String getEscola() {
+        return escola;
+    }
+
+    public void setEscola(String escola) {
+        this.escola = escola;
+    }
+
+    public String getEscAno() {
+        return escAno;
+    }
+
+    public void setEscAno(String escAno) {
+        this.escAno = escAno;
+    }
+
+    public String getEscFone() {
+        return escFone;
+    }
+
+    public void setEscFone(String escFone) {
+        this.escFone = escFone;
     }
 
 }

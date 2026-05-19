@@ -9,7 +9,8 @@ public class AlunoDAO {
     public void inserir(Aluno aluno) throws SQLException{
 
         String sql = "INSERT INTO aluno(nome, cpf, data_nascimento, id_responsavel1, id_responsavel2, rg, estado_civil, " +
-                "celular, email, endereco, cidade, estado, cep) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "celular, email, endereco, cidade, estado, cep, escola, escola_ano, escola_fone) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -36,6 +37,9 @@ public class AlunoDAO {
             stmt.setString(11, aluno.getCidade());
             stmt.setString(12, aluno.getEstado());
             stmt.setString(13, aluno.getCep());
+            stmt.setString(14, aluno.getEscola());
+            stmt.setString(15, aluno.getEscAno());
+            stmt.setString(16, aluno.getEscFone());
 
             stmt.executeUpdate();
             System.out.println("Aluno inserido com sucesso.");
@@ -70,6 +74,9 @@ public class AlunoDAO {
                a.setCidade(rs.getString("cidade"));
                a.setEstado(rs.getString("estado"));
                a.setCep(rs.getString("cep"));
+               a.setEscola(rs.getString("escola"));
+               a.setEscAno(rs.getString("escola_ano"));
+               a.setEscFone(rs.getString("escola_fone"));
                lista.add(a);
 
            }
@@ -87,8 +94,8 @@ public class AlunoDAO {
     public void atualizar (Aluno aluno) throws SQLException {
 
         String sql = "UPDATE aluno SET nome = ?, cpf = ?, data_nascimento = ?, id_responsavel1 = ?, id_responsavel2 = ?," +
-                " rg = ?, estado_civil = ?, celular = ?, email = ?, endereco = ?, cidade = ?, estado = ?, cep = ? " +
-                "WHERE id = ?";
+                " rg = ?, estado_civil = ?, celular = ?, email = ?, endereco = ?, cidade = ?, estado = ?, cep = ?, " +
+                "escola = ?, escola_ano = ?, escola_fone = ? WHERE id = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -106,7 +113,10 @@ public class AlunoDAO {
             stmt.setString(11, aluno.getCidade());
             stmt.setString(12, aluno.getEstado());
             stmt.setString(13, aluno.getCep());
-            stmt.setInt(14, aluno.getId());
+            stmt.setString(14, aluno.getEscola());
+            stmt.setString(15, aluno.getEscAno());
+            stmt.setString(16, aluno.getEscFone());
+            stmt.setInt(17, aluno.getId());
             stmt.executeUpdate();
             System.out.println("Aluno atualizado com sucesso.");
 
@@ -153,7 +163,10 @@ public class AlunoDAO {
                         rs.getString("endereco"),
                         rs.getString("cidade"),
                         rs.getString("estado"),
-                        rs.getString("cep")
+                        rs.getString("cep"),
+                        rs.getString("escola"),
+                        rs.getString("escola_ano"),
+                        rs.getString("escola_fone")
                 );
                 a.setId(rs.getInt("id"));
                 return a;
