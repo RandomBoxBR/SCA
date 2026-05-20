@@ -4,7 +4,7 @@ public class Aluno {
 
     private int id, idResponsavel1, idResponsavel2;
     private String nome, CPF, dataNascimento, RG, estCivil, celular, email, endereco, cidade, estado, cep, escola, escAno,
-            escFone;
+            escFone, temIrmaos, irmaos;
 
     public Aluno() {
 
@@ -12,24 +12,12 @@ public class Aluno {
 
     public Aluno(String nome, String CPF, String dataNascimento, int idResp1, int idResp2, String rg, String estCivil,
                  String celular, String email, String endereco, String cidade, String estado, String cep, String escola,
-                 String escAno, String escFone) {
+                 String escAno, String escFone, String temIrmaos, String irmaos) {
 
-        this.nome = nome;
-        this.CPF = CPF;
-        this.dataNascimento = dataNascimento;
-        this.idResponsavel1 = idResp1;
-        this.idResponsavel2 = idResp2;
-        this.RG = rg;
-        this.estCivil = estCivil;
-        this.celular = celular;
-        this.email = email;
-        this.endereco = endereco;
-        this.cidade = cidade;
-        this.estado = estado;
-        this.cep = cep;
-        this.escola = escola;
-        this.escAno = escAno;
-        this.escFone = escFone;
+        this.nome = nome; this.CPF = CPF; this.dataNascimento = dataNascimento; this.idResponsavel1 = idResp1;
+        this.idResponsavel2 = idResp2; this.RG = rg; this.estCivil = estCivil; this.celular = celular; this.email = email;
+        this.endereco = endereco; this.cidade = cidade; this.estado = estado; this.cep = cep; this.escola = escola;
+        this.escAno = escAno; this.escFone = escFone; this.temIrmaos = temIrmaos; this.irmaos = irmaos;
 
     }
 
@@ -167,6 +155,22 @@ public class Aluno {
 
     public void setEscFone(String escFone) {
         this.escFone = escFone;
+    }
+
+    public String getTemIrmaos() { return temIrmaos; }
+
+    public void setTemIrmaos(String temIrmaos) {
+
+        this.temIrmaos = temIrmaos;
+
+    }
+
+    public String getIrmaos() { return irmaos; }
+
+    public void setIrmaos(String irmaos) {
+
+        this.irmaos = irmaos;
+
     }
 
 }

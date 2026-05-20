@@ -120,6 +120,14 @@ public class Main {
         JtextFieldLimitado txtEsc = new JtextFieldLimitado(20, 50);
         JFormattedTextField txtAno = null;
         JFormattedTextField txtFone = null;
+        String[] opcoesIrmaos = {"NÃO", "SIM"};
+        JComboBox<String> comboIrmaos = new JComboBox<>(opcoesIrmaos);
+        JtextFieldLimitado txtIrmaos = new JtextFieldLimitado(50, 100);
+        comboIrmaos.setBackground(Color.WHITE);
+        JPanel painelIrmaos = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        painelIrmaos.add(new JLabel("Nome e Nascimento:"));
+        painelIrmaos.add(txtIrmaos);
+        painelIrmaos.setVisible(false);
 
         try {
 
@@ -208,6 +216,8 @@ public class Main {
             String escola = txtEsc.getText().trim();
             String ano = txtAnoFinal.getText().replace("_", "").trim();
             String fone = txtFoneFinal.getText().replace("_", "").trim();
+            String temIrmaos = (String) comboIrmaos.getSelectedItem();
+            String irmaos = txtIrmaos.getText().trim();
 
             if(nome.isEmpty()) {
 
@@ -310,12 +320,12 @@ public class Main {
             try {
 
                 Aluno aluno = new Aluno(nome, CPF, dataNasc, id1, id2, RG, civil, celular, email, endereco, cidade,
-                        estado, cep, escola, ano, fone);
+                        estado, cep, escola, ano, fone, temIrmaos, irmaos);
                 alunoDao.inserir(aluno);
 
                 limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboCadResp1, comboCadResp2, txtRG, txtCivil,
                         txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, txtEsc, txtAnoFinal,
-                        txtFoneFinal, null);
+                        txtFoneFinal, comboIrmaos, txtIrmaos, null);
 
                 JOptionPane.showMessageDialog(painel, "Aluno salvo com sucesso!");
 
@@ -342,6 +352,26 @@ public class Main {
 
         });
 
+        comboIrmaos.addActionListener(e -> {
+
+            String selecao = (String) comboIrmaos.getSelectedItem();
+
+            if ("SIM".equals(selecao)) {
+
+                painelIrmaos.setVisible(true);
+
+            } else {
+
+                painelIrmaos.setVisible(false);
+                txtIrmaos.setText("");
+
+            }
+
+            painelIrmaos.revalidate();
+            painelIrmaos.repaint();
+
+        });
+
         painel.add(new JLabel("Nome: ")); painel.add(txtNome);
         painel.add(new JLabel("CPF: ")); painel.add(txtCPFFinal);
         painel.add(new JLabel("Nascimento: ")); painel.add(txtDataFinal);
@@ -358,6 +388,8 @@ public class Main {
         painel.add(new JLabel("Escola: ")); painel.add(txtEsc);
         painel.add(new JLabel("Ano: ")); painel.add(txtAnoFinal);
         painel.add(new JLabel("Fone: ")); painel.add(txtFoneFinal);
+        painel.add(new JLabel("Tem irmãos?")); painel.add(comboIrmaos);
+        painel.add(painelIrmaos);
         painel.add(btnSalvar);
 
         return painel;
@@ -704,7 +736,7 @@ public class Main {
                 System.out.println("Combos de responsáveis atualizados!");
 
 
-            }else {
+            } else {
 
                 preencherTabRespReduzida(respDao, modeloRespReduzido);
 
@@ -757,6 +789,14 @@ public class Main {
         JtextFieldLimitado txtEsc = new JtextFieldLimitado(20, 50);
         JFormattedTextField txtAno = null;
         JFormattedTextField txtFone = null;
+        String[] opcoesIrmaos = {"NÃO", "SIM"};
+        JComboBox<String> comboIrmaos = new JComboBox<>(opcoesIrmaos);
+        comboIrmaos.setBackground(Color.WHITE);
+        JtextFieldLimitado txtIrmaos = new JtextFieldLimitado(50, 100);
+        JPanel painelIrmaos = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        painelIrmaos.add(new JLabel("Nome e Nascimento:"));
+        painelIrmaos.add(txtIrmaos);
+        painelIrmaos.setVisible(false);
 
         try {
 
@@ -840,6 +880,8 @@ public class Main {
         painelEditor.add(new JLabel("Escola: ")); painelEditor.add(txtEsc);
         painelEditor.add(new JLabel("Ano: ")); painelEditor.add(txtAnoFinal);
         painelEditor.add(new JLabel("Fone: ")); painelEditor.add(txtFoneFinal);
+        painelEditor.add(new JLabel("Tem irmãos?")); painelEditor.add(comboIrmaos);
+        painelEditor.add(painelIrmaos);
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
 
@@ -877,6 +919,8 @@ public class Main {
                     txtEsc.setText(a.getEscola());
                     txtAnoFinal.setText(a.getEscAno());
                     txtFoneFinal.setText(a.getEscFone());
+                    comboIrmaos.setSelectedItem(a.getTemIrmaos());
+                    txtIrmaos.setText(a.getIrmaos());
 
                 }
 
@@ -909,6 +953,8 @@ public class Main {
             String novaEscola = txtEsc.getText().trim();
             String novoAno = txtAnoFinal.getText().replace("_", "").trim();
             String novoFone = txtFoneFinal.getText().replace("_", "").trim();
+            String novoTemIrmaos = (String) comboIrmaos.getSelectedItem();
+            String novoIrmaos = txtIrmaos.getText().trim();
 
             if (novoNome.isEmpty()) {
 
@@ -992,7 +1038,8 @@ public class Main {
             }
 
             Aluno alunoEditado = new Aluno(novoNome, novoCPF, novaData, novoId1, novoId2, novoRG, novoCivil,
-                    novoCelular, novoEmail, novoEnder, novaCid, novoEstado, novoCep, novaEscola, novoAno, novoFone);
+                    novoCelular, novoEmail, novoEnder, novaCid, novoEstado, novoCep, novaEscola, novoAno, novoFone,
+                    novoTemIrmaos, novoIrmaos);
             alunoEditado.setId(Integer.parseInt(idTexto));
 
             try {
@@ -1058,7 +1105,7 @@ public class Main {
                     preencherTabAlunoReduzida(alunoDao, modeloReduzido);
                     limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboEditResp1, comboEditResp2, txtRG, txtCivil,
                             txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, txtEsc, txtAnoFinal,
-                            txtFoneFinal, txtId);
+                            txtFoneFinal, comboIrmaos, txtIrmaos, txtId);
                     JOptionPane.showMessageDialog(painelPrincipal, "Aluno deletado com sucesso!");
 
                 } catch (SQLException ex) {
@@ -1072,6 +1119,26 @@ public class Main {
                 }
 
             }
+
+        });
+
+        comboIrmaos.addActionListener(e -> {
+
+            String selecao = (String) comboIrmaos.getSelectedItem();
+
+            if ("SIM".equals(selecao)) {
+
+                painelIrmaos.setVisible(true);
+
+            } else {
+
+                painelIrmaos.setVisible(false);
+                txtIrmaos.setText("");
+
+            }
+
+            painelIrmaos.revalidate();
+            painelIrmaos.repaint();
 
         });
 
@@ -1850,7 +1917,8 @@ public class Main {
                                           JFormattedTextField txtCel, JtextFieldLimitado txtEmail,
                                           JtextFieldLimitado txtEnder, JtextFieldSomenteLetras txtCid, JComboBox cb3,
                                           JFormattedTextField txtCep, JtextFieldLimitado txtEsc,
-                                          JFormattedTextField txtAno, JFormattedTextField txtFone, JTextField txtId) {
+                                          JFormattedTextField txtAno, JFormattedTextField txtFone, JComboBox cb4,
+                                          JtextFieldLimitado txtIrmaos, JTextField txtId) {
 
         txtNome.setText("");
         txtCPF.setValue(null);
@@ -1868,7 +1936,8 @@ public class Main {
         txtEsc.setText("");
         txtAno.setValue(null);
         txtFone.setValue(null);
-
+        if (cb4.getItemCount() > 0) cb4.setSelectedIndex(0);
+        txtIrmaos.setText("");
         if (txtId != null) txtId.setText("");
 
     }
@@ -2026,7 +2095,7 @@ public class Main {
             pw.println("************************************************************");
             pw.println();
             pw.println("Nome;CPF;Data Nascimento;Responsável 1;Responsável 2;RG;Estado Civil;Celular;E-Mail;Endereço;Cidade;" +
-                    "Estado;CEP;Escola;Ano;Fone");
+                    "Estado;CEP;Escola;Ano;Fone;Tem Irmãos?;Irmãos");
 
             for (Aluno a : alunoDao.listar()) {
 
@@ -2041,9 +2110,10 @@ public class Main {
 
                 }
 
-                pw.printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", a.getNome(), a.getCPF(), a.getDataNascimento(),
+                pw.printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", a.getNome(), a.getCPF(), a.getDataNascimento(),
                         nomeR1, nomeR2, a.getRG(), a.getEstCivil(), a.getCelular(), a.getEmail(), a.getEndereco(),
-                        a.getCidade(), a.getEstado(), a.getCep(), a.getEscola(), a.getEscAno(), a.getEscFone());
+                        a.getCidade(), a.getEstado(), a.getCep(), a.getEscola(), a.getEscAno(), a.getEscFone(),
+                        a.getTemIrmaos(), a.getIrmaos());
 
             }
 
@@ -2311,6 +2381,9 @@ public class Main {
         adicionarCampoFicha(painelFicha, "CEP:", a.getCep(), gbc, linha++);
         adicionarCampoFicha(painelFicha, "Escola/Ano/Fone:", a.getEscola() + " - " + a.getEscAno() + " / " +
                  a.getEscFone(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "Tem irmãos?", a.getTemIrmaos(), gbc, linha++);
+        if ("SIM".equals(a.getTemIrmaos()))
+            adicionarCampoFicha(painelFicha, "Irmãos:", a.getIrmaos(), gbc, linha++);
 
         JScrollPane scroll = new JScrollPane(painelFicha);
         scroll.setBorder(null);

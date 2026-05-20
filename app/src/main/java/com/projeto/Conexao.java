@@ -63,6 +63,8 @@ public class Conexao {
                     escola   TEXT,
                     escola_ano   TEXT,
                     escola_fone   TEXT,
+                    tem_irmaos   TEXT   NOT NULL,
+                    irmaos   TEXT,
                     FOREIGN KEY (id_responsavel1) REFERENCES responsavel(id),
                     FOREIGN KEY (id_responsavel2) REFERENCES responsavel(id)
                 );
