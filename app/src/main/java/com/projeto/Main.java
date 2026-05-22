@@ -128,6 +128,8 @@ public class Main {
         painelIrmaos.add(new JLabel("Nome e Nascimento:"));
         painelIrmaos.add(txtIrmaos);
         painelIrmaos.setVisible(false);
+        JFormattedTextField txtAdmissao = null;
+        JFormattedTextField txtDesligamento = null;
 
         try {
 
@@ -183,12 +185,32 @@ public class Main {
 
         } catch (Exception e) { e.printStackTrace(); }
 
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("##/##/####");
+            mascara.setPlaceholderCharacter('_');
+            txtAdmissao = new JFormattedTextField(mascara);
+            txtAdmissao.setColumns(6);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("##/##/####");
+            mascara.setPlaceholderCharacter('_');
+            txtDesligamento = new JFormattedTextField(mascara);
+            txtDesligamento.setColumns(6);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
         final JFormattedTextField txtCPFFinal = txtCPF;
         final JFormattedTextField txtDataFinal = txtData;
         final JFormattedTextField txtCelFinal = txtCel;
         final JFormattedTextField txtCepFinal = txtCep;
         final JFormattedTextField txtAnoFinal = txtAno;
         final JFormattedTextField txtFoneFinal = txtFone;
+        final JFormattedTextField txtAdmFinal = txtAdmissao;
+        final JFormattedTextField txtDeslFinal = txtDesligamento;
 
         comboCadResp1 = new JComboBox<>();
         comboCadResp1.setBackground(Color.WHITE);
@@ -218,6 +240,8 @@ public class Main {
             String fone = txtFoneFinal.getText().replace("_", "").trim();
             String temIrmaos = (String) comboIrmaos.getSelectedItem();
             String irmaos = txtIrmaos.getText().trim();
+            String admissao = txtAdmFinal.getText().replace("_", "").trim();
+            String desligamento = txtDeslFinal.getText().replace("_", "").trim();
 
             if(nome.isEmpty()) {
 
@@ -238,11 +262,9 @@ public class Main {
                 JOptionPane.showMessageDialog(painel, "Preencha a data de nascimento completa!");
                 return;
 
-            }
+            } else if(!isDataValida(dataNasc)) {
 
-            if(!isDataValida(dataNasc)) {
-
-                JOptionPane.showMessageDialog(painel, "Data inserida inválida!");
+                JOptionPane.showMessageDialog(painel, "Data de nascimento inserida inválida!");
                 return;
 
             }
@@ -317,15 +339,43 @@ public class Main {
 
             }
 
+            if(admissao.length() < 10) {
+
+                JOptionPane.showMessageDialog(painel, "Preencha a data de admissão completa!");
+                return;
+
+            } else if(!isDataValida(admissao)) {
+
+                JOptionPane.showMessageDialog(painel, "Data de admissão inserida inválida!");
+                return;
+
+            }
+
+            if (desligamento.length() == 2) {
+
+                desligamento = "";
+
+            } else if (desligamento.length() < 10) {
+
+                JOptionPane.showMessageDialog(painel, "Preencha a data de desligamento completa!");
+                return;
+
+            } else if (!isDataValida(desligamento)) {
+
+                JOptionPane.showMessageDialog(painel, "Data de desligamento inserida inválida!");
+                return;
+
+            }
+
             try {
 
                 Aluno aluno = new Aluno(nome, CPF, dataNasc, id1, id2, RG, civil, celular, email, endereco, cidade,
-                        estado, cep, escola, ano, fone, temIrmaos, irmaos);
+                        estado, cep, escola, ano, fone, temIrmaos, irmaos, admissao, desligamento);
                 alunoDao.inserir(aluno);
 
                 limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboCadResp1, comboCadResp2, txtRG, txtCivil,
                         txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, txtEsc, txtAnoFinal,
-                        txtFoneFinal, comboIrmaos, txtIrmaos, null);
+                        txtFoneFinal, comboIrmaos, txtIrmaos, txtAdmFinal, txtDeslFinal, null);
 
                 JOptionPane.showMessageDialog(painel, "Aluno salvo com sucesso!");
 
@@ -389,6 +439,8 @@ public class Main {
         painel.add(new JLabel("Ano: ")); painel.add(txtAnoFinal);
         painel.add(new JLabel("Fone: ")); painel.add(txtFoneFinal);
         painel.add(new JLabel("Tem irmãos?")); painel.add(comboIrmaos);
+        painel.add(new JLabel("Data de Admissão: ")); painel.add(txtAdmFinal);
+        painel.add(new JLabel("Data de Desligamento: ")); painel.add(txtDeslFinal);
         painel.add(painelIrmaos);
         painel.add(btnSalvar);
 
@@ -797,6 +849,8 @@ public class Main {
         painelIrmaos.add(new JLabel("Nome e Nascimento:"));
         painelIrmaos.add(txtIrmaos);
         painelIrmaos.setVisible(false);
+        JFormattedTextField txtAdmissao = null;
+        JFormattedTextField txtDesligamento = null;
 
         try {
 
@@ -852,12 +906,32 @@ public class Main {
 
         } catch (Exception e) { e.printStackTrace(); }
 
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("##/##/####");
+            mascara.setPlaceholderCharacter('_');
+            txtAdmissao = new JFormattedTextField(mascara);
+            txtAdmissao.setColumns(6);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
+        try {
+
+            MaskFormatter mascara = new MaskFormatter("##/##/####");
+            mascara.setPlaceholderCharacter('_');
+            txtDesligamento = new JFormattedTextField(mascara);
+            txtDesligamento.setColumns(6);
+
+        } catch (Exception e) { e.printStackTrace(); }
+
         final JFormattedTextField txtCPFFinal = txtCPF;
         final JFormattedTextField txtDataFinal = txtData;
         final JFormattedTextField txtCelFinal = txtCel;
         final JFormattedTextField txtCepFinal = txtCep;
         final JFormattedTextField txtAnoFinal = txtAno;
         final JFormattedTextField txtFoneFinal = txtFone;
+        final JFormattedTextField txtAdmFinal = txtAdmissao;
+        final JFormattedTextField txtDeslFinal = txtDesligamento;
 
         JButton btnEditar = new JButton("Salvar Alterações");
         JButton btnExcluir = new JButton("Excluir Aluno");
@@ -881,6 +955,8 @@ public class Main {
         painelEditor.add(new JLabel("Ano: ")); painelEditor.add(txtAnoFinal);
         painelEditor.add(new JLabel("Fone: ")); painelEditor.add(txtFoneFinal);
         painelEditor.add(new JLabel("Tem irmãos?")); painelEditor.add(comboIrmaos);
+        painelEditor.add(new JLabel("Data de Admissão: ")); painelEditor.add(txtAdmFinal);
+        painelEditor.add(new JLabel("Data de Desligamento: ")); painelEditor.add(txtDeslFinal);
         painelEditor.add(painelIrmaos);
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
@@ -921,6 +997,8 @@ public class Main {
                     txtFoneFinal.setText(a.getEscFone());
                     comboIrmaos.setSelectedItem(a.getTemIrmaos());
                     txtIrmaos.setText(a.getIrmaos());
+                    txtAdmFinal.setText(a.getAdmissao());
+                    txtDeslFinal.setText(a.getDesligamento());
 
                 }
 
@@ -955,6 +1033,8 @@ public class Main {
             String novoFone = txtFoneFinal.getText().replace("_", "").trim();
             String novoTemIrmaos = (String) comboIrmaos.getSelectedItem();
             String novoIrmaos = txtIrmaos.getText().trim();
+            String novaAdm = txtAdmFinal.getText().replace("_", "").trim();
+            String novoDesl = txtDeslFinal.getText().replace("_", "").trim();
 
             if (novoNome.isEmpty()) {
 
@@ -972,7 +1052,7 @@ public class Main {
 
             if (novaData.length() < 10 || !isDataValida(novaData)) {
 
-                JOptionPane.showMessageDialog(painelPrincipal, "Data inválida!");
+                JOptionPane.showMessageDialog(painelPrincipal, "Data de nascimento inválida!");
                 return;
 
             }
@@ -1037,9 +1117,27 @@ public class Main {
 
             }
 
+            if (novaAdm.length() < 10 || !isDataValida(novaAdm)) {
+
+                JOptionPane.showMessageDialog(painelPrincipal, "Data de admissão inválida!");
+                return;
+
+            }
+
+            if (novoDesl.length() == 2) {
+
+                novoDesl = "";
+
+            } else if (novoDesl.length() < 10 || !isDataValida(novoDesl)) {
+
+                JOptionPane.showMessageDialog(painelPrincipal, "Data de desligamento inserida inválida!");
+                return;
+
+            }
+
             Aluno alunoEditado = new Aluno(novoNome, novoCPF, novaData, novoId1, novoId2, novoRG, novoCivil,
                     novoCelular, novoEmail, novoEnder, novaCid, novoEstado, novoCep, novaEscola, novoAno, novoFone,
-                    novoTemIrmaos, novoIrmaos);
+                    novoTemIrmaos, novoIrmaos, novaAdm, novoDesl);
             alunoEditado.setId(Integer.parseInt(idTexto));
 
             try {
@@ -1105,7 +1203,7 @@ public class Main {
                     preencherTabAlunoReduzida(alunoDao, modeloReduzido);
                     limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboEditResp1, comboEditResp2, txtRG, txtCivil,
                             txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, txtEsc, txtAnoFinal,
-                            txtFoneFinal, comboIrmaos, txtIrmaos, txtId);
+                            txtFoneFinal, comboIrmaos, txtIrmaos, txtAdmFinal, txtDeslFinal, txtId);
                     JOptionPane.showMessageDialog(painelPrincipal, "Aluno deletado com sucesso!");
 
                 } catch (SQLException ex) {
@@ -1918,7 +2016,8 @@ public class Main {
                                           JtextFieldLimitado txtEnder, JtextFieldSomenteLetras txtCid, JComboBox cb3,
                                           JFormattedTextField txtCep, JtextFieldLimitado txtEsc,
                                           JFormattedTextField txtAno, JFormattedTextField txtFone, JComboBox cb4,
-                                          JtextFieldLimitado txtIrmaos, JTextField txtId) {
+                                          JtextFieldLimitado txtIrmaos, JFormattedTextField txtAdmissao,
+                                          JFormattedTextField txtDesligamento, JTextField txtId) {
 
         txtNome.setText("");
         txtCPF.setValue(null);
@@ -1938,6 +2037,9 @@ public class Main {
         txtFone.setValue(null);
         if (cb4.getItemCount() > 0) cb4.setSelectedIndex(0);
         txtIrmaos.setText("");
+        txtAdmissao.setValue(null);
+        txtDesligamento.setValue(null);
+
         if (txtId != null) txtId.setText("");
 
     }
@@ -2094,8 +2196,8 @@ public class Main {
             pw.println("                Gerado em: " + dataHora);
             pw.println("************************************************************");
             pw.println();
-            pw.println("Nome;CPF;Data Nascimento;Responsável 1;Responsável 2;RG;Estado Civil;Celular;E-Mail;Endereço;Cidade;" +
-                    "Estado;CEP;Escola;Ano;Fone;Tem Irmãos?;Irmãos");
+            pw.println("Nome;CPF;Data de Nascimento;Responsável 1;Responsável 2;RG;Estado Civil;Celular;E-Mail;Endereço;" +
+                    "Cidade;Estado;CEP;Escola;Ano;Fone;Tem Irmãos?;Irmãos;Data de Admissão;Data de Desligamento");
 
             for (Aluno a : alunoDao.listar()) {
 
@@ -2110,10 +2212,10 @@ public class Main {
 
                 }
 
-                pw.printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", a.getNome(), a.getCPF(), a.getDataNascimento(),
+                pw.printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", a.getNome(), a.getCPF(), a.getDataNascimento(),
                         nomeR1, nomeR2, a.getRG(), a.getEstCivil(), a.getCelular(), a.getEmail(), a.getEndereco(),
                         a.getCidade(), a.getEstado(), a.getCep(), a.getEscola(), a.getEscAno(), a.getEscFone(),
-                        a.getTemIrmaos(), a.getIrmaos());
+                        a.getTemIrmaos(), a.getIrmaos(), a.getAdmissao(), a.getDesligamento());
 
             }
 
@@ -2384,6 +2486,8 @@ public class Main {
         adicionarCampoFicha(painelFicha, "Tem irmãos?", a.getTemIrmaos(), gbc, linha++);
         if ("SIM".equals(a.getTemIrmaos()))
             adicionarCampoFicha(painelFicha, "Irmãos:", a.getIrmaos(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "Data de Admissão:", a.getAdmissao(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "Data de Desligamento:", a.getDesligamento(), gbc, linha++);
 
         JScrollPane scroll = new JScrollPane(painelFicha);
         scroll.setBorder(null);
