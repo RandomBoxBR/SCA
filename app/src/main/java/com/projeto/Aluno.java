@@ -4,7 +4,7 @@ public class Aluno {
 
     private int id, idResponsavel1, idResponsavel2;
     private String nome, CPF, dataNascimento, RG, estCivil, celular, email, endereco, cidade, estado, cep, escola, escAno,
-            escFone, temIrmaos, irmaos, admissao, desligamento;
+            escFone, temIrmaos, irmaos, admissao, desligamento, diagnostico, parente, parentesco;
 
     public Aluno() {
 
@@ -12,13 +12,15 @@ public class Aluno {
 
     public Aluno(String nome, String CPF, String dataNascimento, int idResp1, int idResp2, String rg, String estCivil,
                  String celular, String email, String endereco, String cidade, String estado, String cep, String escola,
-                 String escAno, String escFone, String temIrmaos, String irmaos, String admissao, String desligamento) {
+                 String escAno, String escFone, String temIrmaos, String irmaos, String admissao, String desligamento,
+                 String diagnostico, String parente, String parentesco) {
 
         this.nome = nome; this.CPF = CPF; this.dataNascimento = dataNascimento; this.idResponsavel1 = idResp1;
         this.idResponsavel2 = idResp2; this.RG = rg; this.estCivil = estCivil; this.celular = celular; this.email = email;
         this.endereco = endereco; this.cidade = cidade; this.estado = estado; this.cep = cep; this.escola = escola;
         this.escAno = escAno; this.escFone = escFone; this.temIrmaos = temIrmaos; this.irmaos = irmaos;
-        this.admissao = admissao; this.desligamento = desligamento;
+        this.admissao = admissao; this.desligamento = desligamento; this.diagnostico = diagnostico; this.parente = parente;
+        this.parentesco = parentesco;
 
     }
 
@@ -187,6 +189,30 @@ public class Aluno {
     public void setDesligamento(String desligamento) {
 
         this.desligamento = desligamento;
+
+    }
+
+    public String getDiagnostico() { return diagnostico; }
+
+    public void setDiagnostico(String diagnostico) {
+
+        this.diagnostico = diagnostico;
+
+    }
+
+    public String getParente() { return parente; }
+
+    public void setParente(String parente) {
+
+        this.parente = parente;
+
+    }
+
+    public String getParentesco() { return parentesco; }
+
+    public void setParentesco(String parentesco) {
+
+        this.parentesco = parentesco;
 
     }
 

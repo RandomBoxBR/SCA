@@ -67,6 +67,9 @@ public class Conexao {
                     irmaos   TEXT,
                     data_admissao   TEXT   NOT NULL,
                     data_desligamento   TEXT,
+                    diagnostico_down   TEXT   NOT NULL,
+                    parente_down   TEXT   NOT NULL,
+                    grau_parentesco   TEXT,
                     FOREIGN KEY (id_responsavel1) REFERENCES responsavel(id),
                     FOREIGN KEY (id_responsavel2) REFERENCES responsavel(id)
                 );
@@ -81,7 +84,7 @@ public class Conexao {
             """);
 
             stmt.execute("""
-                INSERT OR IGNORE INTO users (id, username, password) VALUES (1, 'Admin', '***REMOVED***');
+                INSERT OR IGNORE INTO users (id, username, password) VALUES (1, 'Admin', 'Admin1234');
             """);
 
             System.out.println("Banco de dados inicializado com sucesso.");

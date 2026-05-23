@@ -120,16 +120,26 @@ public class Main {
         JtextFieldLimitado txtEsc = new JtextFieldLimitado(20, 50);
         JFormattedTextField txtAno = null;
         JFormattedTextField txtFone = null;
-        String[] opcoesIrmaos = {"NÃO", "SIM"};
-        JComboBox<String> comboIrmaos = new JComboBox<>(opcoesIrmaos);
-        JtextFieldLimitado txtIrmaos = new JtextFieldLimitado(50, 100);
+        String[] opcoes = {"NÃO", "SIM"};
+        JComboBox<String> comboIrmaos = new JComboBox<>(opcoes);
         comboIrmaos.setBackground(Color.WHITE);
+        JtextFieldLimitado txtIrmaos = new JtextFieldLimitado(50, 100);
         JPanel painelIrmaos = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        painelIrmaos.add(new JLabel("Nome e Nascimento:"));
+        painelIrmaos.add(new JLabel("Nome e Nascimento: "));
         painelIrmaos.add(txtIrmaos);
         painelIrmaos.setVisible(false);
         JFormattedTextField txtAdmissao = null;
         JFormattedTextField txtDesligamento = null;
+        String[] opcoesDiagnostico = {"Trissomia Simples", "Translocação", "Mosaicismo"};
+        JComboBox<String> comboDiagnostico = new JComboBox<>(opcoesDiagnostico);
+        comboDiagnostico.setBackground(Color.WHITE);
+        JComboBox<String> comboParente = new JComboBox<>(opcoes);
+        comboParente.setBackground(Color.WHITE);
+        JtextFieldLimitado txtParentesco = new JtextFieldLimitado(20, 50);
+        JPanel painelParente = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        painelParente.add(new JLabel("Grau de Parentesco: "));
+        painelParente.add(txtParentesco);
+        painelParente.setVisible(false);
 
         try {
 
@@ -242,6 +252,9 @@ public class Main {
             String irmaos = txtIrmaos.getText().trim();
             String admissao = txtAdmFinal.getText().replace("_", "").trim();
             String desligamento = txtDeslFinal.getText().replace("_", "").trim();
+            String diagnostico = (String) comboDiagnostico.getSelectedItem();
+            String temParente = (String) comboParente.getSelectedItem();
+            String parentesco = txtParentesco.getText().trim();
 
             if(nome.isEmpty()) {
 
@@ -370,12 +383,14 @@ public class Main {
             try {
 
                 Aluno aluno = new Aluno(nome, CPF, dataNasc, id1, id2, RG, civil, celular, email, endereco, cidade,
-                        estado, cep, escola, ano, fone, temIrmaos, irmaos, admissao, desligamento);
+                        estado, cep, escola, ano, fone, temIrmaos, irmaos, admissao, desligamento, diagnostico,
+                        temParente, parentesco);
                 alunoDao.inserir(aluno);
 
                 limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboCadResp1, comboCadResp2, txtRG, txtCivil,
                         txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, txtEsc, txtAnoFinal,
-                        txtFoneFinal, comboIrmaos, txtIrmaos, txtAdmFinal, txtDeslFinal, null);
+                        txtFoneFinal, comboIrmaos, txtIrmaos, txtAdmFinal, txtDeslFinal, comboDiagnostico, comboParente,
+                        txtParentesco, null);
 
                 JOptionPane.showMessageDialog(painel, "Aluno salvo com sucesso!");
 
@@ -422,6 +437,26 @@ public class Main {
 
         });
 
+        comboParente.addActionListener(e -> {
+
+            String selecao = (String) comboParente.getSelectedItem();
+
+            if ("SIM".equals(selecao)) {
+
+                painelParente.setVisible(true);
+
+            } else {
+
+                painelParente.setVisible(false);
+                txtParentesco.setText("");
+
+            }
+
+            painelParente.revalidate();
+            painelParente.repaint();
+
+        });
+
         painel.add(new JLabel("Nome: ")); painel.add(txtNome);
         painel.add(new JLabel("CPF: ")); painel.add(txtCPFFinal);
         painel.add(new JLabel("Nascimento: ")); painel.add(txtDataFinal);
@@ -438,10 +473,13 @@ public class Main {
         painel.add(new JLabel("Escola: ")); painel.add(txtEsc);
         painel.add(new JLabel("Ano: ")); painel.add(txtAnoFinal);
         painel.add(new JLabel("Fone: ")); painel.add(txtFoneFinal);
-        painel.add(new JLabel("Tem irmãos?")); painel.add(comboIrmaos);
+        painel.add(new JLabel("Tem irmãos? ")); painel.add(comboIrmaos);
+        painel.add(painelIrmaos);
         painel.add(new JLabel("Data de Admissão: ")); painel.add(txtAdmFinal);
         painel.add(new JLabel("Data de Desligamento: ")); painel.add(txtDeslFinal);
-        painel.add(painelIrmaos);
+        painel.add(new JLabel("Diagnóstico: ")); painel.add(comboDiagnostico);
+        painel.add(new JLabel("Tem parente com síndrome de DOWN? ")); painel.add(comboParente);
+        painel.add(painelParente);
         painel.add(btnSalvar);
 
         return painel;
@@ -841,16 +879,26 @@ public class Main {
         JtextFieldLimitado txtEsc = new JtextFieldLimitado(20, 50);
         JFormattedTextField txtAno = null;
         JFormattedTextField txtFone = null;
-        String[] opcoesIrmaos = {"NÃO", "SIM"};
-        JComboBox<String> comboIrmaos = new JComboBox<>(opcoesIrmaos);
+        String[] opcoesSN = {"NÃO", "SIM"};
+        JComboBox<String> comboIrmaos = new JComboBox<>(opcoesSN);
         comboIrmaos.setBackground(Color.WHITE);
         JtextFieldLimitado txtIrmaos = new JtextFieldLimitado(50, 100);
         JPanel painelIrmaos = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        painelIrmaos.add(new JLabel("Nome e Nascimento:"));
+        painelIrmaos.add(new JLabel("Nome e Nascimento: "));
         painelIrmaos.add(txtIrmaos);
         painelIrmaos.setVisible(false);
         JFormattedTextField txtAdmissao = null;
         JFormattedTextField txtDesligamento = null;
+        String[] opcoesDiagnostico = {"Trissomia Simples", "Translocação", "Mosaicismo"};
+        JComboBox<String> comboDiagnostico = new JComboBox<>(opcoesDiagnostico);
+        comboDiagnostico.setBackground(Color.WHITE);
+        JComboBox<String> comboParente = new JComboBox<>(opcoesSN);
+        comboParente.setBackground(Color.WHITE);
+        JtextFieldLimitado txtParentesco = new JtextFieldLimitado(20, 50);
+        JPanel painelParente = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        painelParente.add(new JLabel("Grau de Parentesco: "));
+        painelParente.add(txtParentesco);
+        painelParente.setVisible(false);
 
         try {
 
@@ -955,9 +1003,12 @@ public class Main {
         painelEditor.add(new JLabel("Ano: ")); painelEditor.add(txtAnoFinal);
         painelEditor.add(new JLabel("Fone: ")); painelEditor.add(txtFoneFinal);
         painelEditor.add(new JLabel("Tem irmãos?")); painelEditor.add(comboIrmaos);
+        painelEditor.add(painelIrmaos);
         painelEditor.add(new JLabel("Data de Admissão: ")); painelEditor.add(txtAdmFinal);
         painelEditor.add(new JLabel("Data de Desligamento: ")); painelEditor.add(txtDeslFinal);
-        painelEditor.add(painelIrmaos);
+        painelEditor.add(new JLabel("Diagnóstico: ")); painelEditor.add(comboDiagnostico);
+        painelEditor.add(new JLabel("Tem parente com síndrome de DOWN? ")); painelEditor.add(comboParente);
+        painelEditor.add(painelParente);
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
 
@@ -999,6 +1050,9 @@ public class Main {
                     txtIrmaos.setText(a.getIrmaos());
                     txtAdmFinal.setText(a.getAdmissao());
                     txtDeslFinal.setText(a.getDesligamento());
+                    comboDiagnostico.setSelectedItem(a.getDiagnostico());
+                    comboParente.setSelectedItem(a.getParente());
+                    txtParentesco.setText(a.getParentesco());
 
                 }
 
@@ -1035,6 +1089,9 @@ public class Main {
             String novoIrmaos = txtIrmaos.getText().trim();
             String novaAdm = txtAdmFinal.getText().replace("_", "").trim();
             String novoDesl = txtDeslFinal.getText().replace("_", "").trim();
+            String novoDiag = (String) comboDiagnostico.getSelectedItem();
+            String novoTemParent = (String) comboParente.getSelectedItem();
+            String novoParent = txtParentesco.getText().trim();
 
             if (novoNome.isEmpty()) {
 
@@ -1137,7 +1194,7 @@ public class Main {
 
             Aluno alunoEditado = new Aluno(novoNome, novoCPF, novaData, novoId1, novoId2, novoRG, novoCivil,
                     novoCelular, novoEmail, novoEnder, novaCid, novoEstado, novoCep, novaEscola, novoAno, novoFone,
-                    novoTemIrmaos, novoIrmaos, novaAdm, novoDesl);
+                    novoTemIrmaos, novoIrmaos, novaAdm, novoDesl, novoDiag, novoTemParent, novoParent);
             alunoEditado.setId(Integer.parseInt(idTexto));
 
             try {
@@ -1203,7 +1260,8 @@ public class Main {
                     preencherTabAlunoReduzida(alunoDao, modeloReduzido);
                     limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboEditResp1, comboEditResp2, txtRG, txtCivil,
                             txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, txtEsc, txtAnoFinal,
-                            txtFoneFinal, comboIrmaos, txtIrmaos, txtAdmFinal, txtDeslFinal, txtId);
+                            txtFoneFinal, comboIrmaos, txtIrmaos, txtAdmFinal, txtDeslFinal, comboDiagnostico, comboParente,
+                            txtParentesco, txtId);
                     JOptionPane.showMessageDialog(painelPrincipal, "Aluno deletado com sucesso!");
 
                 } catch (SQLException ex) {
@@ -1237,6 +1295,26 @@ public class Main {
 
             painelIrmaos.revalidate();
             painelIrmaos.repaint();
+
+        });
+
+        comboParente.addActionListener(e -> {
+
+            String selecao = (String) comboParente.getSelectedItem();
+
+            if ("SIM".equals(selecao)) {
+
+                painelParente.setVisible(true);
+
+            } else {
+
+                painelParente.setVisible(false);
+                txtParentesco.setText("");
+
+            }
+
+            painelParente.revalidate();
+            painelParente.repaint();
 
         });
 
@@ -2017,7 +2095,8 @@ public class Main {
                                           JFormattedTextField txtCep, JtextFieldLimitado txtEsc,
                                           JFormattedTextField txtAno, JFormattedTextField txtFone, JComboBox cb4,
                                           JtextFieldLimitado txtIrmaos, JFormattedTextField txtAdmissao,
-                                          JFormattedTextField txtDesligamento, JTextField txtId) {
+                                          JFormattedTextField txtDesligamento, JComboBox cb5, JComboBox cb6,
+                                          JtextFieldLimitado txtParentesco, JTextField txtId) {
 
         txtNome.setText("");
         txtCPF.setValue(null);
@@ -2039,6 +2118,9 @@ public class Main {
         txtIrmaos.setText("");
         txtAdmissao.setValue(null);
         txtDesligamento.setValue(null);
+        if (cb5.getItemCount() > 0) cb5.setSelectedIndex(0);
+        if (cb6.getItemCount() > 0) cb6.setSelectedIndex(0);
+        txtParentesco.setText("");
 
         if (txtId != null) txtId.setText("");
 
@@ -2197,7 +2279,8 @@ public class Main {
             pw.println("************************************************************");
             pw.println();
             pw.println("Nome;CPF;Data de Nascimento;Responsável 1;Responsável 2;RG;Estado Civil;Celular;E-Mail;Endereço;" +
-                    "Cidade;Estado;CEP;Escola;Ano;Fone;Tem Irmãos?;Irmãos;Data de Admissão;Data de Desligamento");
+                    "Cidade;Estado;CEP;Escola;Ano;Fone;Tem Irmãos?;Irmãos;Data de Admissão;Data de Desligamento;Diagnóstico;" +
+                    "Tem Parente Com Síndrome de DOWN?;Grau de Parentesco");
 
             for (Aluno a : alunoDao.listar()) {
 
@@ -2212,10 +2295,12 @@ public class Main {
 
                 }
 
-                pw.printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", a.getNome(), a.getCPF(), a.getDataNascimento(),
+                pw.printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", a.getNome(), a.getCPF(), a.getDataNascimento(),
                         nomeR1, nomeR2, a.getRG(), a.getEstCivil(), a.getCelular(), a.getEmail(), a.getEndereco(),
                         a.getCidade(), a.getEstado(), a.getCep(), a.getEscola(), a.getEscAno(), a.getEscFone(),
-                        a.getTemIrmaos(), a.getIrmaos(), a.getAdmissao(), a.getDesligamento());
+                        a.getTemIrmaos(), a.getIrmaos(), a.getAdmissao(), a.getDesligamento(), a.getDiagnostico(),
+                        a.getParente(), a.getParentesco()
+                );
 
             }
 
@@ -2488,6 +2573,10 @@ public class Main {
             adicionarCampoFicha(painelFicha, "Irmãos:", a.getIrmaos(), gbc, linha++);
         adicionarCampoFicha(painelFicha, "Data de Admissão:", a.getAdmissao(), gbc, linha++);
         adicionarCampoFicha(painelFicha, "Data de Desligamento:", a.getDesligamento(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "Diagnóstico:", a.getDiagnostico(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "Tem parente com síndrome de DOWN?", a.getParente(), gbc, linha++);
+        if ("SIM".equals(a.getParente()))
+            adicionarCampoFicha(painelFicha, "Grau de Parentesco:", a.getParentesco(), gbc, linha++);
 
         JScrollPane scroll = new JScrollPane(painelFicha);
         scroll.setBorder(null);

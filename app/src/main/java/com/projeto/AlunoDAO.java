@@ -10,8 +10,8 @@ public class AlunoDAO {
 
         String sql = "INSERT INTO aluno(nome, cpf, data_nascimento, id_responsavel1, id_responsavel2, rg, estado_civil, " +
                 "celular, email, endereco, cidade, estado, cep, escola, escola_ano, escola_fone, tem_irmaos, irmaos, " +
-                "data_admissao, data_desligamento) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "data_admissao, data_desligamento, diagnostico_down, parente_down, grau_parentesco) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -30,6 +30,7 @@ public class AlunoDAO {
                 stmt.setNull(5, Types.INTEGER);
 
             }
+
             stmt.setString(6, aluno.getRG());
             stmt.setString(7, aluno.getEstCivil());
             stmt.setString(8, aluno.getCelular());
@@ -45,6 +46,9 @@ public class AlunoDAO {
             stmt.setString(18, aluno.getIrmaos());
             stmt.setString(19, aluno.getAdmissao());
             stmt.setString(20, aluno.getDesligamento());
+            stmt.setString(21, aluno.getDiagnostico());
+            stmt.setString(22, aluno.getParente());
+            stmt.setString(23, aluno.getParentesco());
 
             stmt.executeUpdate();
             System.out.println("Aluno inserido com sucesso.");
@@ -86,6 +90,9 @@ public class AlunoDAO {
                a.setIrmaos(rs.getString("irmaos"));
                a.setAdmissao(rs.getString("data_admissao"));
                a.setDesligamento(rs.getString("data_desligamento"));
+               a.setDiagnostico(rs.getString("diagnostico_down"));
+               a.setParente(rs.getString("parente_down"));
+               a.setParentesco(rs.getString("grau_parentesco"));
                lista.add(a);
 
            }
@@ -105,7 +112,7 @@ public class AlunoDAO {
         String sql = "UPDATE aluno SET nome = ?, cpf = ?, data_nascimento = ?, id_responsavel1 = ?, id_responsavel2 = ?," +
                 " rg = ?, estado_civil = ?, celular = ?, email = ?, endereco = ?, cidade = ?, estado = ?, cep = ?, " +
                 "escola = ?, escola_ano = ?, escola_fone = ?, tem_irmaos = ?, irmaos = ?, data_admissao = ?, " +
-                "data_desligamento = ? WHERE id = ?";
+                "data_desligamento = ?, diagnostico_down = ?, parente_down = ?, grau_parentesco = ? WHERE id = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -130,7 +137,10 @@ public class AlunoDAO {
             stmt.setString(18, aluno.getIrmaos());
             stmt.setString(19, aluno.getAdmissao());
             stmt.setString(20, aluno.getDesligamento());
-            stmt.setInt(21, aluno.getId());
+            stmt.setString(21, aluno.getDiagnostico());
+            stmt.setString(22, aluno.getParente());
+            stmt.setString(23, aluno.getParentesco());
+            stmt.setInt(24, aluno.getId());
             stmt.executeUpdate();
             System.out.println("Aluno atualizado com sucesso.");
 
@@ -184,7 +194,10 @@ public class AlunoDAO {
                         rs.getString("tem_irmaos"),
                         rs.getString("irmaos"),
                         rs.getString("data_admissao"),
-                        rs.getString("data_desligamento")
+                        rs.getString("data_desligamento"),
+                        rs.getString("diagnostico_down"),
+                        rs.getString("parente_down"),
+                        rs.getString("grau_parentesco")
                 );
                 a.setId(rs.getInt("id"));
                 return a;
