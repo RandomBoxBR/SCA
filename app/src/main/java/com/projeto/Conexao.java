@@ -70,6 +70,10 @@ public class Conexao {
                     diagnostico_down   TEXT   NOT NULL,
                     parente_down   TEXT   NOT NULL,
                     grau_parentesco   TEXT,
+                    recebe_beneficio   TEXT   NOT NULL,
+                    iniciou_terapia   TEXT,
+                    recebeu_atendimento   TEXT   NOT NULL,
+                    instituicoes   TEXT,
                     FOREIGN KEY (id_responsavel1) REFERENCES responsavel(id),
                     FOREIGN KEY (id_responsavel2) REFERENCES responsavel(id)
                 );

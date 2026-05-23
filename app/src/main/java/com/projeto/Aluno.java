@@ -4,7 +4,8 @@ public class Aluno {
 
     private int id, idResponsavel1, idResponsavel2;
     private String nome, CPF, dataNascimento, RG, estCivil, celular, email, endereco, cidade, estado, cep, escola, escAno,
-            escFone, temIrmaos, irmaos, admissao, desligamento, diagnostico, parente, parentesco;
+            escFone, temIrmaos, irmaos, admissao, desligamento, diagnostico, parente, parentesco, beneficio, terapia,
+            atendimento, instituicoes;
 
     public Aluno() {
 
@@ -13,14 +14,16 @@ public class Aluno {
     public Aluno(String nome, String CPF, String dataNascimento, int idResp1, int idResp2, String rg, String estCivil,
                  String celular, String email, String endereco, String cidade, String estado, String cep, String escola,
                  String escAno, String escFone, String temIrmaos, String irmaos, String admissao, String desligamento,
-                 String diagnostico, String parente, String parentesco) {
+                 String diagnostico, String parente, String parentesco, String beneficio, String terapia, String atendimento,
+                 String instituicoes) {
 
         this.nome = nome; this.CPF = CPF; this.dataNascimento = dataNascimento; this.idResponsavel1 = idResp1;
         this.idResponsavel2 = idResp2; this.RG = rg; this.estCivil = estCivil; this.celular = celular; this.email = email;
         this.endereco = endereco; this.cidade = cidade; this.estado = estado; this.cep = cep; this.escola = escola;
         this.escAno = escAno; this.escFone = escFone; this.temIrmaos = temIrmaos; this.irmaos = irmaos;
         this.admissao = admissao; this.desligamento = desligamento; this.diagnostico = diagnostico; this.parente = parente;
-        this.parentesco = parentesco;
+        this.parentesco = parentesco; this.beneficio = beneficio; this.terapia = terapia; this.atendimento = atendimento;
+        this.instituicoes = instituicoes;
 
     }
 
@@ -213,6 +216,38 @@ public class Aluno {
     public void setParentesco(String parentesco) {
 
         this.parentesco = parentesco;
+
+    }
+
+    public String getBeneficio() { return beneficio; }
+
+    public void setBeneficio(String beneficio) {
+
+        this.beneficio = beneficio;
+
+    }
+
+    public String getTerapia() { return terapia; }
+
+    public void setTerapia(String terapia) {
+
+        this.terapia = terapia;
+
+    }
+
+    public String getInstituicoes() { return instituicoes; }
+
+    public void setInstituicoes(String instituicoes) {
+
+        this.instituicoes = instituicoes;
+
+    }
+
+    public String getAtendimento() { return atendimento; }
+
+    public void setAtendimento(String atendimento) {
+
+        this.atendimento = atendimento;
 
     }
 

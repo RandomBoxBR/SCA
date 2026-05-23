@@ -10,8 +10,9 @@ public class AlunoDAO {
 
         String sql = "INSERT INTO aluno(nome, cpf, data_nascimento, id_responsavel1, id_responsavel2, rg, estado_civil, " +
                 "celular, email, endereco, cidade, estado, cep, escola, escola_ano, escola_fone, tem_irmaos, irmaos, " +
-                "data_admissao, data_desligamento, diagnostico_down, parente_down, grau_parentesco) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "data_admissao, data_desligamento, diagnostico_down, parente_down, grau_parentesco, recebe_beneficio, " +
+                "iniciou_terapia, recebeu_atendimento, instituicoes) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -49,6 +50,10 @@ public class AlunoDAO {
             stmt.setString(21, aluno.getDiagnostico());
             stmt.setString(22, aluno.getParente());
             stmt.setString(23, aluno.getParentesco());
+            stmt.setString(24, aluno.getBeneficio());
+            stmt.setString(25, aluno.getTerapia());
+            stmt.setString(26, aluno.getAtendimento());
+            stmt.setString(27, aluno.getInstituicoes());
 
             stmt.executeUpdate();
             System.out.println("Aluno inserido com sucesso.");
@@ -93,6 +98,10 @@ public class AlunoDAO {
                a.setDiagnostico(rs.getString("diagnostico_down"));
                a.setParente(rs.getString("parente_down"));
                a.setParentesco(rs.getString("grau_parentesco"));
+               a.setBeneficio(rs.getString("recebe_beneficio"));
+               a.setTerapia(rs.getString("iniciou_terapia"));
+               a.setAtendimento(rs.getString("recebeu_atendimento"));
+               a.setInstituicoes(rs.getString("instituicoes"));
                lista.add(a);
 
            }
@@ -109,10 +118,11 @@ public class AlunoDAO {
 
     public void atualizar (Aluno aluno) throws SQLException {
 
-        String sql = "UPDATE aluno SET nome = ?, cpf = ?, data_nascimento = ?, id_responsavel1 = ?, id_responsavel2 = ?," +
-                " rg = ?, estado_civil = ?, celular = ?, email = ?, endereco = ?, cidade = ?, estado = ?, cep = ?, " +
+        String sql = "UPDATE aluno SET nome = ?, cpf = ?, data_nascimento = ?, id_responsavel1 = ?, id_responsavel2 = ?, " +
+                "rg = ?, estado_civil = ?, celular = ?, email = ?, endereco = ?, cidade = ?, estado = ?, cep = ?, " +
                 "escola = ?, escola_ano = ?, escola_fone = ?, tem_irmaos = ?, irmaos = ?, data_admissao = ?, " +
-                "data_desligamento = ?, diagnostico_down = ?, parente_down = ?, grau_parentesco = ? WHERE id = ?";
+                "data_desligamento = ?, diagnostico_down = ?, parente_down = ?, grau_parentesco = ?, recebe_beneficio = ?, " +
+                "iniciou_terapia = ?, recebeu_atendimento = ?, instituicoes = ? WHERE id = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -140,7 +150,11 @@ public class AlunoDAO {
             stmt.setString(21, aluno.getDiagnostico());
             stmt.setString(22, aluno.getParente());
             stmt.setString(23, aluno.getParentesco());
-            stmt.setInt(24, aluno.getId());
+            stmt.setString(24, aluno.getBeneficio());
+            stmt.setString(25, aluno.getTerapia());
+            stmt.setString(26, aluno.getAtendimento());
+            stmt.setString(27, aluno.getInstituicoes());
+            stmt.setInt(28, aluno.getId());
             stmt.executeUpdate();
             System.out.println("Aluno atualizado com sucesso.");
 
@@ -197,7 +211,11 @@ public class AlunoDAO {
                         rs.getString("data_desligamento"),
                         rs.getString("diagnostico_down"),
                         rs.getString("parente_down"),
-                        rs.getString("grau_parentesco")
+                        rs.getString("grau_parentesco"),
+                        rs.getString("recebe_beneficio"),
+                        rs.getString("iniciou_terapia"),
+                        rs.getString("recebeu_atendimento"),
+                        rs.getString("instituicoes")
                 );
                 a.setId(rs.getInt("id"));
                 return a;

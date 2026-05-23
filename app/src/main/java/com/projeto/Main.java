@@ -140,6 +140,16 @@ public class Main {
         painelParente.add(new JLabel("Grau de Parentesco: "));
         painelParente.add(txtParentesco);
         painelParente.setVisible(false);
+        JComboBox<String> comboBeneficio = new JComboBox<>(opcoes);
+        comboBeneficio.setBackground(Color.WHITE);
+        JtextFieldSomenteNumeros txtTerapia = new JtextFieldSomenteNumeros(2, 2);
+        JComboBox<String> comboAtendimento = new JComboBox<>(opcoes);
+        comboAtendimento.setBackground(Color.WHITE);
+        JtextFieldLimitado txtInst = new JtextFieldLimitado(50, 100);
+        JPanel painelInst = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        painelInst.add(new JLabel("Quais: "));
+        painelInst.add(txtInst);
+        painelInst.setVisible(false);
 
         try {
 
@@ -255,6 +265,10 @@ public class Main {
             String diagnostico = (String) comboDiagnostico.getSelectedItem();
             String temParente = (String) comboParente.getSelectedItem();
             String parentesco = txtParentesco.getText().trim();
+            String beneficio = (String) comboBeneficio.getSelectedItem();
+            String terapia = txtTerapia.getText().trim();
+            String atendimento = (String) comboAtendimento.getSelectedItem();
+            String instituicoes = txtInst.getText().trim();
 
             if(nome.isEmpty()) {
 
@@ -384,13 +398,13 @@ public class Main {
 
                 Aluno aluno = new Aluno(nome, CPF, dataNasc, id1, id2, RG, civil, celular, email, endereco, cidade,
                         estado, cep, escola, ano, fone, temIrmaos, irmaos, admissao, desligamento, diagnostico,
-                        temParente, parentesco);
+                        temParente, parentesco, beneficio, terapia, atendimento, instituicoes);
                 alunoDao.inserir(aluno);
 
                 limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboCadResp1, comboCadResp2, txtRG, txtCivil,
                         txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, txtEsc, txtAnoFinal,
                         txtFoneFinal, comboIrmaos, txtIrmaos, txtAdmFinal, txtDeslFinal, comboDiagnostico, comboParente,
-                        txtParentesco, null);
+                        txtParentesco, comboBeneficio, txtTerapia, comboAtendimento, txtInst, null);
 
                 JOptionPane.showMessageDialog(painel, "Aluno salvo com sucesso!");
 
@@ -457,6 +471,26 @@ public class Main {
 
         });
 
+        comboAtendimento.addActionListener(e -> {
+
+            String selecao = (String) comboAtendimento.getSelectedItem();
+
+            if ("SIM".equals(selecao)) {
+
+                painelInst.setVisible(true);
+
+            } else {
+
+                painelInst.setVisible(false);
+                txtInst.setText("");
+
+            }
+
+            painelInst.revalidate();
+            painelInst.repaint();
+
+        });
+
         painel.add(new JLabel("Nome: ")); painel.add(txtNome);
         painel.add(new JLabel("CPF: ")); painel.add(txtCPFFinal);
         painel.add(new JLabel("Nascimento: ")); painel.add(txtDataFinal);
@@ -480,6 +514,10 @@ public class Main {
         painel.add(new JLabel("Diagnóstico: ")); painel.add(comboDiagnostico);
         painel.add(new JLabel("Tem parente com síndrome de DOWN? ")); painel.add(comboParente);
         painel.add(painelParente);
+        painel.add(new JLabel("Recebe o benefício de prestação continuada - BPC - INSS? ")); painel.add(comboBeneficio);
+        painel.add(new JLabel("Íniciou terapia com que idade? ")); painel.add(txtTerapia);
+        painel.add(new JLabel("Recebeu atendimento em alguma instituição? ")); painel.add(comboAtendimento);
+        painel.add(painelInst);
         painel.add(btnSalvar);
 
         return painel;
@@ -899,6 +937,16 @@ public class Main {
         painelParente.add(new JLabel("Grau de Parentesco: "));
         painelParente.add(txtParentesco);
         painelParente.setVisible(false);
+        JComboBox<String> comboBeneficio = new JComboBox<>(opcoesSN);
+        comboBeneficio.setBackground(Color.WHITE);
+        JtextFieldSomenteNumeros txtTerapia = new JtextFieldSomenteNumeros(2, 2);
+        JComboBox<String> comboAtendimento = new JComboBox<>(opcoesSN);
+        comboAtendimento.setBackground(Color.WHITE);
+        JtextFieldLimitado txtInst = new JtextFieldLimitado(50, 100);
+        JPanel painelInst = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        painelInst.add(new JLabel("Quais: "));
+        painelInst.add(txtInst);
+        painelInst.setVisible(false);
 
         try {
 
@@ -1009,6 +1057,10 @@ public class Main {
         painelEditor.add(new JLabel("Diagnóstico: ")); painelEditor.add(comboDiagnostico);
         painelEditor.add(new JLabel("Tem parente com síndrome de DOWN? ")); painelEditor.add(comboParente);
         painelEditor.add(painelParente);
+        painelEditor.add(new JLabel("Recebe o benefício de prestação continuada - BPC - INSS? ")); painelEditor.add(comboBeneficio);
+        painelEditor.add(new JLabel("Íniciou terapia com que idade? ")); painelEditor.add(txtTerapia);
+        painelEditor.add(new JLabel("Recebeu atendimento em alguma instituição? ")); painelEditor.add(comboAtendimento);
+        painelEditor.add(painelInst);
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
 
@@ -1053,6 +1105,10 @@ public class Main {
                     comboDiagnostico.setSelectedItem(a.getDiagnostico());
                     comboParente.setSelectedItem(a.getParente());
                     txtParentesco.setText(a.getParentesco());
+                    comboBeneficio.setSelectedItem(a.getBeneficio());
+                    txtTerapia.setText(a.getTerapia());
+                    comboAtendimento.setSelectedItem(a.getAtendimento());
+                    txtInst.setText(a.getInstituicoes());
 
                 }
 
@@ -1092,6 +1148,10 @@ public class Main {
             String novoDiag = (String) comboDiagnostico.getSelectedItem();
             String novoTemParent = (String) comboParente.getSelectedItem();
             String novoParent = txtParentesco.getText().trim();
+            String novoBenef = (String) comboBeneficio.getSelectedItem();
+            String novaTerap = txtTerapia.getText().trim();
+            String novoAtend = (String) comboAtendimento.getSelectedItem();
+            String novaInst = txtInst.getText().trim();
 
             if (novoNome.isEmpty()) {
 
@@ -1194,7 +1254,8 @@ public class Main {
 
             Aluno alunoEditado = new Aluno(novoNome, novoCPF, novaData, novoId1, novoId2, novoRG, novoCivil,
                     novoCelular, novoEmail, novoEnder, novaCid, novoEstado, novoCep, novaEscola, novoAno, novoFone,
-                    novoTemIrmaos, novoIrmaos, novaAdm, novoDesl, novoDiag, novoTemParent, novoParent);
+                    novoTemIrmaos, novoIrmaos, novaAdm, novoDesl, novoDiag, novoTemParent, novoParent, novoBenef,
+                    novaTerap, novoAtend, novaInst);
             alunoEditado.setId(Integer.parseInt(idTexto));
 
             try {
@@ -1261,7 +1322,7 @@ public class Main {
                     limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboEditResp1, comboEditResp2, txtRG, txtCivil,
                             txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, txtEsc, txtAnoFinal,
                             txtFoneFinal, comboIrmaos, txtIrmaos, txtAdmFinal, txtDeslFinal, comboDiagnostico, comboParente,
-                            txtParentesco, txtId);
+                            txtParentesco, comboBeneficio, txtTerapia, comboAtendimento, txtInst, txtId);
                     JOptionPane.showMessageDialog(painelPrincipal, "Aluno deletado com sucesso!");
 
                 } catch (SQLException ex) {
@@ -1315,6 +1376,26 @@ public class Main {
 
             painelParente.revalidate();
             painelParente.repaint();
+
+        });
+
+        comboAtendimento.addActionListener(e -> {
+
+            String selecao = (String) comboAtendimento.getSelectedItem();
+
+            if ("SIM".equals(selecao)) {
+
+                painelInst.setVisible(true);
+
+            } else {
+
+                painelInst.setVisible(false);
+                txtInst.setText("");
+
+            }
+
+            painelInst.revalidate();
+            painelInst.repaint();
 
         });
 
@@ -2096,7 +2177,9 @@ public class Main {
                                           JFormattedTextField txtAno, JFormattedTextField txtFone, JComboBox cb4,
                                           JtextFieldLimitado txtIrmaos, JFormattedTextField txtAdmissao,
                                           JFormattedTextField txtDesligamento, JComboBox cb5, JComboBox cb6,
-                                          JtextFieldLimitado txtParentesco, JTextField txtId) {
+                                          JtextFieldLimitado txtParentesco, JComboBox cb7,
+                                          JtextFieldSomenteNumeros txtTerapia, JComboBox cb8, JtextFieldLimitado txtInst,
+                                          JTextField txtId) {
 
         txtNome.setText("");
         txtCPF.setValue(null);
@@ -2121,6 +2204,10 @@ public class Main {
         if (cb5.getItemCount() > 0) cb5.setSelectedIndex(0);
         if (cb6.getItemCount() > 0) cb6.setSelectedIndex(0);
         txtParentesco.setText("");
+        if (cb7.getItemCount() > 0) cb7.setSelectedIndex(0);
+        txtTerapia.setText("");
+        if (cb8.getItemCount() > 0) cb8.setSelectedIndex(0);
+        txtInst.setText("");
 
         if (txtId != null) txtId.setText("");
 
@@ -2280,7 +2367,8 @@ public class Main {
             pw.println();
             pw.println("Nome;CPF;Data de Nascimento;Responsável 1;Responsável 2;RG;Estado Civil;Celular;E-Mail;Endereço;" +
                     "Cidade;Estado;CEP;Escola;Ano;Fone;Tem Irmãos?;Irmãos;Data de Admissão;Data de Desligamento;Diagnóstico;" +
-                    "Tem Parente Com Síndrome de DOWN?;Grau de Parentesco");
+                    "Tem Parente Com Síndrome de DOWN?;Grau de Parentesco;Recebe o Benefício de Prestação Continuada?;" +
+                    "Íniciou Terapia Com Que Idade?;Recebeu Atendimento em Alguma Instituição?;Quais");
 
             for (Aluno a : alunoDao.listar()) {
 
@@ -2295,11 +2383,12 @@ public class Main {
 
                 }
 
-                pw.printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n", a.getNome(), a.getCPF(), a.getDataNascimento(),
-                        nomeR1, nomeR2, a.getRG(), a.getEstCivil(), a.getCelular(), a.getEmail(), a.getEndereco(),
-                        a.getCidade(), a.getEstado(), a.getCep(), a.getEscola(), a.getEscAno(), a.getEscFone(),
-                        a.getTemIrmaos(), a.getIrmaos(), a.getAdmissao(), a.getDesligamento(), a.getDiagnostico(),
-                        a.getParente(), a.getParentesco()
+                pw.printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+                        a.getNome(), a.getCPF(), a.getDataNascimento(), nomeR1, nomeR2, a.getRG(), a.getEstCivil(),
+                        a.getCelular(), a.getEmail(), a.getEndereco(), a.getCidade(), a.getEstado(), a.getCep(),
+                        a.getEscola(), a.getEscAno(), a.getEscFone(), a.getTemIrmaos(), a.getIrmaos(), a.getAdmissao(),
+                        a.getDesligamento(), a.getDiagnostico(), a.getParente(), a.getParentesco(), a.getBeneficio(),
+                        a.getTerapia(), a.getAtendimento(), a.getInstituicoes()
                 );
 
             }
@@ -2577,6 +2666,11 @@ public class Main {
         adicionarCampoFicha(painelFicha, "Tem parente com síndrome de DOWN?", a.getParente(), gbc, linha++);
         if ("SIM".equals(a.getParente()))
             adicionarCampoFicha(painelFicha, "Grau de Parentesco:", a.getParentesco(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "Recebe o benefício de prestação continuada - BPC - INSS?", a.getBeneficio(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "Íniciou terapia com que idade?", a.getTerapia(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "Recebeu atendimento em alguma instituição?", a.getAtendimento(), gbc, linha++);
+        if ("SIM".equals(a.getAtendimento()))
+            adicionarCampoFicha(painelFicha, "Quais:", a.getInstituicoes(), gbc, linha++);
 
         JScrollPane scroll = new JScrollPane(painelFicha);
         scroll.setBorder(null);
