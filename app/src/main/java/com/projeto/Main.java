@@ -13,6 +13,7 @@ import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.StringJoiner;
 
 public class Main {
 
@@ -151,6 +152,23 @@ public class Main {
         painelInst.add(txtInst);
         painelInst.setVisible(false);
 
+        JCheckBox chkFisio = new JCheckBox("Fisioterapia");
+        JCheckBox chkFono = new JCheckBox("Fonoaudiologia");
+        JCheckBox chkTera = new JCheckBox("Terapia Ocupacional");
+        JCheckBox chkPsi = new JCheckBox("Psicologia");
+        JCheckBox chkMusico = new JCheckBox("Musicoterapia");
+        JCheckBox chkArte = new JCheckBox("Arteterapia");
+        JCheckBox chkPsicoPed = new JCheckBox("Psicopedagogia");
+        JCheckBox chkEsporte = new JCheckBox("Esporte");
+
+        JtextFieldLimitado txtOutTer = new JtextFieldLimitado(20, 60);
+
+        JPanel painelCheckboxes = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 5));
+        painelCheckboxes.add(chkFisio);    painelCheckboxes.add(chkFono);
+        painelCheckboxes.add(chkTera);     painelCheckboxes.add(chkPsi);
+        painelCheckboxes.add(chkMusico);   painelCheckboxes.add(chkArte);
+        painelCheckboxes.add(chkPsicoPed); painelCheckboxes.add(chkEsporte);
+
         try {
 
             MaskFormatter mascara = new MaskFormatter("###.###.###-##");
@@ -269,6 +287,26 @@ public class Main {
             String terapia = txtTerapia.getText().trim();
             String atendimento = (String) comboAtendimento.getSelectedItem();
             String instituicoes = txtInst.getText().trim();
+
+            StringJoiner Atividades = new StringJoiner(", ");
+
+            if (chkFisio.isSelected())    Atividades.add("Fisioterapia");
+            if (chkFono.isSelected())     Atividades.add("Fonoaudiologia");
+            if (chkTera.isSelected())     Atividades.add("Terapia Ocupacional");
+            if (chkPsi.isSelected())      Atividades.add("Psicologia");
+            if (chkMusico.isSelected())   Atividades.add("Musicoterapia");
+            if (chkArte.isSelected())     Atividades.add("Arteterapia");
+            if (chkPsicoPed.isSelected()) Atividades.add("Psicopedagogia");
+            if (chkEsporte.isSelected())  Atividades.add("Esporte");
+
+            String outrasTexto = txtOutTer.getText().trim();
+            if (!outrasTexto.isEmpty()) {
+
+                Atividades.add(outrasTexto);
+
+            }
+
+            String atividades = Atividades.toString();
 
             if(nome.isEmpty()) {
 
@@ -398,13 +436,14 @@ public class Main {
 
                 Aluno aluno = new Aluno(nome, CPF, dataNasc, id1, id2, RG, civil, celular, email, endereco, cidade,
                         estado, cep, escola, ano, fone, temIrmaos, irmaos, admissao, desligamento, diagnostico,
-                        temParente, parentesco, beneficio, terapia, atendimento, instituicoes);
+                        temParente, parentesco, beneficio, terapia, atendimento, instituicoes, atividades);
                 alunoDao.inserir(aluno);
 
                 limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboCadResp1, comboCadResp2, txtRG, txtCivil,
                         txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, txtEsc, txtAnoFinal,
                         txtFoneFinal, comboIrmaos, txtIrmaos, txtAdmFinal, txtDeslFinal, comboDiagnostico, comboParente,
-                        txtParentesco, comboBeneficio, txtTerapia, comboAtendimento, txtInst, null);
+                        txtParentesco, comboBeneficio, txtTerapia, comboAtendimento, txtInst, chkFisio, chkFono, chkTera,
+                        chkPsi, chkMusico, chkArte, chkPsicoPed, chkEsporte, txtOutTer, null);
 
                 JOptionPane.showMessageDialog(painel, "Aluno salvo com sucesso!");
 
@@ -518,6 +557,8 @@ public class Main {
         painel.add(new JLabel("Íniciou terapia com que idade? ")); painel.add(txtTerapia);
         painel.add(new JLabel("Recebeu atendimento em alguma instituição? ")); painel.add(comboAtendimento);
         painel.add(painelInst);
+        painel.add(new JLabel("Atualmente realiza quais terapias e atividades extras?")); painel.add(painelCheckboxes);
+        painel.add(new JLabel("Outras: ")); painel.add(txtOutTer);
         painel.add(btnSalvar);
 
         return painel;
@@ -948,6 +989,23 @@ public class Main {
         painelInst.add(txtInst);
         painelInst.setVisible(false);
 
+        JCheckBox chkFisio = new JCheckBox("Fisioterapia");
+        JCheckBox chkFono = new JCheckBox("Fonoaudiologia");
+        JCheckBox chkTera = new JCheckBox("Terapia Ocupacional");
+        JCheckBox chkPsi = new JCheckBox("Psicologia");
+        JCheckBox chkMusico = new JCheckBox("Musicoterapia");
+        JCheckBox chkArte = new JCheckBox("Arteterapia");
+        JCheckBox chkPsicoPed = new JCheckBox("Psicopedagogia");
+        JCheckBox chkEsporte = new JCheckBox("Esporte");
+
+        JtextFieldLimitado txtOutTer = new JtextFieldLimitado(20, 60);
+
+        JPanel painelCheckboxes = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 5));
+        painelCheckboxes.add(chkFisio);    painelCheckboxes.add(chkFono);
+        painelCheckboxes.add(chkTera);     painelCheckboxes.add(chkPsi);
+        painelCheckboxes.add(chkMusico);   painelCheckboxes.add(chkArte);
+        painelCheckboxes.add(chkPsicoPed); painelCheckboxes.add(chkEsporte);
+
         try {
 
             MaskFormatter mascara = new MaskFormatter("###.###.###-##");
@@ -1061,6 +1119,8 @@ public class Main {
         painelEditor.add(new JLabel("Íniciou terapia com que idade? ")); painelEditor.add(txtTerapia);
         painelEditor.add(new JLabel("Recebeu atendimento em alguma instituição? ")); painelEditor.add(comboAtendimento);
         painelEditor.add(painelInst);
+        painelEditor.add(new JLabel("Atualmente realiza quais terapias e atividades extras?")); painelEditor.add(painelCheckboxes);
+        painelEditor.add(new JLabel("Outras: ")); painelEditor.add(txtOutTer);
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
 
@@ -1110,6 +1170,68 @@ public class Main {
                     comboAtendimento.setSelectedItem(a.getAtendimento());
                     txtInst.setText(a.getInstituicoes());
 
+                    chkFisio.setSelected(false);
+                    chkFono.setSelected(false);
+                    chkTera.setSelected(false);
+                    chkPsi.setSelected(false);
+                    chkMusico.setSelected(false);
+                    chkArte.setSelected(false);
+                    chkPsicoPed.setSelected(false);
+                    chkEsporte.setSelected(false);
+
+                    String Atividades = a.getAtividades();
+
+                    if (Atividades != null && !Atividades.trim().isEmpty()) {
+
+                        String[] itens = Atividades.split(",\\s*");
+
+                        StringJoiner outrasAcumuladas = new StringJoiner(", ");
+
+                        for (String item : itens) {
+                            String itemTrim = item.trim();
+
+                            switch (itemTrim) {
+                                case "Fisioterapia":
+                                    chkFisio.setSelected(true);
+                                    break;
+                                case "Fonoaudiologia":
+                                    chkFono.setSelected(true);
+                                    break;
+                                case "Terapia Ocupacional":
+                                    chkTera.setSelected(true);
+                                    break;
+                                case "Psicologia":
+                                    chkPsi.setSelected(true);
+                                    break;
+                                case "Musicoterapia":
+                                    chkMusico.setSelected(true);
+                                    break;
+                                case "Arteterapia":
+                                    chkArte.setSelected(true);
+                                    break;
+                                case "Psicopedagogia":
+                                    chkPsicoPed.setSelected(true);
+                                    break;
+                                case "Esporte":
+                                    chkEsporte.setSelected(true);
+                                    break;
+                                default:
+
+                                    if (!itemTrim.isEmpty()) {
+
+                                        outrasAcumuladas.add(itemTrim);
+
+                                    }
+
+                                    break;
+                            }
+
+                        }
+
+                        txtOutTer.setText(outrasAcumuladas.toString());
+
+                    }
+
                 }
 
             }
@@ -1152,6 +1274,26 @@ public class Main {
             String novaTerap = txtTerapia.getText().trim();
             String novoAtend = (String) comboAtendimento.getSelectedItem();
             String novaInst = txtInst.getText().trim();
+
+            StringJoiner Atividades = new StringJoiner(", ");
+
+            if (chkFisio.isSelected())    Atividades.add("Fisioterapia");
+            if (chkFono.isSelected())     Atividades.add("Fonoaudiologia");
+            if (chkTera.isSelected())     Atividades.add("Terapia Ocupacional");
+            if (chkPsi.isSelected())      Atividades.add("Psicologia");
+            if (chkMusico.isSelected())   Atividades.add("Musicoterapia");
+            if (chkArte.isSelected())     Atividades.add("Arteterapia");
+            if (chkPsicoPed.isSelected()) Atividades.add("Psicopedagogia");
+            if (chkEsporte.isSelected())  Atividades.add("Esporte");
+
+            String outrasTexto = txtOutTer.getText().trim();
+            if (!outrasTexto.isEmpty()) {
+
+                Atividades.add(outrasTexto);
+
+            }
+
+            String novaAtiv = Atividades.toString();
 
             if (novoNome.isEmpty()) {
 
@@ -1255,7 +1397,7 @@ public class Main {
             Aluno alunoEditado = new Aluno(novoNome, novoCPF, novaData, novoId1, novoId2, novoRG, novoCivil,
                     novoCelular, novoEmail, novoEnder, novaCid, novoEstado, novoCep, novaEscola, novoAno, novoFone,
                     novoTemIrmaos, novoIrmaos, novaAdm, novoDesl, novoDiag, novoTemParent, novoParent, novoBenef,
-                    novaTerap, novoAtend, novaInst);
+                    novaTerap, novoAtend, novaInst, novaAtiv);
             alunoEditado.setId(Integer.parseInt(idTexto));
 
             try {
@@ -1322,7 +1464,8 @@ public class Main {
                     limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboEditResp1, comboEditResp2, txtRG, txtCivil,
                             txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, txtEsc, txtAnoFinal,
                             txtFoneFinal, comboIrmaos, txtIrmaos, txtAdmFinal, txtDeslFinal, comboDiagnostico, comboParente,
-                            txtParentesco, comboBeneficio, txtTerapia, comboAtendimento, txtInst, txtId);
+                            txtParentesco, comboBeneficio, txtTerapia, comboAtendimento, txtInst, chkFisio, chkFono, chkTera,
+                            chkPsi, chkMusico, chkArte, chkPsicoPed, chkEsporte, txtOutTer, txtId);
                     JOptionPane.showMessageDialog(painelPrincipal, "Aluno deletado com sucesso!");
 
                 } catch (SQLException ex) {
@@ -2179,7 +2322,9 @@ public class Main {
                                           JFormattedTextField txtDesligamento, JComboBox cb5, JComboBox cb6,
                                           JtextFieldLimitado txtParentesco, JComboBox cb7,
                                           JtextFieldSomenteNumeros txtTerapia, JComboBox cb8, JtextFieldLimitado txtInst,
-                                          JTextField txtId) {
+                                          JCheckBox chkFisio, JCheckBox chkFono, JCheckBox chkTera, JCheckBox chkPsi,
+                                          JCheckBox chkMusico, JCheckBox chkArte, JCheckBox chkPsicoPed,
+                                          JCheckBox chkEsporte, JtextFieldLimitado txtOutTer, JTextField txtId) {
 
         txtNome.setText("");
         txtCPF.setValue(null);
@@ -2208,6 +2353,16 @@ public class Main {
         txtTerapia.setText("");
         if (cb8.getItemCount() > 0) cb8.setSelectedIndex(0);
         txtInst.setText("");
+
+        chkFisio.setSelected(false);
+        chkFono.setSelected(false);
+        chkTera.setSelected(false);
+        chkPsi.setSelected(false);
+        chkMusico.setSelected(false);
+        chkArte.setSelected(false);
+        chkPsicoPed.setSelected(false);
+        chkEsporte.setSelected(false);
+        txtOutTer.setText("");
 
         if (txtId != null) txtId.setText("");
 
@@ -2368,7 +2523,7 @@ public class Main {
             pw.println("Nome;CPF;Data de Nascimento;Responsável 1;Responsável 2;RG;Estado Civil;Celular;E-Mail;Endereço;" +
                     "Cidade;Estado;CEP;Escola;Ano;Fone;Tem Irmãos?;Irmãos;Data de Admissão;Data de Desligamento;Diagnóstico;" +
                     "Tem Parente Com Síndrome de DOWN?;Grau de Parentesco;Recebe o Benefício de Prestação Continuada?;" +
-                    "Íniciou Terapia Com Que Idade?;Recebeu Atendimento em Alguma Instituição?;Quais");
+                    "Íniciou Terapia Com Que Idade?;Recebeu Atendimento em Alguma Instituição?;Quais;Terapias e Atividades Extras");
 
             for (Aluno a : alunoDao.listar()) {
 
@@ -2383,12 +2538,12 @@ public class Main {
 
                 }
 
-                pw.printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
+                pw.printf("%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s;%s\n",
                         a.getNome(), a.getCPF(), a.getDataNascimento(), nomeR1, nomeR2, a.getRG(), a.getEstCivil(),
                         a.getCelular(), a.getEmail(), a.getEndereco(), a.getCidade(), a.getEstado(), a.getCep(),
                         a.getEscola(), a.getEscAno(), a.getEscFone(), a.getTemIrmaos(), a.getIrmaos(), a.getAdmissao(),
                         a.getDesligamento(), a.getDiagnostico(), a.getParente(), a.getParentesco(), a.getBeneficio(),
-                        a.getTerapia(), a.getAtendimento(), a.getInstituicoes()
+                        a.getTerapia(), a.getAtendimento(), a.getInstituicoes(), a.getAtividades()
                 );
 
             }
@@ -2564,7 +2719,7 @@ public class Main {
         if (nomesAlunos.isEmpty()) nomesAlunos = "Nenhum aluno vinculado";
 
         JDialog ficha = new JDialog((Frame) null, "Ficha do Responsável: " + r.getNome(), true);
-        ficha.setSize(550, 650);
+        ficha.setSize(650, 800);
         ficha.setLocationRelativeTo(null);
         ficha.setResizable(false);
 
@@ -2623,7 +2778,7 @@ public class Main {
         }
 
         JDialog ficha = new JDialog((Frame) null, "Ficha do Aluno: " + a.getNome(), true);
-        ficha.setSize(550, 650);
+        ficha.setSize(650, 800);
         ficha.setLocationRelativeTo(null);
         ficha.setResizable(false);
 
@@ -2671,6 +2826,7 @@ public class Main {
         adicionarCampoFicha(painelFicha, "Recebeu atendimento em alguma instituição?", a.getAtendimento(), gbc, linha++);
         if ("SIM".equals(a.getAtendimento()))
             adicionarCampoFicha(painelFicha, "Quais:", a.getInstituicoes(), gbc, linha++);
+        adicionarCampoFicha(painelFicha, "Atualmente realiza quais terapias e atividades extras?", a.getAtividades(), gbc, linha);
 
         JScrollPane scroll = new JScrollPane(painelFicha);
         scroll.setBorder(null);

@@ -11,8 +11,8 @@ public class AlunoDAO {
         String sql = "INSERT INTO aluno(nome, cpf, data_nascimento, id_responsavel1, id_responsavel2, rg, estado_civil, " +
                 "celular, email, endereco, cidade, estado, cep, escola, escola_ano, escola_fone, tem_irmaos, irmaos, " +
                 "data_admissao, data_desligamento, diagnostico_down, parente_down, grau_parentesco, recebe_beneficio, " +
-                "iniciou_terapia, recebeu_atendimento, instituicoes) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                "iniciou_terapia, recebeu_atendimento, instituicoes, terapias_atividades) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -54,6 +54,7 @@ public class AlunoDAO {
             stmt.setString(25, aluno.getTerapia());
             stmt.setString(26, aluno.getAtendimento());
             stmt.setString(27, aluno.getInstituicoes());
+            stmt.setString(28, aluno.getAtividades());
 
             stmt.executeUpdate();
             System.out.println("Aluno inserido com sucesso.");
@@ -102,6 +103,7 @@ public class AlunoDAO {
                a.setTerapia(rs.getString("iniciou_terapia"));
                a.setAtendimento(rs.getString("recebeu_atendimento"));
                a.setInstituicoes(rs.getString("instituicoes"));
+               a.setAtividades(rs.getString("terapias_atividades"));
                lista.add(a);
 
            }
@@ -122,7 +124,7 @@ public class AlunoDAO {
                 "rg = ?, estado_civil = ?, celular = ?, email = ?, endereco = ?, cidade = ?, estado = ?, cep = ?, " +
                 "escola = ?, escola_ano = ?, escola_fone = ?, tem_irmaos = ?, irmaos = ?, data_admissao = ?, " +
                 "data_desligamento = ?, diagnostico_down = ?, parente_down = ?, grau_parentesco = ?, recebe_beneficio = ?, " +
-                "iniciou_terapia = ?, recebeu_atendimento = ?, instituicoes = ? WHERE id = ?";
+                "iniciou_terapia = ?, recebeu_atendimento = ?, instituicoes = ?, terapias_atividades = ? WHERE id = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -154,7 +156,8 @@ public class AlunoDAO {
             stmt.setString(25, aluno.getTerapia());
             stmt.setString(26, aluno.getAtendimento());
             stmt.setString(27, aluno.getInstituicoes());
-            stmt.setInt(28, aluno.getId());
+            stmt.setString(28, aluno.getAtividades());
+            stmt.setInt(29, aluno.getId());
             stmt.executeUpdate();
             System.out.println("Aluno atualizado com sucesso.");
 
@@ -215,7 +218,8 @@ public class AlunoDAO {
                         rs.getString("recebe_beneficio"),
                         rs.getString("iniciou_terapia"),
                         rs.getString("recebeu_atendimento"),
-                        rs.getString("instituicoes")
+                        rs.getString("instituicoes"),
+                        rs.getString("terapias_atividades")
                 );
                 a.setId(rs.getInt("id"));
                 return a;

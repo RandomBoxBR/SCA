@@ -74,6 +74,7 @@ public class Conexao {
                     iniciou_terapia   TEXT,
                     recebeu_atendimento   TEXT   NOT NULL,
                     instituicoes   TEXT,
+                    terapias_atividades   TEXT,
                     FOREIGN KEY (id_responsavel1) REFERENCES responsavel(id),
                     FOREIGN KEY (id_responsavel2) REFERENCES responsavel(id)
                 );
