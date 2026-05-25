@@ -4,7 +4,7 @@ public class Responsavel {
 
     private int id;
     private String nome, CPF, dataNascimento, RG, estCivil, celular, email, profissao, locTrabalho, endereco,
-            cidade, estado, cep;
+            cidade, estado, cep, observacao;
 
     public Responsavel() {
 
@@ -12,21 +12,11 @@ public class Responsavel {
 
     public Responsavel(String nome, String CPF, String dataNascimento, String RG, String estCivil, String celular,
                        String email, String profissao, String locTrabalho, String endereco, String cidade, String estado,
-                       String cep) {
+                       String cep, String observacao) {
 
-        this.nome = nome;
-        this.CPF = CPF;
-        this.dataNascimento = dataNascimento;
-        this.RG = RG;
-        this.estCivil = estCivil;
-        this.celular = celular;
-        this.email = email;
-        this.profissao = profissao;
-        this.locTrabalho = locTrabalho;
-        this.endereco = endereco;
-        this.cidade = cidade;
-        this.estado = estado;
-        this.cep = cep;
+        this.nome = nome; this.CPF = CPF; this.dataNascimento = dataNascimento; this.RG = RG; this.estCivil = estCivil;
+        this.celular = celular; this.email = email; this.profissao = profissao; this.locTrabalho = locTrabalho;
+        this.endereco = endereco; this.cidade = cidade; this.estado = estado; this.cep = cep; this.observacao = observacao;
 
     }
 
@@ -139,6 +129,14 @@ public class Responsavel {
     public void setCep(String cep) {
 
         this.cep = cep;
+
+    }
+
+    public String getObservacao() { return observacao; }
+
+    public void setObservacao(String observacao) {
+
+        this.observacao = observacao;
 
     }
 

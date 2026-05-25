@@ -5,7 +5,7 @@ public class Aluno {
     private int id, idResponsavel1, idResponsavel2;
     private String nome, CPF, dataNascimento, RG, estCivil, celular, email, endereco, cidade, estado, cep, escola, escAno,
             escFone, temIrmaos, irmaos, admissao, desligamento, diagnostico, parente, parentesco, beneficio, terapia,
-            atendimento, instituicoes, atividades;
+            atendimento, instituicoes, atividades, observacao;
 
     public Aluno() {
 
@@ -15,7 +15,7 @@ public class Aluno {
                  String celular, String email, String endereco, String cidade, String estado, String cep, String escola,
                  String escAno, String escFone, String temIrmaos, String irmaos, String admissao, String desligamento,
                  String diagnostico, String parente, String parentesco, String beneficio, String terapia, String atendimento,
-                 String instituicoes, String atividades) {
+                 String instituicoes, String atividades, String observacao) {
 
         this.nome = nome; this.CPF = CPF; this.dataNascimento = dataNascimento; this.idResponsavel1 = idResp1;
         this.idResponsavel2 = idResp2; this.RG = rg; this.estCivil = estCivil; this.celular = celular; this.email = email;
@@ -23,7 +23,7 @@ public class Aluno {
         this.escAno = escAno; this.escFone = escFone; this.temIrmaos = temIrmaos; this.irmaos = irmaos;
         this.admissao = admissao; this.desligamento = desligamento; this.diagnostico = diagnostico; this.parente = parente;
         this.parentesco = parentesco; this.beneficio = beneficio; this.terapia = terapia; this.atendimento = atendimento;
-        this.instituicoes = instituicoes; this.atividades = atividades;
+        this.instituicoes = instituicoes; this.atividades = atividades; this.observacao = observacao;
 
     }
 
@@ -256,6 +256,14 @@ public class Aluno {
     public void setAtividades(String atividades) {
 
         this.atividades = atividades;
+
+    }
+
+    public String getObservacao() { return observacao; }
+
+    public void setObservacao(String observacao) {
+
+        this.observacao = observacao;
 
     }
 

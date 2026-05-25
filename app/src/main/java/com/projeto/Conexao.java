@@ -40,7 +40,8 @@ public class Conexao {
                     endereco   TEXT   NOT NULL,
                     cidade   TEXT   NOT NULL,
                     estado   TEXT   NOT NULL,
-                    cep   TEXT   NOT NULL
+                    cep   TEXT   NOT NULL,
+                    observacao   TEXT
                 );
             """);
 
@@ -75,6 +76,7 @@ public class Conexao {
                     recebeu_atendimento   TEXT   NOT NULL,
                     instituicoes   TEXT,
                     terapias_atividades   TEXT,
+                    observacao   TEXT,
                     FOREIGN KEY (id_responsavel1) REFERENCES responsavel(id),
                     FOREIGN KEY (id_responsavel2) REFERENCES responsavel(id)
                 );

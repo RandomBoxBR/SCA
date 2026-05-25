@@ -125,10 +125,10 @@ public class Main {
 
         JPanel painel = new JPanel(new FlowLayout());
 
-        JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20, 100);
+        JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20, 80);
         JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
-        JtextFieldSomenteNumeros txtRG = new JtextFieldSomenteNumeros(12, 12);
+        JtextFieldSomenteNumeros txtRG = new JtextFieldSomenteNumeros(6, 12);
         JtextFieldSomenteLetras txtCivil = new JtextFieldSomenteLetras(10, 40);
         JFormattedTextField txtCel = null;
         JtextFieldLimitado txtEmail = new JtextFieldLimitado(20, 50);
@@ -145,7 +145,7 @@ public class Main {
         String[] opcoes = {"NÃO", "SIM"};
         JComboBox<String> comboIrmaos = new JComboBox<>(opcoes);
         comboIrmaos.setBackground(Color.WHITE);
-        JtextFieldLimitado txtIrmaos = new JtextFieldLimitado(50, 100);
+        JtextFieldLimitado txtIrmaos = new JtextFieldLimitado(30, 100);
         JPanel painelIrmaos = new JPanel(new FlowLayout(FlowLayout.LEFT));
         painelIrmaos.add(new JLabel("Nome e Nascimento: "));
         painelIrmaos.add(txtIrmaos);
@@ -167,7 +167,7 @@ public class Main {
         JtextFieldSomenteNumeros txtTerapia = new JtextFieldSomenteNumeros(2, 2);
         JComboBox<String> comboAtendimento = new JComboBox<>(opcoes);
         comboAtendimento.setBackground(Color.WHITE);
-        JtextFieldLimitado txtInst = new JtextFieldLimitado(50, 100);
+        JtextFieldLimitado txtInst = new JtextFieldLimitado(30, 100);
         JPanel painelInst = new JPanel(new FlowLayout(FlowLayout.LEFT));
         painelInst.add(new JLabel("Quais: "));
         painelInst.add(txtInst);
@@ -189,6 +189,16 @@ public class Main {
         painelCheckboxes.add(chkTera);     painelCheckboxes.add(chkPsi);
         painelCheckboxes.add(chkMusico);   painelCheckboxes.add(chkArte);
         painelCheckboxes.add(chkPsicoPed); painelCheckboxes.add(chkEsporte);
+
+        JTextArea txtObs = new JTextArea(3, 30);
+        txtObs.setLineWrap(true);
+        txtObs.setWrapStyleWord(true);
+        txtObs.setFont(new Font("Arial", Font.PLAIN, 13));
+
+        JScrollPane scrollObs = new JScrollPane(txtObs);
+        scrollObs.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollObs.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollObs.setPreferredSize(new Dimension(400, 60));
 
         try {
 
@@ -329,6 +339,8 @@ public class Main {
 
             String atividades = Atividades.toString();
 
+            String observacao = txtObs.getText().trim();
+
             if(nome.isEmpty()) {
 
                 JOptionPane.showMessageDialog(painel, "Preencha o nome!");
@@ -457,14 +469,14 @@ public class Main {
 
                 Aluno aluno = new Aluno(nome, CPF, dataNasc, id1, id2, RG, civil, celular, email, endereco, cidade,
                         estado, cep, escola, ano, fone, temIrmaos, irmaos, admissao, desligamento, diagnostico,
-                        temParente, parentesco, beneficio, terapia, atendimento, instituicoes, atividades);
+                        temParente, parentesco, beneficio, terapia, atendimento, instituicoes, atividades, observacao);
                 alunoDao.inserir(aluno);
 
                 limparCamposAluno(txtNome, txtCPFFinal, txtDataFinal, comboCadResp1, comboCadResp2, txtRG, txtCivil,
                         txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, txtEsc, txtAnoFinal,
                         txtFoneFinal, comboIrmaos, txtIrmaos, txtAdmFinal, txtDeslFinal, comboDiagnostico, comboParente,
                         txtParentesco, comboBeneficio, txtTerapia, comboAtendimento, txtInst, chkFisio, chkFono, chkTera,
-                        chkPsi, chkMusico, chkArte, chkPsicoPed, chkEsporte, txtOutTer, null);
+                        chkPsi, chkMusico, chkArte, chkPsicoPed, chkEsporte, txtOutTer, txtObs, null);
 
                 JOptionPane.showMessageDialog(painel, "Aluno salvo com sucesso!");
 
@@ -586,6 +598,7 @@ public class Main {
 
         painel.add(agrupar("Atualmente realiza quais terapias e atividades extras?", painelCheckboxes));
         painel.add(agrupar("Outras: ", txtOutTer));
+        painel.add(agrupar("Observação: ", scrollObs));
         painel.add(btnSalvar);
 
         return painel;
@@ -596,10 +609,10 @@ public class Main {
 
         JPanel painel = new JPanel(new FlowLayout());
 
-        JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20, 100);
+        JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20, 80);
         JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
-        JtextFieldSomenteNumeros txtRG = new JtextFieldSomenteNumeros(12, 12);
+        JtextFieldSomenteNumeros txtRG = new JtextFieldSomenteNumeros(6, 12);
         JtextFieldSomenteLetras txtCivil = new JtextFieldSomenteLetras(10, 40);
         JFormattedTextField txtCel = null;
         JtextFieldLimitado txtEmail = new JtextFieldLimitado(20, 50);
@@ -612,6 +625,16 @@ public class Main {
         JComboBox<String> comboEstado = new JComboBox<>(ufs);
         comboEstado.setBackground(Color.WHITE);
         JFormattedTextField txtCep = null;
+
+        JTextArea txtObs = new JTextArea(3, 30);
+        txtObs.setLineWrap(true);
+        txtObs.setWrapStyleWord(true);
+        txtObs.setFont(new Font("Arial", Font.PLAIN, 13));
+
+        JScrollPane scrollObs = new JScrollPane(txtObs);
+        scrollObs.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollObs.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollObs.setPreferredSize(new Dimension(400, 60));
 
         try {
 
@@ -671,6 +694,7 @@ public class Main {
             String cidade = txtCid.getText();
             String estado = (String) comboEstado.getSelectedItem();
             String cep = txtCepFinal.getText().replace("_", "").trim();
+            String observacao = txtObs.getText().trim();
 
             if(nome.isEmpty()) {
 
@@ -731,11 +755,11 @@ public class Main {
             try {
 
                 Responsavel resp = new Responsavel(nome, CPF, dataNasc, RG, civil, celular, email, prof, trab, endereco,
-                        cidade, estado, cep);
+                        cidade, estado, cep, observacao);
                 respDao.inserir(resp);
 
                 limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, txtRG, txtCivil, txtCelFinal, txtEmail,
-                        txtProf, txtTrab, txtEnder, txtCid, comboEstado, txtCepFinal, null);
+                        txtProf, txtTrab, txtEnder, txtCid, comboEstado, txtCepFinal, txtObs, null);
 
                 JOptionPane.showMessageDialog(painel, "Responsável salvo com sucesso!");
 
@@ -775,6 +799,7 @@ public class Main {
         painel.add(agrupar("Cidade: ", txtCid));
         painel.add(agrupar("Estado: ", comboEstado));
         painel.add(agrupar("CEP: ", txtCepFinal));
+        painel.add(agrupar("Observação: ", scrollObs));
         painel.add(btnSalvar);
 
         return painel;
@@ -965,13 +990,13 @@ public class Main {
 
         atualizarCombosResponsaveis(respDao, comboEditResp1, comboEditResp2);
 
-        JTextField txtId = new JTextField(2);
+        JTextField txtId = new JTextField(3);
         txtId.setEditable(false);
         JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20, 100);
 
         JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
-        JtextFieldSomenteNumeros txtRG = new JtextFieldSomenteNumeros(12, 12);
+        JtextFieldSomenteNumeros txtRG = new JtextFieldSomenteNumeros(6, 12);
         JtextFieldSomenteLetras txtCivil = new JtextFieldSomenteLetras(10, 40);
         JtextFieldLimitado txtEmail = new JtextFieldLimitado(20, 50);
         JFormattedTextField txtCel = null;
@@ -988,7 +1013,7 @@ public class Main {
         String[] opcoesSN = {"NÃO", "SIM"};
         JComboBox<String> comboIrmaos = new JComboBox<>(opcoesSN);
         comboIrmaos.setBackground(Color.WHITE);
-        JtextFieldLimitado txtIrmaos = new JtextFieldLimitado(50, 100);
+        JtextFieldLimitado txtIrmaos = new JtextFieldLimitado(30, 100);
         JPanel painelIrmaos = new JPanel(new FlowLayout(FlowLayout.LEFT));
         painelIrmaos.add(new JLabel("Nome e Nascimento: "));
         painelIrmaos.add(txtIrmaos);
@@ -1010,7 +1035,7 @@ public class Main {
         JtextFieldSomenteNumeros txtTerapia = new JtextFieldSomenteNumeros(2, 2);
         JComboBox<String> comboAtendimento = new JComboBox<>(opcoesSN);
         comboAtendimento.setBackground(Color.WHITE);
-        JtextFieldLimitado txtInst = new JtextFieldLimitado(50, 100);
+        JtextFieldLimitado txtInst = new JtextFieldLimitado(30, 100);
         JPanel painelInst = new JPanel(new FlowLayout(FlowLayout.LEFT));
         painelInst.add(new JLabel("Quais: "));
         painelInst.add(txtInst);
@@ -1032,6 +1057,16 @@ public class Main {
         painelCheckboxes.add(chkTera);     painelCheckboxes.add(chkPsi);
         painelCheckboxes.add(chkMusico);   painelCheckboxes.add(chkArte);
         painelCheckboxes.add(chkPsicoPed); painelCheckboxes.add(chkEsporte);
+
+        JTextArea txtObs = new JTextArea(3, 30);
+        txtObs.setLineWrap(true);
+        txtObs.setWrapStyleWord(true);
+        txtObs.setFont(new Font("Arial", Font.PLAIN, 13));
+
+        JScrollPane scrollObs = new JScrollPane(txtObs);
+        scrollObs.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollObs.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollObs.setPreferredSize(new Dimension(400, 60));
 
         try {
 
@@ -1154,6 +1189,7 @@ public class Main {
 
         painelEditor.add(agrupar("Atualmente realiza quais terapias e atividades extras?", painelCheckboxes));
         painelEditor.add(agrupar("Outras: ", txtOutTer));
+        painelEditor.add(agrupar("Observação: ", scrollObs));
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
 
@@ -1265,6 +1301,8 @@ public class Main {
 
                     }
 
+                    txtObs.setText(a.getObservacao());
+
                 }
 
             }
@@ -1327,6 +1365,7 @@ public class Main {
             }
 
             String novaAtiv = Atividades.toString();
+            String novaObs = txtObs.getText().trim();
 
             if (novoNome.isEmpty()) {
 
@@ -1430,7 +1469,7 @@ public class Main {
             Aluno alunoEditado = new Aluno(novoNome, novoCPF, novaData, novoId1, novoId2, novoRG, novoCivil,
                     novoCelular, novoEmail, novoEnder, novaCid, novoEstado, novoCep, novaEscola, novoAno, novoFone,
                     novoTemIrmaos, novoIrmaos, novaAdm, novoDesl, novoDiag, novoTemParent, novoParent, novoBenef,
-                    novaTerap, novoAtend, novaInst, novaAtiv);
+                    novaTerap, novoAtend, novaInst, novaAtiv, novaObs);
             alunoEditado.setId(Integer.parseInt(idTexto));
 
             try {
@@ -1498,7 +1537,7 @@ public class Main {
                             txtCelFinal, txtEmail, txtEnder, txtCid, comboEstado, txtCepFinal, txtEsc, txtAnoFinal,
                             txtFoneFinal, comboIrmaos, txtIrmaos, txtAdmFinal, txtDeslFinal, comboDiagnostico, comboParente,
                             txtParentesco, comboBeneficio, txtTerapia, comboAtendimento, txtInst, chkFisio, chkFono, chkTera,
-                            chkPsi, chkMusico, chkArte, chkPsicoPed, chkEsporte, txtOutTer, txtId);
+                            chkPsi, chkMusico, chkArte, chkPsicoPed, chkEsporte, txtOutTer, txtObs, txtId);
                     JOptionPane.showMessageDialog(painelPrincipal, "Aluno deletado com sucesso!");
 
                 } catch (SQLException ex) {
@@ -1596,7 +1635,7 @@ public class Main {
         JtextFieldSomenteLetras txtNome = new JtextFieldSomenteLetras(20, 100);
         JFormattedTextField txtCPF = null;
         JFormattedTextField txtData = null;
-        JtextFieldSomenteNumeros txtRG = new JtextFieldSomenteNumeros(12, 12);
+        JtextFieldSomenteNumeros txtRG = new JtextFieldSomenteNumeros(6, 12);
         JtextFieldSomenteLetras txtCivil = new JtextFieldSomenteLetras(10, 40);
         JtextFieldLimitado txtEmail = new JtextFieldLimitado(20, 50);
         JFormattedTextField txtCel = null;
@@ -1609,6 +1648,16 @@ public class Main {
         JComboBox<String> comboEstado = new JComboBox<>(ufs);
         comboEstado.setBackground(Color.WHITE);
         JFormattedTextField txtCep = null;
+
+        JTextArea txtObs = new JTextArea(3, 30);
+        txtObs.setLineWrap(true);
+        txtObs.setWrapStyleWord(true);
+        txtObs.setFont(new Font("Arial", Font.PLAIN, 13));
+
+        JScrollPane scrollObs = new JScrollPane(txtObs);
+        scrollObs.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollObs.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollObs.setPreferredSize(new Dimension(400, 60));
 
         try {
 
@@ -1669,6 +1718,7 @@ public class Main {
         painelEditor.add(agrupar("Cidade: ", txtCid));
         painelEditor.add(agrupar("Estado: ", comboEstado));
         painelEditor.add(agrupar("CEP: ", txtCepFinal));
+        painelEditor.add(agrupar("Observação: ", scrollObs));
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
 
@@ -1703,6 +1753,7 @@ public class Main {
                     txtCid.setText(r.getCidade());
                     comboEstado.setSelectedItem(r.getEstado());
                     txtCepFinal.setText(r.getCep());
+                    txtObs.setText(r.getObservacao());
 
                 }
 
@@ -1734,6 +1785,7 @@ public class Main {
             String novaCid = txtCid.getText().trim();
             String novoEstado = (String) comboEstado.getSelectedItem();
             String novoCep = txtCepFinal.getText().trim();
+            String novaObs = txtObs.getText().trim();
 
             if (novoNome.isEmpty()) {
 
@@ -1785,7 +1837,7 @@ public class Main {
             }
 
             Responsavel respEditado = new Responsavel(novoNome, novoCPF, novaData, novoRG, novoCivil, novoCelular,
-                    novoEmail, novaProf, novoTrab, novoEnder, novaCid, novoEstado, novoCep);
+                    novoEmail, novaProf, novoTrab, novoEnder, novaCid, novoEstado, novoCep, novaObs);
             respEditado.setId(Integer.parseInt(idTexto));
 
             try {
@@ -1861,7 +1913,7 @@ public class Main {
                     respDao.deletar(Integer.parseInt(txtId.getText()));
                     preencherTabRespReduzida(respDao, modeloReduzido);
                     limparCamposResponsavel(txtNome, txtCPFFinal, txtDataFinal, txtRG, txtCivil, txtCelFinal, txtEmail,
-                            txtProf, txtTrab, txtEnder, txtCid, comboEstado, txtCepFinal, txtId);
+                            txtProf, txtTrab, txtEnder, txtCid, comboEstado, txtCepFinal, txtObs, txtId);
                     JOptionPane.showMessageDialog(painelPrincipal, "Responsável deletado com sucesso!");
 
                 } catch (SQLException ex) {
@@ -2324,7 +2376,7 @@ public class Main {
                                                 JtextFieldLimitado txtEmail, JtextFieldSomenteLetras txtProf,
                                                 JtextFieldLimitado txtTrab, JtextFieldLimitado txtEnder,
                                                 JtextFieldSomenteLetras txtCid, JComboBox cb1, JFormattedTextField txtCep,
-                                                JTextField txtId) {
+                                                JTextArea txtObs, JTextField txtId) {
 
         txtNome.setText("");
         txtCPF.setValue(null);
@@ -2339,6 +2391,7 @@ public class Main {
         txtCid.setText("");
         if (cb1.getItemCount() > 0) cb1.setSelectedIndex(0);
         txtCep.setValue(null);
+        txtObs.setText("");
         if(txtId != null) txtId.setText("");
 
     }
@@ -2357,7 +2410,8 @@ public class Main {
                                           JtextFieldSomenteNumeros txtTerapia, JComboBox cb8, JtextFieldLimitado txtInst,
                                           JCheckBox chkFisio, JCheckBox chkFono, JCheckBox chkTera, JCheckBox chkPsi,
                                           JCheckBox chkMusico, JCheckBox chkArte, JCheckBox chkPsicoPed,
-                                          JCheckBox chkEsporte, JtextFieldLimitado txtOutTer, JTextField txtId) {
+                                          JCheckBox chkEsporte, JtextFieldLimitado txtOutTer, JTextArea txtObs,
+                                          JTextField txtId) {
 
         txtNome.setText("");
         txtCPF.setValue(null);
@@ -2386,7 +2440,6 @@ public class Main {
         txtTerapia.setText("");
         if (cb8.getItemCount() > 0) cb8.setSelectedIndex(0);
         txtInst.setText("");
-
         chkFisio.setSelected(false);
         chkFono.setSelected(false);
         chkTera.setSelected(false);
@@ -2396,7 +2449,7 @@ public class Main {
         chkPsicoPed.setSelected(false);
         chkEsporte.setSelected(false);
         txtOutTer.setText("");
-
+        txtObs.setText("");
         if (txtId != null) txtId.setText("");
 
     }
@@ -2785,6 +2838,8 @@ public class Main {
         adicionarCampoFicha(painelFicha, "Cidade/Estado:", r.getCidade() + " - " + r.getEstado(), gbc, linha++);
         adicionarCampoFicha(painelFicha, "CEP:", r.getCep(), gbc, linha++);
         adicionarCampoFicha(painelFicha, "Alunos Vinculados:", nomesAlunos, gbc, linha++);
+        if (!(r.getObservacao().isEmpty()))
+            adicionarCampoFicha(painelFicha, "Observação:", r.getObservacao(), gbc, linha);
 
         JScrollPane scroll = new JScrollPane(painelFicha);
         scroll.setBorder(null);
@@ -2859,7 +2914,9 @@ public class Main {
         adicionarCampoFicha(painelFicha, "Recebeu atendimento em alguma instituição?", a.getAtendimento(), gbc, linha++);
         if ("SIM".equals(a.getAtendimento()))
             adicionarCampoFicha(painelFicha, "Quais:", a.getInstituicoes(), gbc, linha++);
-        adicionarCampoFicha(painelFicha, "Atualmente realiza quais terapias e atividades extras?", a.getAtividades(), gbc, linha);
+        adicionarCampoFicha(painelFicha, "Atualmente realiza quais terapias e atividades extras?", a.getAtividades(), gbc, linha++);
+        if (!(a.getObservacao().isEmpty()))
+            adicionarCampoFicha(painelFicha, "Observação:", a.getObservacao(), gbc, linha);
 
         JScrollPane scroll = new JScrollPane(painelFicha);
         scroll.setBorder(null);
