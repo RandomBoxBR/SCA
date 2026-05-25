@@ -213,7 +213,7 @@ public class Main {
             MaskFormatter mascara = new MaskFormatter("(##) 9####-####");
             mascara.setPlaceholderCharacter('_');
             txtCel = new JFormattedTextField(mascara);
-            txtCel.setColumns(15);
+            txtCel.setColumns(9);
 
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -222,7 +222,7 @@ public class Main {
             MaskFormatter mascara = new MaskFormatter("#####-###");
             mascara.setPlaceholderCharacter('_');
             txtCep = new JFormattedTextField(mascara);
-            txtCep.setColumns(9);
+            txtCep.setColumns(6);
 
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -231,7 +231,7 @@ public class Main {
             MaskFormatter mascara = new MaskFormatter("####");
             mascara.setPlaceholderCharacter('_');
             txtAno = new JFormattedTextField(mascara);
-            txtAno.setColumns(4);
+            txtAno.setColumns(3);
 
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -618,7 +618,7 @@ public class Main {
             MaskFormatter mascara = new MaskFormatter("###.###.###-##");
             mascara.setPlaceholderCharacter('_');
             txtCPF = new JFormattedTextField(mascara);
-            txtCPF.setColumns(14);
+            txtCPF.setColumns(9);
 
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -627,7 +627,7 @@ public class Main {
             MaskFormatter mascara = new MaskFormatter("##/##/####");
             mascara.setPlaceholderCharacter('_');
             txtData = new JFormattedTextField(mascara);
-            txtData.setColumns(10);
+            txtData.setColumns(6);
 
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -636,7 +636,7 @@ public class Main {
             MaskFormatter mascara = new MaskFormatter("(##) 9####-####");
             mascara.setPlaceholderCharacter('_');
             txtCel = new JFormattedTextField(mascara);
-            txtCel.setColumns(15);
+            txtCel.setColumns(9);
 
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -645,7 +645,7 @@ public class Main {
             MaskFormatter mascara = new MaskFormatter("#####-###");
             mascara.setPlaceholderCharacter('_');
             txtCep = new JFormattedTextField(mascara);
-            txtCep.setColumns(9);
+            txtCep.setColumns(6);
 
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -1027,7 +1027,7 @@ public class Main {
 
         JtextFieldLimitado txtOutTer = new JtextFieldLimitado(20, 60);
 
-        JPanel painelCheckboxes = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 5));
+        JPanel painelCheckboxes = new JPanel(new GridLayout(0, 3, 5, 5));
         painelCheckboxes.add(chkFisio);    painelCheckboxes.add(chkFono);
         painelCheckboxes.add(chkTera);     painelCheckboxes.add(chkPsi);
         painelCheckboxes.add(chkMusico);   painelCheckboxes.add(chkArte);
@@ -1044,19 +1044,19 @@ public class Main {
 
         try {
 
-            MaskFormatter m = new MaskFormatter("##/##/####");
-            m.setPlaceholderCharacter('_');
-            txtData = new JFormattedTextField(m);
+            MaskFormatter mascara = new MaskFormatter("##/##/####");
+            mascara.setPlaceholderCharacter('_');
+            txtData = new JFormattedTextField(mascara);
             txtData.setColumns(6);
 
-        } catch (Exception e)  { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace(); }
 
         try {
 
             MaskFormatter mascara = new MaskFormatter("(##) 9####-####");
             mascara.setPlaceholderCharacter('_');
             txtCel = new JFormattedTextField(mascara);
-            txtCel.setColumns(15);
+            txtCel.setColumns(9);
 
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -1065,7 +1065,7 @@ public class Main {
             MaskFormatter mascara = new MaskFormatter("#####-###");
             mascara.setPlaceholderCharacter('_');
             txtCep = new JFormattedTextField(mascara);
-            txtCep.setColumns(9);
+            txtCep.setColumns(6);
 
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -1074,7 +1074,7 @@ public class Main {
             MaskFormatter mascara = new MaskFormatter("####");
             mascara.setPlaceholderCharacter('_');
             txtAno = new JFormattedTextField(mascara);
-            txtAno.setColumns(4);
+            txtAno.setColumns(3);
 
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -1615,25 +1615,25 @@ public class Main {
             MaskFormatter mascara = new MaskFormatter("###.###.###-##");
             mascara.setPlaceholderCharacter('_');
             txtCPF = new JFormattedTextField(mascara);
-            txtCPF.setColumns(14);
+            txtCPF.setColumns(9);
 
         } catch (Exception e) { e.printStackTrace(); }
 
         try {
 
-            MaskFormatter m = new MaskFormatter("##/##/####");
-            m.setPlaceholderCharacter('_');
-            txtData = new JFormattedTextField(m);
-            txtData.setColumns(10);
+            MaskFormatter mascara = new MaskFormatter("##/##/####");
+            mascara.setPlaceholderCharacter('_');
+            txtData = new JFormattedTextField(mascara);
+            txtData.setColumns(6);
 
-        } catch (Exception e)  { e.printStackTrace(); }
+        } catch (Exception e) { e.printStackTrace(); }
 
         try {
 
             MaskFormatter mascara = new MaskFormatter("(##) 9####-####");
             mascara.setPlaceholderCharacter('_');
             txtCel = new JFormattedTextField(mascara);
-            txtCel.setColumns(15);
+            txtCel.setColumns(9);
 
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -1642,7 +1642,7 @@ public class Main {
             MaskFormatter mascara = new MaskFormatter("#####-###");
             mascara.setPlaceholderCharacter('_');
             txtCep = new JFormattedTextField(mascara);
-            txtCep.setColumns(9);
+            txtCep.setColumns(6);
 
         } catch (Exception e) { e.printStackTrace(); }
 
@@ -2879,9 +2879,14 @@ public class Main {
         gbc.gridx = 1;
         gbc.weightx = 0.7;
 
-        JTextField campo = new JTextField(valor);
+        JTextArea campo = new JTextArea(valor);
         campo.setEditable(false);
+        campo.setLineWrap(true);
+        campo.setWrapStyleWord(true);
         campo.setFont(new Font("Arial", Font.PLAIN, 13));
+
+        campo.setBorder(UIManager.getBorder("TextField.border"));
+        campo.setBackground(UIManager.getColor("TextField.inactiveBackground"));
 
         p.add(campo, gbc);
 
