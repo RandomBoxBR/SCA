@@ -29,6 +29,27 @@ public class Main {
 
         SwingUtilities.invokeLater(() -> {
 
+            KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
+
+                if (e.getKeyCode() == KeyEvent.VK_ENTER && e.getID() == KeyEvent.KEY_PRESSED) {
+
+                    Component focoAtual = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+
+                    if (focoAtual instanceof JTextField || focoAtual instanceof JComboBox
+                            || focoAtual instanceof JCheckBox || focoAtual instanceof JButton) {
+
+                        focoAtual.transferFocus();
+                        e.consume();
+                        return true;
+
+                    }
+
+                }
+
+                return false;
+
+            });
+
             JFrame frame = new JFrame("SCA - Sistema de Cadastro Asdown");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -530,35 +551,41 @@ public class Main {
 
         });
 
-        painel.add(new JLabel("Nome: ")); painel.add(txtNome);
-        painel.add(new JLabel("CPF: ")); painel.add(txtCPFFinal);
-        painel.add(new JLabel("Nascimento: ")); painel.add(txtDataFinal);
-        painel.add(new JLabel("Resp. 1:")); painel.add(comboCadResp1);
-        painel.add(new JLabel("Resp. 2:")); painel.add(comboCadResp2);
-        painel.add(new JLabel("RG: ")); painel.add(txtRG);
-        painel.add(new JLabel("Estado Civil: ")); painel.add(txtCivil);
-        painel.add(new JLabel("Número de Cel.: ")); painel.add(txtCelFinal);
-        painel.add(new JLabel("E-mail: ")); painel.add(txtEmail);
-        painel.add(new JLabel("Endereço: ")); painel.add(txtEnder);
-        painel.add(new JLabel("Cidade: ")); painel.add(txtCid);
-        painel.add(new JLabel("Estado: ")); painel.add(comboEstado);
-        painel.add(new JLabel("CEP: ")); painel.add(txtCepFinal);
-        painel.add(new JLabel("Escola: ")); painel.add(txtEsc);
-        painel.add(new JLabel("Ano: ")); painel.add(txtAnoFinal);
-        painel.add(new JLabel("Fone: ")); painel.add(txtFoneFinal);
-        painel.add(new JLabel("Tem irmãos? ")); painel.add(comboIrmaos);
+        painel.add(agrupar("Nome: ", txtNome));
+        painel.add(agrupar("CPF: ", txtCPFFinal));
+        painel.add(agrupar("Nascimento: ", txtDataFinal));
+        painel.add(agrupar("Resp. 1:", comboCadResp1));
+        painel.add(agrupar("Resp. 2:", comboCadResp2));
+        painel.add(agrupar("RG: ", txtRG));
+        painel.add(agrupar("Estado Civil: ", txtCivil));
+        painel.add(agrupar("Número de Cel.: ", txtCelFinal));
+        painel.add(agrupar("E-mail: ", txtEmail));
+        painel.add(agrupar("Endereço: ", txtEnder));
+        painel.add(agrupar("Cidade: ", txtCid));
+        painel.add(agrupar("Estado: ", comboEstado));
+        painel.add(agrupar("CEP: ", txtCepFinal));
+        painel.add(agrupar("Escola: ", txtEsc));
+        painel.add(agrupar("Ano: ", txtAnoFinal));
+        painel.add(agrupar("Fone: ", txtFoneFinal));
+        painel.add(agrupar("Tem irmãos? ", comboIrmaos));
+
         painel.add(painelIrmaos);
-        painel.add(new JLabel("Data de Admissão: ")); painel.add(txtAdmFinal);
-        painel.add(new JLabel("Data de Desligamento: ")); painel.add(txtDeslFinal);
-        painel.add(new JLabel("Diagnóstico: ")); painel.add(comboDiagnostico);
-        painel.add(new JLabel("Tem parente com síndrome de DOWN? ")); painel.add(comboParente);
+
+        painel.add(agrupar("Data de Admissão: ", txtAdmFinal));
+        painel.add(agrupar("Data de Desligamento: ", txtDeslFinal));
+        painel.add(agrupar("Diagnóstico: ", comboDiagnostico));
+        painel.add(agrupar("Tem parente com síndrome de DOWN? ", comboParente));
+
         painel.add(painelParente);
-        painel.add(new JLabel("Recebe o benefício de prestação continuada - BPC - INSS? ")); painel.add(comboBeneficio);
-        painel.add(new JLabel("Íniciou terapia com que idade? ")); painel.add(txtTerapia);
-        painel.add(new JLabel("Recebeu atendimento em alguma instituição? ")); painel.add(comboAtendimento);
+
+        painel.add(agrupar("Recebe o benefício de prestação continuada - BPC - INSS? ", comboBeneficio));
+        painel.add(agrupar("Íniciou terapia com que idade? ", txtTerapia));
+        painel.add(agrupar("Recebeu atendimento em alguma instituição? ", comboAtendimento));
+
         painel.add(painelInst);
-        painel.add(new JLabel("Atualmente realiza quais terapias e atividades extras?")); painel.add(painelCheckboxes);
-        painel.add(new JLabel("Outras: ")); painel.add(txtOutTer);
+
+        painel.add(agrupar("Atualmente realiza quais terapias e atividades extras?", painelCheckboxes));
+        painel.add(agrupar("Outras: ", txtOutTer));
         painel.add(btnSalvar);
 
         return painel;
@@ -735,19 +762,19 @@ public class Main {
 
         });
 
-        painel.add(new JLabel("Nome: ")); painel.add(txtNome);
-        painel.add(new JLabel("CPF: ")); painel.add(txtCPFFinal);
-        painel.add(new JLabel("Nascimento: ")); painel.add(txtDataFinal);
-        painel.add(new JLabel("RG: ")); painel.add(txtRG);
-        painel.add(new JLabel("Estado Civil: ")); painel.add(txtCivil);
-        painel.add(new JLabel("Número de Cel.: ")); painel.add(txtCelFinal);
-        painel.add(new JLabel("E-mail: ")); painel.add(txtEmail);
-        painel.add(new JLabel("Profissão: ")); painel.add(txtProf);
-        painel.add(new JLabel("Local de Trabalho: ")); painel.add(txtTrab);
-        painel.add(new JLabel("Endereço: ")); painel.add(txtEnder);
-        painel.add(new JLabel("Cidade: ")); painel.add(txtCid);
-        painel.add(new JLabel("Estado: ")); painel.add(comboEstado);
-        painel.add(new JLabel("CEP: ")); painel.add(txtCepFinal);
+        painel.add(agrupar("Nome: ", txtNome));
+        painel.add(agrupar("CPF: ", txtCPFFinal));
+        painel.add(agrupar("Nascimento: ", txtDataFinal));
+        painel.add(agrupar("RG: ", txtRG));
+        painel.add(agrupar("Estado Civil: ", txtCivil));
+        painel.add(agrupar("Número de Cel.: ", txtCelFinal));
+        painel.add(agrupar("E-mail: ", txtEmail));
+        painel.add(agrupar("Profissão: ", txtProf));
+        painel.add(agrupar("Local de Trabalho: ", txtTrab));
+        painel.add(agrupar("Endereço: ", txtEnder));
+        painel.add(agrupar("Cidade: ", txtCid));
+        painel.add(agrupar("Estado: ", comboEstado));
+        painel.add(agrupar("CEP: ", txtCepFinal));
         painel.add(btnSalvar);
 
         return painel;
@@ -1091,36 +1118,42 @@ public class Main {
         JButton btnExcluir = new JButton("Excluir Aluno");
         btnExcluir.setBackground(new Color(255, 150, 150));
 
-        painelEditor.add(new JLabel("ID:")); painelEditor.add(txtId);
-        painelEditor.add(new JLabel("Nome:")); painelEditor.add(txtNome);
-        painelEditor.add(new JLabel("CPF:")); painelEditor.add(txtCPFFinal);
-        painelEditor.add(new JLabel("Data de Nascimento:")); painelEditor.add(txtDataFinal);
-        painelEditor.add(new JLabel("Resp. 1")); painelEditor.add(comboEditResp1);
-        painelEditor.add(new JLabel("Resp. 2")); painelEditor.add(comboEditResp2);
-        painelEditor.add(new JLabel("RG: ")); painelEditor.add(txtRG);
-        painelEditor.add(new JLabel("Estado Civil: ")); painelEditor.add(txtCivil);
-        painelEditor.add(new JLabel("Número de Cel.: ")); painelEditor.add(txtCelFinal);
-        painelEditor.add(new JLabel("E-Mail: ")); painelEditor.add(txtEmail);
-        painelEditor.add(new JLabel("Endereço: ")); painelEditor.add(txtEnder);
-        painelEditor.add(new JLabel("Cidade: ")); painelEditor.add(txtCid);
-        painelEditor.add(new JLabel("Estado: ")); painelEditor.add(comboEstado);
-        painelEditor.add(new JLabel("CEP: ")); painelEditor.add(txtCepFinal);
-        painelEditor.add(new JLabel("Escola: ")); painelEditor.add(txtEsc);
-        painelEditor.add(new JLabel("Ano: ")); painelEditor.add(txtAnoFinal);
-        painelEditor.add(new JLabel("Fone: ")); painelEditor.add(txtFoneFinal);
-        painelEditor.add(new JLabel("Tem irmãos?")); painelEditor.add(comboIrmaos);
+        painelEditor.add(agrupar("ID:", txtId));
+        painelEditor.add(agrupar("Nome:", txtNome));
+        painelEditor.add(agrupar("CPF:", txtCPFFinal));
+        painelEditor.add(agrupar("Data de Nascimento:", txtDataFinal));
+        painelEditor.add(agrupar("Resp. 1", comboEditResp1));
+        painelEditor.add(agrupar("Resp. 2", comboEditResp2));
+        painelEditor.add(agrupar("RG: ", txtRG));
+        painelEditor.add(agrupar("Estado Civil: ", txtCivil));
+        painelEditor.add(agrupar("Número de Cel.: ", txtCelFinal));
+        painelEditor.add(agrupar("E-Mail: ", txtEmail));
+        painelEditor.add(agrupar("Endereço: ", txtEnder));
+        painelEditor.add(agrupar("Cidade: ", txtCid));
+        painelEditor.add(agrupar("Estado: ", comboEstado));
+        painelEditor.add(agrupar("CEP: ", txtCepFinal));
+        painelEditor.add(agrupar("Escola: ", txtEsc));
+        painelEditor.add(agrupar("Ano: ", txtAnoFinal));
+        painelEditor.add(agrupar("Fone: ", txtFoneFinal));
+        painelEditor.add(agrupar("Tem irmãos?", comboIrmaos));
+
         painelEditor.add(painelIrmaos);
-        painelEditor.add(new JLabel("Data de Admissão: ")); painelEditor.add(txtAdmFinal);
-        painelEditor.add(new JLabel("Data de Desligamento: ")); painelEditor.add(txtDeslFinal);
-        painelEditor.add(new JLabel("Diagnóstico: ")); painelEditor.add(comboDiagnostico);
-        painelEditor.add(new JLabel("Tem parente com síndrome de DOWN? ")); painelEditor.add(comboParente);
+
+        painelEditor.add(agrupar("Data de Admissão: ", txtAdmFinal));
+        painelEditor.add(agrupar("Data de Desligamento: ", txtDeslFinal));
+        painelEditor.add(agrupar("Diagnóstico: ", comboDiagnostico));
+        painelEditor.add(agrupar("Tem parente com síndrome de DOWN? ", comboParente));
+
         painelEditor.add(painelParente);
-        painelEditor.add(new JLabel("Recebe o benefício de prestação continuada - BPC - INSS? ")); painelEditor.add(comboBeneficio);
-        painelEditor.add(new JLabel("Íniciou terapia com que idade? ")); painelEditor.add(txtTerapia);
-        painelEditor.add(new JLabel("Recebeu atendimento em alguma instituição? ")); painelEditor.add(comboAtendimento);
+
+        painelEditor.add(agrupar("Recebe o benefício de prestação continuada - BPC - INSS? ", comboBeneficio));
+        painelEditor.add(agrupar("Íniciou terapia com que idade? ", txtTerapia));
+        painelEditor.add(agrupar("Recebeu atendimento em alguma instituição? ", comboAtendimento));
+
         painelEditor.add(painelInst);
-        painelEditor.add(new JLabel("Atualmente realiza quais terapias e atividades extras?")); painelEditor.add(painelCheckboxes);
-        painelEditor.add(new JLabel("Outras: ")); painelEditor.add(txtOutTer);
+
+        painelEditor.add(agrupar("Atualmente realiza quais terapias e atividades extras?", painelCheckboxes));
+        painelEditor.add(agrupar("Outras: ", txtOutTer));
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
 
@@ -1622,20 +1655,20 @@ public class Main {
         JButton btnExcluir = new JButton("Excluir Responsável");
         btnExcluir.setBackground(new Color(255, 150, 150));
 
-        painelEditor.add(new JLabel("ID: ")); painelEditor.add(txtId);
-        painelEditor.add(new JLabel("Nome: ")); painelEditor.add(txtNome);
-        painelEditor.add(new JLabel("CPF: ")); painelEditor.add(txtCPFFinal);
-        painelEditor.add(new JLabel("Data de Nascimento: ")); painelEditor.add(txtDataFinal);
-        painelEditor.add(new JLabel("RG: ")); painelEditor.add(txtRG);
-        painelEditor.add(new JLabel("Estado Civil: ")); painelEditor.add(txtCivil);
-        painelEditor.add(new JLabel("Número de Cel.: ")); painelEditor.add(txtCelFinal);
-        painelEditor.add(new JLabel("E-Mail: ")); painelEditor.add(txtEmail);
-        painelEditor.add(new JLabel("Profissão: ")); painelEditor.add(txtProf);
-        painelEditor.add(new JLabel("Local de Trabalho: ")); painelEditor.add(txtTrab);
-        painelEditor.add(new JLabel("Endereço: ")); painelEditor.add(txtEnder);
-        painelEditor.add(new JLabel("Cidade: ")); painelEditor.add(txtCid);
-        painelEditor.add(new JLabel("Estado: ")); painelEditor.add(comboEstado);
-        painelEditor.add(new JLabel("CEP: ")); painelEditor.add(txtCepFinal);
+        painelEditor.add(agrupar("ID: ", txtId));
+        painelEditor.add(agrupar("Nome: ", txtNome));
+        painelEditor.add(agrupar("CPF: ", txtCPFFinal));
+        painelEditor.add(agrupar("Data de Nascimento: ", txtDataFinal));
+        painelEditor.add(agrupar("RG: ", txtRG));
+        painelEditor.add(agrupar("Estado Civil: ", txtCivil));
+        painelEditor.add(agrupar("Número de Cel.: ", txtCelFinal));
+        painelEditor.add(agrupar("E-Mail: ", txtEmail));
+        painelEditor.add(agrupar("Profissão: ", txtProf));
+        painelEditor.add(agrupar("Local de Trabalho: ", txtTrab));
+        painelEditor.add(agrupar("Endereço: ", txtEnder));
+        painelEditor.add(agrupar("Cidade: ", txtCid));
+        painelEditor.add(agrupar("Estado: ", comboEstado));
+        painelEditor.add(agrupar("CEP: ", txtCepFinal));
         painelEditor.add(btnEditar);
         painelEditor.add(btnExcluir);
 
@@ -2851,6 +2884,17 @@ public class Main {
         campo.setFont(new Font("Arial", Font.PLAIN, 13));
 
         p.add(campo, gbc);
+
+    }
+
+    private static JPanel agrupar(String texto, JComponent campo) {
+
+        JPanel miniPainel = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 0));
+
+        miniPainel.add(new JLabel(texto));
+        miniPainel.add(campo);
+
+        return miniPainel;
 
     }
 
